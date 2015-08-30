@@ -11,6 +11,7 @@ public class PreferenciasUtil {
     public static final String PREFERENCIAS_LOGIN = "USUARIO_LOGIN";
     public static final String KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL = "email";
     public static final String KEY_PREFERENCIAS_USUARIO_LOGADO_NOME = "usuario";
+    public static final String KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO = "foto";
 
     public static void salvarPreferenciasLogin(String key, String value, Context contexto) {
         SharedPreferences preferencias = contexto.getSharedPreferences(

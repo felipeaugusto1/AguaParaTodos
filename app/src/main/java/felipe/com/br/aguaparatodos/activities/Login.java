@@ -111,6 +111,7 @@ public class Login extends FragmentActivity {
 
                         PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, json.getString("name"), getApplicationContext());
                         PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, json.getString("email"), getApplicationContext());
+                        PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, Profile.getCurrentProfile().getProfilePictureUri(50, 50).toString(), getApplicationContext());
 
                         verificarEmail(parametros);
                     }
@@ -145,16 +146,13 @@ public class Login extends FragmentActivity {
 
                 usuarioLogado = gson.fromJson(str, Usuario.class);
 
-                Profile profile = Profile.getCurrentProfile();
-                Bundle bundle = new Bundle();
                 //Log.d("imagem", profile.getProfilePictureUri(20, 20)+"");
                 //Bundle bundle = new Bundle();
                 //bundle.putString(getResources().getString(R.string.bundle_nome_usuario), json.getString("name"));
                 //bundle.putString(getResources().getString(R.string.bundle_email_usuario), json.getString("email"));
-                bundle.putString(getResources().getString(R.string.bundle_foto_usuario), profile.getProfilePictureUri(50, 50).toString());
+
 
                 Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
-                telaPosLogin.putExtras(bundle);
                 startActivity(telaPosLogin);
             }
 
