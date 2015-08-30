@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Água</string>
+
+    <string name="facebook_app_id">886882718059406</string>
+
+    <string name="action_settings">Configurações</string>
+
+    <!-- URLS WEBSERVICES -->
+    <string name="usuario_login">usuario/login</string>
+
+    <!-- TELA DE LOGIN -->
+    <string name="bundle_nome_usuario">nome_usuario</string>
+    <string name="bundle_email_usuario">email_usuario</string>
+    <string name="bundle_foto_usuario">foto_usuario</string>
+    <string name="login_facebook_aguarde">Aguarde...</string>
+    <string name="login_facebook_cancelado">Login com Facebook cancelado.</string>
+    <string name="login_facebook_erro">Ocorreu um erro ao logar com o Facebook.</string>
+
+    <!-- MENU DRAWER -->
+    <string name="menu_mapa">Mapa</string>
+    <string name="menu_registrar_ocorrencia">Registrar</string>
+    <string name="menu_sobre">Sobre</string>
+    <string name="menu_sair">Sair</string>
+    <string name="menu_notificacao">Notificação</string>
+
+    <!-- TELA REGISTRAR OCORRENCIA -->
+    <string name="tituloTelaRegistrarOcorrenia">Registrar Ocorrência</string>
+
+    <string name="txtTituloOcorrencia">Título:</string>
+    <string name="edTituloOcorrencia">Informe um título.</string>
+    <string name="txtObservacaoOcorrencia">Observação:</string>
+    <string name="edObservacaoOcorrencia">Descreva a ocorrência.</string>
+    <string name="txtEnderecoOcorrencia">Endereço:</string>
+    <string name="btnCadastrarOcorrencia">Cadastrar</string>
+</resources>
