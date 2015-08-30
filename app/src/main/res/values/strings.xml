@@ -5,16 +5,21 @@
 
     <string name="action_settings">Configurações</string>
 
+    <string name="aguarde">Aguarde&#8230;</string>
+    <string name="msgErroWS">Ocorreu algum erro. Por favor aguarde alguns instantes.</string>
+
     <!-- URLS WEBSERVICES -->
     <string name="usuario_login">usuario/login</string>
+    <string name="ocorrencia_nova">ocorrencia/nova</string>
+    <string name="ocorrencia_listar">ocorrencia/listar</string>
 
     <!-- TELA DE LOGIN -->
     <string name="bundle_nome_usuario">nome_usuario</string>
     <string name="bundle_email_usuario">email_usuario</string>
     <string name="bundle_foto_usuario">foto_usuario</string>
-    <string name="login_facebook_aguarde">Aguarde...</string>
     <string name="login_facebook_cancelado">Login com Facebook cancelado.</string>
     <string name="login_facebook_erro">Ocorreu um erro ao logar com o Facebook.</string>
+    <string name="login_erro">Ocorreu algum erro. Por favor tente novamente mais tarde.</string>
 
     <!-- MENU DRAWER -->
     <string name="menu_mapa">Mapa</string>
@@ -26,10 +31,20 @@
     <!-- TELA REGISTRAR OCORRENCIA -->
     <string name="tituloTelaRegistrarOcorrenia">Registrar Ocorrência</string>
 
+    <string name="msgCadastrandoOcorrencia">Cadastrando ocorrência&#8230;</string>
+    <string name="msgSucessoEnviarOcorrencia">Ocorrência cadastrada com sucesso.</string>
+    <string name="msgErroEnviarOcorrencia">Ocorreu um erro ao cadastrar a ocorrência.</string>
     <string name="txtTituloOcorrencia">Título:</string>
     <string name="edTituloOcorrencia">Informe um título.</string>
     <string name="txtObservacaoOcorrencia">Observação:</string>
     <string name="edObservacaoOcorrencia">Descreva a ocorrência.</string>
     <string name="txtEnderecoOcorrencia">Endereço:</string>
     <string name="btnCadastrarOcorrencia">Cadastrar</string>
+    <string name="txtPontoReferenciaOcorrencia">Ponto de referência:</string>
+    <string name="edPontoReferenciaOcorrencia">Cite um ponto de referência.</string>
+
+    <string name="erroInformarTituloOcorrencia">Por favor informe um título.</string>
+    <string name="erroInformarEnderecoOcorrencia">Por favor informe um endereço.</string>
+    <string name="erroBuscarEndereco">Ocorreu algum erro ao buscar o endereço, por favor tente novamente.</string>
+
 </resources>

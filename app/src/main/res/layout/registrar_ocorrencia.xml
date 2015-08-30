@@ -70,11 +70,33 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"></AutoCompleteTextView>
 
+    <TextView
+        android:id="@+id/textViewPontoReferencia"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextEnderecoOcorrencia"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/txtPontoReferenciaOcorrencia"
+        android:textSize="12dp" />
+
+    <EditText
+        android:id="@+id/editTextPontoReferenciaOcorrencia"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewPontoReferencia"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:hint="@string/edPontoReferenciaOcorrencia"
+        android:inputType="textMultiLine"
+        android:lines="2" />
+
     <Button
         android:id="@+id/btnEnviarOcorrencia"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextEnderecoOcorrencia"
+        android:layout_below="@+id/editTextPontoReferenciaOcorrencia"
         android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"

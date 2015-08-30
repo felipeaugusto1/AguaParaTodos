@@ -130,7 +130,7 @@ public class BuscarEnderecoGoogle {
             }
 
         } catch (IOException e) {
-            Log.e("Erro busca coordenada", e.getMessage());
+            Log.e("Erro buscar coordenada", e.getMessage());
         }
 
         return new ArrayList<Double>();

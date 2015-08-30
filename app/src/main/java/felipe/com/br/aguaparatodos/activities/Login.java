@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.*;
@@ -35,6 +36,7 @@ import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
 import felipe.com.br.aguaparatodos.utils.PreferenciasUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
+import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
 import felipe.com.br.aguaparatodos.utils.WebService;
 
@@ -58,28 +60,34 @@ public class Login extends FragmentActivity {
 
         setContentView(R.layout.login);
 
-        this.btnLoginFacebook = (LoginButton) findViewById(R.id.btnLoginFacebook);
-        this.btnLoginFacebook.setReadPermissions("public_profile");
-        this.btnLoginFacebook.setReadPermissions("email");
+        if (!PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()).equalsIgnoreCase("erro")) {
+            this.parametros = new RequestParams();
+            this.parametros.put("email", PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()));
+            this.verificarEmail(this.parametros);
+        } else {
+            this.btnLoginFacebook = (LoginButton) findViewById(R.id.btnLoginFacebook);
+            this.btnLoginFacebook.setReadPermissions("public_profile");
+            this.btnLoginFacebook.setReadPermissions("email");
 
-        this.btnLoginFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                ToastUtil.criarToastCurto(getApplicationContext(), getResources().getString(R.string.login_facebook_aguarde));
-                recuperarInformacoesUsuarioFacebook();
-            }
+            this.btnLoginFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    ToastUtil.criarToastCurto(getApplicationContext(), getResources().getString(R.string.aguarde));
+                    recuperarInformacoesUsuarioFacebook();
+                }
 
-            @Override
-            public void onCancel() {
-                ToastUtil.criarToastCurto(getApplicationContext(), getResources().getString(R.string.login_facebook_cancelado));
-            }
+                @Override
+                public void onCancel() {
+                    ToastUtil.criarToastCurto(getApplicationContext(), getResources().getString(R.string.login_facebook_cancelado));
+                }
 
-            @Override
-            public void onError(FacebookException e) {
-                ToastUtil.criarToastCurto(getApplicationContext(), getResources().getString(R.string.login_facebook_erro));
-            }
-        });
-
+                @Override
+                public void onError(FacebookException e) {
+                    LoginManager.getInstance().logOut();
+                    ToastUtil.criarToastCurto(getApplicationContext(), getResources().getString(R.string.login_facebook_erro));
+                }
+            });
+        }
     }
 
      public void recuperarInformacoesUsuarioFacebook() {
@@ -146,11 +154,7 @@ public class Login extends FragmentActivity {
 
                 usuarioLogado = gson.fromJson(str, Usuario.class);
 
-                //Log.d("imagem", profile.getProfilePictureUri(20, 20)+"");
-                //Bundle bundle = new Bundle();
-                //bundle.putString(getResources().getString(R.string.bundle_nome_usuario), json.getString("name"));
-                //bundle.putString(getResources().getString(R.string.bundle_email_usuario), json.getString("email"));
-
+                UsuarioSingleton.getInstancia().setUsuario(usuarioLogado);
 
                 Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
                 startActivity(telaPosLogin);
@@ -158,7 +162,8 @@ public class Login extends FragmentActivity {
 
             @Override
             public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-
+                LoginManager.getInstance().logOut();
+                ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.login_erro));
             }
 
         });

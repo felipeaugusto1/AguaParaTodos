@@ -8,8 +8,10 @@ public class Ocorrencia {
     private int id;
     private String titulo;
     private String descricao;
+    private String pontoReferencia;
     private Localidade localidade;
     private int qtdDenuncias;
+    private boolean ocorrenciaSolucionada;
     private Usuario usuario;
     private String numeroEndereco;
     private String endereco;
@@ -19,7 +21,7 @@ public class Ocorrencia {
     public Ocorrencia() {
     }
 
-    public Ocorrencia(String titulo, String descricao, Localidade localidade, Usuario usuario, String numeroEndereco, String endereco, String cidade, String estado) {
+    public Ocorrencia(String titulo, String descricao, Localidade localidade, Usuario usuario, String numeroEndereco, String endereco, String cidade, String estado, boolean ocorrenciaSolucionada, String pontoReferencia) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.localidade = localidade;
@@ -28,6 +30,8 @@ public class Ocorrencia {
         this.endereco = endereco;
         this.cidade = cidade;
         this.estado = estado;
+        this.ocorrenciaSolucionada = ocorrenciaSolucionada;
+        this.pontoReferencia = pontoReferencia;
     }
 
     public int getId() {
@@ -108,5 +112,21 @@ public class Ocorrencia {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public boolean isOcorrenciaSolucionada() {
+        return ocorrenciaSolucionada;
+    }
+
+    public void setOcorrenciaSolucionada(boolean ocorrenciaSolucionada) {
+        this.ocorrenciaSolucionada = ocorrenciaSolucionada;
+    }
+
+    public String getPontoReferencia() {
+        return pontoReferencia;
+    }
+
+    public void setPontoReferencia(String pontoReferencia) {
+        this.pontoReferencia = pontoReferencia;
     }
 }

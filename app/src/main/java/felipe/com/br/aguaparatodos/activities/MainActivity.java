@@ -3,6 +3,8 @@ package felipe.com.br.aguaparatodos.activities;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,9 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
@@ -23,12 +28,19 @@ import com.google.android.gms.drive.Drive;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -36,9 +48,21 @@ import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
+import org.apache.http.Header;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import felipe.com.br.aguaparatodos.R;
+import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
 import felipe.com.br.aguaparatodos.utils.PreferenciasUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
+import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
+import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
+import felipe.com.br.aguaparatodos.utils.WebService;
 
 import static felipe.com.br.aguaparatodos.R.string.app_name;
 
@@ -65,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
 
     private SupportMapFragment mapFragment;
     private GoogleMap mapa;
+
+    private static ProgressDialog progressDialog;
+    private List<Ocorrencia> listaOcorrencias;
+    private HashMap<Marker, Ocorrencia> marcadoresHashMap;
+    private RequestParams parametros;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,14 +145,17 @@ public class MainActivity extends AppCompatActivity {
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
 
-        //if you want to update the items at a later time it is recommended to keep it in a variable
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_mapa)).withIcon(GoogleMaterial.Icon.gmd_map).withIdentifier(ID_MENU_MAPA);
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_registrar_ocorrencia)).withIcon(GoogleMaterial.Icon.gmd_new_releases).withIdentifier(ID_MENU_REGISTRAR_OCORRENCIA);
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sobre)).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(ID_MENU_SOBRE);
-        SwitchDrawerItem item4 = new SwitchDrawerItem().withName(getResources().getString(R.string.menu_notificacao)).withCheckable(false);
+        SwitchDrawerItem item4 = new SwitchDrawerItem().withName(getResources().getString(R.string.menu_notificacao)).withCheckable(UsuarioSingleton.getInstancia().getUsuario().isReceberNotificacao()).withOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(IDrawerItem iDrawerItem, CompoundButton compoundButton, boolean b) {
+                navigationDrawer.getAdapter().notifyDataSetChanged();
+            }
+        });
         PrimaryDrawerItem item5 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sair)).withIcon(GoogleMaterial.Icon.gmd_exit_to_app).withIdentifier(ID_MENU_SAIR);
 
-        // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.agua)
@@ -170,6 +202,9 @@ public class MainActivity extends AppCompatActivity {
                             navigationDrawer.setSelection(0);
                         } else if (position == ID_MENU_SAIR) {
                             LoginManager.getInstance().logOut();
+                            PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, "erro", getApplicationContext());
+                            PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, "erro", getApplicationContext());
+                            PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, "erro", getApplicationContext());
                             Intent intent = new Intent(MainActivity.this, Login.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
@@ -187,11 +222,15 @@ public class MainActivity extends AppCompatActivity {
 
         // ---- hamburger icon ----
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        navigationDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+        this.navigationDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         // ----
 
+        this.navigationDrawer.getAdapter().notifyDataSetChanged();
         this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        configurarMapa();
+
+
+        this.configurarMapa();
+        this.atualizarMapa();
     }
 
     private void configurarMapa() {
@@ -203,10 +242,88 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        MarkerOptions marker = new MarkerOptions();
-        marker.position(new LatLng(-5.751593, -35.238532)).title("Marcador").snippet("Legenda");
+        //this.atualizarMapa();
+        //MarkerOptions marker = new MarkerOptions();
+        //marker.position(new LatLng(-5.751593, -35.238532)).title("Marcador").snippet("Legenda");
 
-        this.mapa.addMarker(marker);
+        //this.mapa.addMarker(marker);
+    }
+
+    private void atualizarMapa() {
+        this.listaOcorrencias = new ArrayList<Ocorrencia>();
+        this.marcadoresHashMap = new HashMap<Marker, Ocorrencia>();
+
+        progressDialog = ProgressDialog.show(this, getResources()
+                        .getString(R.string.aguarde),
+                "carregando ocorrencias...");
+        progressDialog.setCanceledOnTouchOutside(true);
+
+        this.parametros = new RequestParams();
+        this.buscarOcorrenciasWS();
+    }
+
+    private void buscarOcorrenciasWS() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(WebService.ENDERECO_WS.concat(getResources().getString(R.string.ocorrencia_listar)),
+                new AsyncHttpResponseHandler() {
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers,
+                                          byte[] response) {
+                        String str = "";
+                        try {
+                            str = new String(response, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+
+                        Gson gson = new Gson();
+
+                        Type listType = new TypeToken<ArrayList<Ocorrencia>>() {
+                        }.getType();
+                        listaOcorrencias = gson.fromJson(str, listType);
+
+                        percorrerOcorrencias();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers,
+                                          byte[] errorResponse, Throwable e) {
+                        progressDialog.dismiss();
+
+                        ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.msgErroWS));
+                    }
+                });
+    }
+
+    private void percorrerOcorrencias() {
+        try {
+            configurarMapa();
+            adicionarMarcadores();
+        } catch (Exception e) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void adicionarMarcadores() {
+        if (!ValidadorUtil.isNulo(this.listaOcorrencias) && this.listaOcorrencias.size() > 0) {
+            for (Ocorrencia ocorrencia : listaOcorrencias) {
+                LatLng c = new LatLng(ocorrencia.getLocalidade().getLatitude(),
+                        ocorrencia.getLocalidade().getLongitude());
+
+                MarkerOptions markerOption = null;
+
+                markerOption = new MarkerOptions().position(c);
+
+                Marker marcadorAtual = this.mapa.addMarker(markerOption);
+
+                if (!ValidadorUtil.isNulo(marcadorAtual)) {
+                    this.marcadoresHashMap.put(marcadorAtual, ocorrencia);
+                    this.mapa.setInfoWindowAdapter(new MarkerInfoWindowAdapter());
+                }
+            }
+        }
+        progressDialog.dismiss();
     }
 
     @Override
@@ -297,4 +414,45 @@ public class MainActivity extends AppCompatActivity {
             ((MainActivity) getActivity()).onDialogDismissed();
         }
     }
+
+    public class MarkerInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+        public MarkerInfoWindowAdapter() {
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            return null;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            View v = null;
+            try {
+                Ocorrencia ocorrencia = marcadoresHashMap.get(marker);
+                if (ocorrencia.getId() != 0) {
+                    v = inflater.inflate(R.layout.descricao_ocorrencia_mapa,
+                            null);
+                    TextView titulo = (TextView) v.findViewById(R.id.txtTitulo);
+                    TextView descricao = (TextView) v.findViewById(R.id.txtDescricao);
+                    TextView endereco = (TextView) v.findViewById(R.id.txtEndereco);
+                    TextView denuncias = (TextView) v.findViewById(R.id.txtDenuncias);
+
+                    titulo.setText(ocorrencia.getTitulo());
+                    descricao.setText(ocorrencia.getDescricao());
+                    endereco.setText(ocorrencia.getEndereco());
+                    //denuncias.setText(getResources().getString(
+                    //       R.string.qtdDenunciasOcorrencia) + " " + +ocorrencia.getDenuncias());
+                }
+
+            } catch (Exception e) {
+            }
+
+            return v;
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package felipe.com.br.aguaparatodos.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,24 +16,37 @@ import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import felipe.com.br.aguaparatodos.R;
+import felipe.com.br.aguaparatodos.dominio.Usuario;
 import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
+import felipe.com.br.aguaparatodos.utils.ToastUtil;
+import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
+import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
+import felipe.com.br.aguaparatodos.utils.WebService;
 
 /**
  * Created by felipe on 8/24/15.
@@ -49,8 +63,11 @@ public class RegistrarOcorrencia extends AppCompatActivity {
     private static final String GOOGLE_API_KEY = "AIzaSyApev4-PxnD258_TnkDCcCL_KTOXwhjU7M";
     private AutoCompleteTextView enderecoAutoComplete;
 
-    private EditText tituloOcorrencia, observacaoOcorrencia;
+    private EditText tituloOcorrencia, observacaoOcorrencia, pontoReferenciaOcorrencia;
     private Button btnCadastrarOcorrencia;
+
+    private RequestParams parametros;
+    private static ProgressDialog progressDialog;
 
     private Drawer navigationDrawer;
     private Toolbar toolbar;
@@ -95,17 +112,110 @@ public class RegistrarOcorrencia extends AppCompatActivity {
 
         this.tituloOcorrencia = (EditText) findViewById(R.id.editTextTituloOcorrencia);
         this.observacaoOcorrencia = (EditText) findViewById(R.id.editTextDescricaoOcorrencia);
+        this.pontoReferenciaOcorrencia = (EditText) findViewById(R.id.editTextPontoReferenciaOcorrencia);
 
         this.btnCadastrarOcorrencia = (Button) findViewById(R.id.btnEnviarOcorrencia);
         this.btnCadastrarOcorrencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<String, String> valores = BuscarEnderecoGoogle.buscarEnderecoByNome(enderecoAutoComplete.getText().toString(), getApplicationContext());
-                Log.d("ENDERECO", valores.get("ENDERECO"));
-                Log.d("CIDADE", valores.get("CIDADE"));
-                Log.d("ESTADO", valores.get("ESTADO"));
+
+                progressDialog = ProgressDialog.show(RegistrarOcorrencia.this, getResources().getString(R.string.aguarde),
+                        getResources().getString(R.string.msgCadastrandoOcorrencia));
+
+                tituloOcorrencia.setError(null);
+                //observacaoOcorrencia.setError(null);
+                enderecoAutoComplete.setError(null);
+                //pontoReferenciaOcorrencia.setError(null);
+
+                ValidadorUtil.validarCampoEmBranco(tituloOcorrencia, getResources().getString(R.string.erroInformarTituloOcorrencia));
+                ValidadorUtil.validarCampoEmBranco(enderecoAutoComplete, getResources().getString(R.string.erroInformarTituloOcorrencia));
+
+                if (ValidadorUtil.isNulo(tituloOcorrencia.getError()) && ValidadorUtil.isNulo(enderecoAutoComplete.getError())) {
+                    prepararParametros();
+                }
             }
         });
+    }
+
+    private void prepararParametros() {
+        try {
+            List<Double> coordenadasEndereco = BuscarEnderecoGoogle.buscarCoordenadasPorEndereco(getApplicationContext(), this.enderecoAutoComplete.getText().toString());
+            Map<String, String> valores = BuscarEnderecoGoogle.buscarEnderecoByNome(enderecoAutoComplete.getText().toString(), getApplicationContext());
+
+            Log.d("ENDERECO", valores.get("ENDERECO"));
+            Log.d("CIDADE", valores.get("CIDADE"));
+            Log.d("ESTADO", valores.get("ESTADO"));
+
+            this.parametros = new RequestParams();
+
+            this.parametros.put("titulo", this.tituloOcorrencia.getText().toString());
+            this.parametros.put("descricao", this.observacaoOcorrencia.getText().toString());
+            this.parametros.put("referencia", this.pontoReferenciaOcorrencia.getText().toString());
+            this.parametros.put("latitude", String.valueOf(coordenadasEndereco.get(0)));
+            this.parametros.put("longitude", String.valueOf(coordenadasEndereco.get(1)));
+            this.parametros.put("id_usuario", String.valueOf(UsuarioSingleton.getInstancia().getUsuario().getId()));
+            this.parametros.put("endereco", String.valueOf(valores.get("ENDERECO")));
+            this.parametros.put("cidade", String.valueOf(valores.get("CIDADE")));
+            this.parametros.put("estado", String.valueOf(valores.get("ESTADO")));
+
+            this.enviarOcorrencia(this.parametros);
+        } catch (Exception e) {
+            ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.erroBuscarEndereco));
+        }
+
+
+    }
+
+    private boolean enviarOcorrencia(RequestParams parametros) {
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(WebService.ENDERECO_WS.concat(getResources().getString(R.string.ocorrencia_nova)), parametros, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+
+                String str = "";
+                try {
+                    str = new String(bytes, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                if (str.equalsIgnoreCase("sucesso")) {
+                    progressDialog.dismiss();
+
+                    ToastUtil.criarToastLongo(getApplicationContext(),
+                            getResources().getString(R.string.msgSucessoEnviarOcorrencia));
+
+                    limparCampos();
+
+                    startActivity(new Intent(RegistrarOcorrencia.this, MainActivity.class));
+                } else if (str.equalsIgnoreCase("erro")) {
+                    progressDialog.dismiss();
+
+                    ToastUtil.criarToastLongo(getApplicationContext(),
+                            getResources().getString(R.string.msgErroEnviarOcorrencia));
+                }
+
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                progressDialog.dismiss();
+
+                ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.msgErroWS));
+            }
+
+        });
+
+        return true;
+    }
+
+    private void limparCampos() {
+        this.tituloOcorrencia.setText("");
+        this.observacaoOcorrencia.setText("");
+        this.enderecoAutoComplete.setText("");
+        this.pontoReferenciaOcorrencia.setText("");
     }
 
     @Override
