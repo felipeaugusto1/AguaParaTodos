@@ -1,2 +1,2 @@
-# AguaParaTodos
-Projeto desenvolvimento por Felipe Augusto para competição de aplicativos.
+# Agua Para Todos
+Projeto desenvolvimento por Felipe Augusto Galdino de Almeida para competição de aplicativos.
