@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Drawer navigationDrawer;
     private Toolbar toolbar;
+    private FloatingActionButton fab;
 
     private static final int ID_MENU_MAPA = 1;
     private static final int ID_MENU_REGISTRAR_OCORRENCIA = 2;
@@ -139,6 +142,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .build();
+
+        this.fab = (FloatingActionButton) findViewById(R.id.fab_nova_ocorrencia);
+        this.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RegistrarOcorrencia.class));
+            }
+        });
+
 
         this.toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         this.toolbar.setTitle(getResources().getString(app_name));
@@ -313,7 +325,8 @@ public class MainActivity extends AppCompatActivity {
 
                 MarkerOptions markerOption = null;
 
-                markerOption = new MarkerOptions().position(c);
+                markerOption = new MarkerOptions().position(c).icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 
                 Marker marcadorAtual = this.mapa.addMarker(markerOption);
 
