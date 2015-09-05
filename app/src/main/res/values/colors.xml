@@ -4,6 +4,8 @@
     <color name="vermelho">#FF0000</color>
     <color name="branco">#FFFFFF</color>
     <color name="prata">#CCCCCC</color>
+    <color name="cinza_claro">#eeeeee</color>
+
 
     <!-- Material DEFAULT colors -->
     <color name="material_drawer_primary">#2196F3</color>

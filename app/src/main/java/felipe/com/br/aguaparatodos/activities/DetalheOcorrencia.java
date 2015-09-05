@@ -83,8 +83,8 @@ public class DetalheOcorrencia extends AppCompatActivity {
     private RequestParams parametros;
     private Ocorrencia ocorrencia;
 
-    private TextView txtTituloOcorrencia, txtTipoOcorrencia,
-            txtDescricaoOcorrencia, txtData, qtdConfirmacoes, qtdDenuncias;
+    private TextView txtTituloOcorrencia,
+            txtDescricaoOcorrencia, txtData, txtPontoReferenciaOcorrencia, txtEnderecoOcorrencia;
 
 
     @Override
@@ -131,12 +131,13 @@ public class DetalheOcorrencia extends AppCompatActivity {
     }
 
     private void criarReferenciasComponentes() {
-        this.txtTituloOcorrencia = (TextView) findViewById(R.id.txtTituloOcorrenciaDetalhe);
-        this.txtTipoOcorrencia = (TextView) findViewById(R.id.txtTipoOcorrenciaDetalhe);
-        this.txtDescricaoOcorrencia = (TextView) findViewById(R.id.txtDescricaoOcorrenciaDetalhe);
-        this.txtData = (TextView) findViewById(R.id.txtDataOcorrenciaDetalhe);
-        this.qtdConfirmacoes = (TextView) findViewById(R.id.txtQtdConfirmacoes);
-        this.qtdDenuncias = (TextView) findViewById(R.id.txtQtdDenuncias);
+        this.txtTituloOcorrencia = (TextView) findViewById(R.id.txtTituloOcorrencia);
+        this.txtPontoReferenciaOcorrencia = (TextView) findViewById(R.id.txtPontoReferenciaOcorrencia);
+        this.txtDescricaoOcorrencia = (TextView) findViewById(R.id.txtObsOcorrencia);
+        this.txtData = (TextView) findViewById(R.id.txtDataOcorrencia);
+        this.txtEnderecoOcorrencia = (TextView) findViewById(R.id.txtEnderecoOcorrencia);
+        //this.qtdConfirmacoes = (TextView) findViewById(R.id.txtQtdConfirmacoes);
+        //this.qtdDenuncias = (TextView) findViewById(R.id.txtQtdDenuncias);
     }
 
     private void buscarOcorrenciasPorIdWS(RequestParams parametros) {
@@ -204,12 +205,22 @@ public class DetalheOcorrencia extends AppCompatActivity {
         Log.d("ocorrencia", ocorrencia.toString());
         if (!ValidadorUtil.isNuloOuVazio(ocorrencia)) {
             this.txtTituloOcorrencia.setText(ocorrencia.getTitulo());
-            this.txtDescricaoOcorrencia.setText(ocorrencia.getDescricao());
+            this.txtEnderecoOcorrencia.setText(ocorrencia.getEnderecoFormatado());
+
+            if (ocorrencia.getDescricao().length() > 0)
+                this.txtDescricaoOcorrencia.setText(ocorrencia.getDescricao());
+            else
+                this.txtDescricaoOcorrencia.setText("Campo não informado.");
+
+            if (ocorrencia.getPontoReferencia().length() > 0)
+                this.txtPontoReferenciaOcorrencia.setText(ocorrencia.getPontoReferencia());
+            else
+                this.txtPontoReferenciaOcorrencia.setText("Campo não informado.");
 
             String dataFormatada = new SimpleDateFormat("dd/MM/yyyy").format(ocorrencia.getDataCadastro());
 
             this.txtData.setText(dataFormatada);
-            this.qtdConfirmacoes.setText("quantidade denuncias: " + ocorrencia.getQtdDenuncias());
+            //this.qtdConfirmacoes.setText("quantidade denuncias: " + ocorrencia.getQtdDenuncias());
 
             LatLng c = new LatLng(ocorrencia.getEndereco().getLatitude(),
                     ocorrencia.getEndereco().getLongitude());

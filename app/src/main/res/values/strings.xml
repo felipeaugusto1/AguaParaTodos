@@ -39,12 +39,16 @@
     <string name="msgSucessoEnviarOcorrencia">Ocorrência cadastrada com sucesso.</string>
     <string name="msgErroEnviarOcorrencia">Ocorreu um erro ao cadastrar a ocorrência.</string>
     <string name="txtTituloOcorrencia">Título:</string>
+    <string name="txtTituloOcorrencia2">Ocorrência</string>
     <string name="edTituloOcorrencia">Informe um título.</string>
     <string name="txtObservacaoOcorrencia">Observação:</string>
+    <string name="txtObservacaoOcorrencia2">Observação</string>
     <string name="edObservacaoOcorrencia">Descreva a ocorrência.</string>
     <string name="txtEnderecoOcorrencia">Endereço:</string>
+    <string name="txtEnderecoOcorrencia2">Endereço</string>
     <string name="btnCadastrarOcorrencia">Cadastrar</string>
     <string name="txtPontoReferenciaOcorrencia">Ponto de referência:</string>
+    <string name="txtPontoReferenciaOcorrencia2">Ponto de referência</string>
     <string name="edPontoReferenciaOcorrencia">Cite um ponto de referência.</string>
 
     <string name="erroInformarTituloOcorrencia">Por favor informe um título.</string>
