@@ -5,12 +5,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -240,6 +242,23 @@ public class MainActivity extends AppCompatActivity {
 
         this.configurarMapa();
         this.atualizarMapa();
+
+        this.mapa.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                final Ocorrencia ocorrencia = marcadoresHashMap.get(marker);
+
+                Intent telaDetalheOcorrencia = new Intent(MainActivity.this,
+                        DetalheOcorrencia.class);
+
+                telaDetalheOcorrencia.putExtra("ocorrencia_id",
+                        String.valueOf(ocorrencia.getId()));
+                telaDetalheOcorrencia.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                startActivity(telaDetalheOcorrencia);
+            }
+        });
     }
 
     private void configurarMapa() {
@@ -250,12 +269,6 @@ public class MainActivity extends AppCompatActivity {
                 this.mapa.setMyLocationEnabled(true);
             }
         }
-
-        //this.atualizarMapa();
-        //MarkerOptions marker = new MarkerOptions();
-        //marker.position(new LatLng(-5.751593, -35.238532)).title("Marcador").snippet("Legenda");
-
-        //this.mapa.addMarker(marker);
     }
 
     private void atualizarMapa() {
@@ -464,5 +477,21 @@ public class MainActivity extends AppCompatActivity {
             return v;
         }
     }
+
+    /* @Override
+    public void onInfoWindowClick(Marker marcador) {
+        Log.d("entrou aqui", "entrou aqui");
+        final Ocorrencia ocorrencia = marcadoresHashMap.get(marcador);
+
+        Intent telaDetalheOcorrencia = new Intent(MainActivity.this,
+                DetalheOcorrencia.class);
+
+        telaDetalheOcorrencia.putExtra("ocorrencia_id",
+                String.valueOf(ocorrencia.getId()));
+        telaDetalheOcorrencia.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        startActivity(telaDetalheOcorrencia);
+    } */
 
 }

@@ -1,5 +1,7 @@
 package felipe.com.br.aguaparatodos.dominio;
 
+import java.util.Date;
+
 /**
  * Created by felipe on 8/29/15.
  */
@@ -12,21 +14,21 @@ public class Ocorrencia {
     private int qtdDenuncias;
     private boolean ocorrenciaSolucionada;
     private Usuario usuario;
-    private String numeroEndereco;
     private Endereco endereco;
+    private Date dataCadastro;
 
     public Ocorrencia() {
     }
 
-    public Ocorrencia(String titulo, String descricao, String pontoReferencia, int qtdDenuncias, boolean ocorrenciaSolucionada, Usuario usuario, String numeroEndereco, Endereco endereco) {
+    public Ocorrencia(String titulo, String descricao, String pontoReferencia, int qtdDenuncias, boolean ocorrenciaSolucionada, Usuario usuario, Endereco endereco, Date dataCadastro) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.pontoReferencia = pontoReferencia;
         this.qtdDenuncias = qtdDenuncias;
         this.ocorrenciaSolucionada = ocorrenciaSolucionada;
         this.usuario = usuario;
-        this.numeroEndereco = numeroEndereco;
         this.endereco = endereco;
+        this.dataCadastro = dataCadastro;
     }
 
     public int getId() {
@@ -69,14 +71,6 @@ public class Ocorrencia {
         this.usuario = usuario;
     }
 
-    public String getNumeroEndereco() {
-        return numeroEndereco;
-    }
-
-    public void setNumeroEndereco(String numeroEndereco) {
-        this.numeroEndereco = numeroEndereco;
-    }
-
     public Endereco getEndereco() {
         return endereco;
     }
@@ -103,5 +97,28 @@ public class Ocorrencia {
 
     public String getEnderecoFormatado() {
         return this.endereco.getEndereco() + ", " + this.endereco.getCidade();
+    }
+
+    public Date getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(Date dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+
+    @Override
+    public String toString() {
+        return "Ocorrencia{" +
+                "id=" + id +
+                ", titulo='" + titulo + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", pontoReferencia='" + pontoReferencia + '\'' +
+                ", qtdDenuncias=" + qtdDenuncias +
+                ", ocorrenciaSolucionada=" + ocorrenciaSolucionada +
+                ", usuario=" + usuario +
+                ", endereco=" + endereco +
+                ", dataCadastro=" + dataCadastro +
+                '}';
     }
 }

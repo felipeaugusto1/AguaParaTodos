@@ -15,6 +15,7 @@
     <string name="usuario_login">usuario/login</string>
     <string name="ocorrencia_nova">ocorrencia/nova</string>
     <string name="ocorrencia_listar">ocorrencia/listar</string>
+    <string name="ocorrencia_buscar_id">ocorrencia/buscarPorId</string>
 
     <!-- TELA DE LOGIN -->
     <string name="bundle_nome_usuario">nome_usuario</string>
@@ -54,5 +55,8 @@
     <string name="msgCaracterRestante">caractere restante.</string>
 
     <string name="limparCampos">Limpar campos</string>
+
+    <!-- Tela Detalhe da Ocorrencia -->
+    <string name="tituloTelaDetalheOcorrenia">Detalhes da Ocorrência</string>
 
 </resources>
