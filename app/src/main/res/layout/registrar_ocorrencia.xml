@@ -1,110 +1,159 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:id="@+id/scrollView1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     tools:context=".RegistrarOcorrencia">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar_top" />
+    <RelativeLayout
 
-    <TextView
-        android:id="@+id/textViewTitulo"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/txtTituloOcorrencia"
-        android:textSize="12dp" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editTextTituloOcorrencia"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewTitulo"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:hint="@string/edTituloOcorrencia" />
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_top" />
 
-    <TextView
-        android:id="@+id/textViewDescricao"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextTituloOcorrencia"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/txtObservacaoOcorrencia"
-        android:textSize="12dp" />
+        <TextView
+            android:id="@+id/textViewTitulo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/txtTituloOcorrencia"
+            android:textSize="12dp" />
 
-    <EditText
-        android:id="@+id/editTextDescricaoOcorrencia"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewDescricao"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:hint="@string/edObservacaoOcorrencia"
-        android:inputType="textMultiLine"
-        android:lines="3" />
+        <EditText
+            android:id="@+id/editTextTituloOcorrencia"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewTitulo"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:hint="@string/edTituloOcorrencia"
+            android:inputType="textCapSentences"
+            android:maxLength="30" />
 
-    <TextView
-        android:id="@+id/textViewEndereco"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextDescricaoOcorrencia"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/txtEnderecoOcorrencia"
-        android:textSize="12dp" />
+        <TextView
+            android:id="@+id/textViewContadorTitulo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextTituloOcorrencia"
+            android:layout_marginLeft="5dp"
+            android:textSize="12dp" />
 
-    <AutoCompleteTextView
-        android:id="@+id/editTextEnderecoOcorrencia"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewEndereco"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"></AutoCompleteTextView>
+        <TextView
+            android:id="@+id/textViewDescricao"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewContadorTitulo"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/txtObservacaoOcorrencia"
+            android:textSize="12dp" />
 
-    <TextView
-        android:id="@+id/textViewPontoReferencia"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextEnderecoOcorrencia"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/txtPontoReferenciaOcorrencia"
-        android:textSize="12dp" />
+        <EditText
+            android:id="@+id/editTextDescricaoOcorrencia"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewDescricao"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:hint="@string/edObservacaoOcorrencia"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:maxLength="50" />
 
-    <EditText
-        android:id="@+id/editTextPontoReferenciaOcorrencia"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewPontoReferencia"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:hint="@string/edPontoReferenciaOcorrencia"
-        android:inputType="textMultiLine"
-        android:lines="2" />
+        <TextView
+            android:id="@+id/textViewContadorDescricao"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextDescricaoOcorrencia"
+            android:layout_marginLeft="5dp"
+            android:textSize="12dp" />
 
-    <Button
-        android:id="@+id/btnEnviarOcorrencia"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextPontoReferenciaOcorrencia"
-        android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="20dp"
-        android:layout_weight="1"
-        android:background="@color/colorPrimary"
-        android:text="@string/btnCadastrarOcorrencia"
-        android:textColor="@android:color/white" />
+        <TextView
+            android:id="@+id/textViewEndereco"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewContadorDescricao"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/txtEnderecoOcorrencia"
+            android:textSize="12dp" />
 
-</RelativeLayout>
+        <AutoCompleteTextView
+            android:id="@+id/editTextEnderecoOcorrencia"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewEndereco"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"></AutoCompleteTextView>
 
+        <TextView
+            android:id="@+id/textViewPontoReferencia"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextEnderecoOcorrencia"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/txtPontoReferenciaOcorrencia"
+            android:textSize="12dp" />
+
+        <EditText
+            android:id="@+id/editTextPontoReferenciaOcorrencia"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewPontoReferencia"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:hint="@string/edPontoReferenciaOcorrencia"
+            android:inputType="textMultiLine"
+            android:lines="2" />
+
+        <TextView
+            android:id="@+id/textViewContadorReferencia"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextPontoReferenciaOcorrencia"
+            android:layout_marginLeft="5dp"
+            android:textSize="12dp" />
+
+        <Button
+            android:id="@+id/btnEnviarOcorrencia"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewContadorReferencia"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="@string/btnCadastrarOcorrencia"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/txtLimparCamposOcorrencia"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnEnviarOcorrencia"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:gravity="right"
+            android:onClick="limparCampos"
+            android:text="@string/limparCampos"
+            android:textSize="12dp" />
+
+
+    </RelativeLayout>
+
+</ScrollView>

@@ -1,8 +1,6 @@
 package felipe.com.br.aguaparatodos.activities;
 
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +11,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -318,10 +315,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void adicionarMarcadores() {
-        if (!ValidadorUtil.isNulo(this.listaOcorrencias) && this.listaOcorrencias.size() > 0) {
+        if (!ValidadorUtil.isNuloOuVazio(this.listaOcorrencias) && this.listaOcorrencias.size() > 0) {
             for (Ocorrencia ocorrencia : listaOcorrencias) {
-                LatLng c = new LatLng(ocorrencia.getLocalidade().getLatitude(),
-                        ocorrencia.getLocalidade().getLongitude());
+                LatLng c = new LatLng(ocorrencia.getEndereco().getLatitude(),
+                        ocorrencia.getEndereco().getLongitude());
 
                 MarkerOptions markerOption = null;
 
@@ -330,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Marker marcadorAtual = this.mapa.addMarker(markerOption);
 
-                if (!ValidadorUtil.isNulo(marcadorAtual)) {
+                if (!ValidadorUtil.isNuloOuVazio(marcadorAtual)) {
                     this.marcadoresHashMap.put(marcadorAtual, ocorrencia);
                     this.mapa.setInfoWindowAdapter(new MarkerInfoWindowAdapter());
                 }
@@ -456,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
 
                     titulo.setText(ocorrencia.getTitulo());
                     descricao.setText(ocorrencia.getDescricao());
-                    endereco.setText(ocorrencia.getEndereco());
+                    endereco.setText(ocorrencia.getEnderecoFormatado());
                     //denuncias.setText(getResources().getString(
                     //       R.string.qtdDenunciasOcorrencia) + " " + +ocorrencia.getDenuncias());
                 }

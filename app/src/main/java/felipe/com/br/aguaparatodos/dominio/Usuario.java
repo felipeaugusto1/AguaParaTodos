@@ -16,6 +16,7 @@ public class Usuario {
     private boolean usuarioTwitter;
     private boolean usuarioGooglePlus;
     private boolean receberNotificacao;
+    private Endereco endereco;
 
     public Usuario() {
     }
@@ -92,6 +93,14 @@ public class Usuario {
         this.receberNotificacao = receberNotificacao;
     }
 
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
@@ -104,6 +113,7 @@ public class Usuario {
                 ", usuarioTwitter=" + usuarioTwitter +
                 ", usuarioGooglePlus=" + usuarioGooglePlus +
                 ", receberNotificacao=" + receberNotificacao +
+                ", endereco=" + endereco +
                 '}';
     }
 }

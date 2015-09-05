@@ -8,6 +8,9 @@
     <string name="aguarde">Aguarde&#8230;</string>
     <string name="msgErroWS">Ocorreu algum erro. Por favor aguarde alguns instantes.</string>
 
+    <string name="msgSim">Sim</string>
+    <string name="msgNao">Não</string>
+
     <!-- URLS WEBSERVICES -->
     <string name="usuario_login">usuario/login</string>
     <string name="ocorrencia_nova">ocorrencia/nova</string>
@@ -46,5 +49,10 @@
     <string name="erroInformarTituloOcorrencia">Por favor informe um título.</string>
     <string name="erroInformarEnderecoOcorrencia">Por favor informe um endereço.</string>
     <string name="erroBuscarEndereco">Ocorreu algum erro ao buscar o endereço, por favor tente novamente.</string>
+
+    <string name="msgCaracteresRestantes">caracteres restantes.</string>
+    <string name="msgCaracterRestante">caractere restante.</string>
+
+    <string name="limparCampos">Limpar campos</string>
 
 </resources>

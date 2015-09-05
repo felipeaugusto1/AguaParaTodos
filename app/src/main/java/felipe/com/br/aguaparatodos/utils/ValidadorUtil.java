@@ -10,8 +10,17 @@ import java.util.Objects;
 
 public final class ValidadorUtil {
 
-	public static boolean isNulo(Object objeto) {
-		return (objeto == null) ? true : false;
+	public static boolean isNuloOuVazio(Object objeto) {
+		if (objeto == null)
+            return true;
+
+        if (objeto instanceof String)
+            return (((String) objeto).isEmpty());
+
+        if (objeto instanceof Number)
+            return (((Number) objeto).intValue() == 0);
+
+        return false;
 	}
 
 	public static boolean validarCampoEmBranco(View pView, String pMessage) {

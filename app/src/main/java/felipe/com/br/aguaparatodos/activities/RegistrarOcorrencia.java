@@ -1,12 +1,16 @@
 package felipe.com.br.aguaparatodos.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,9 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -41,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 
 import felipe.com.br.aguaparatodos.R;
-import felipe.com.br.aguaparatodos.dominio.Usuario;
 import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
@@ -63,7 +65,12 @@ public class RegistrarOcorrencia extends AppCompatActivity {
     private static final String GOOGLE_API_KEY = "AIzaSyApev4-PxnD258_TnkDCcCL_KTOXwhjU7M";
     private AutoCompleteTextView enderecoAutoComplete;
 
-    private EditText tituloOcorrencia, observacaoOcorrencia, pontoReferenciaOcorrencia;
+    private EditText edTituloOcorrencia, edObservacaoOcorrencia, edPontoReferenciaOcorrencia;
+    private TextView txtContadorOcorrencia, txtContadorTitulo, txtContadorPontoReferencia;
+    private static int TAMANHO_MAXIMO_DESCRICAO_OCORRENCIA = 50, TAMANHO_MAXIMO_TITULO_OCORRENCIA = 30, TAMANHO_MAXIMO_REFERENCIA_OCORRENCIA = 30;
+    private int contadorDescricaoOcorrencia = TAMANHO_MAXIMO_DESCRICAO_OCORRENCIA;
+    private int contadorTituloOcorrencia = TAMANHO_MAXIMO_TITULO_OCORRENCIA;
+    private int contadorReferenciaOcorrencia = TAMANHO_MAXIMO_REFERENCIA_OCORRENCIA;
     private Button btnCadastrarOcorrencia;
 
     private RequestParams parametros;
@@ -110,29 +117,86 @@ public class RegistrarOcorrencia extends AppCompatActivity {
         this.enderecoAutoComplete = (AutoCompleteTextView) findViewById(R.id.editTextEnderecoOcorrencia);
         this.enderecoAutoComplete.setAdapter(new PlacesAutoCompleteAdapter(getApplicationContext(), R.layout.item_lista_busca_endereco));
 
-        this.tituloOcorrencia = (EditText) findViewById(R.id.editTextTituloOcorrencia);
-        this.observacaoOcorrencia = (EditText) findViewById(R.id.editTextDescricaoOcorrencia);
-        this.pontoReferenciaOcorrencia = (EditText) findViewById(R.id.editTextPontoReferenciaOcorrencia);
+        this.txtContadorOcorrencia = (TextView) findViewById(R.id.textViewContadorDescricao);
+        this.txtContadorOcorrencia.setText(contadorDescricaoOcorrencia + " " +getResources().getString(R.string.msgCaracteresRestantes));
+
+        this.txtContadorTitulo = (TextView) findViewById(R.id.textViewContadorTitulo);
+        this.txtContadorTitulo.setText(contadorTituloOcorrencia + " " + getResources().getString(R.string.msgCaracteresRestantes));
+
+        this.txtContadorPontoReferencia = (TextView) findViewById(R.id.textViewContadorReferencia);
+        this.txtContadorPontoReferencia.setText(contadorReferenciaOcorrencia + " " +getResources().getString(R.string.msgCaracteresRestantes));
+        this.edPontoReferenciaOcorrencia = (EditText) findViewById(R.id.editTextPontoReferenciaOcorrencia);
+        this.edPontoReferenciaOcorrencia.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int tamanhoAtual = edPontoReferenciaOcorrencia.getText().toString().length();
+                if (contadorReferenciaOcorrencia > 1)
+                    txtContadorPontoReferencia.setText((contadorReferenciaOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracteresRestantes));
+                else if (contadorReferenciaOcorrencia == 1)
+                    txtContadorPontoReferencia.setText((contadorReferenciaOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracterRestante));
+                contadorReferenciaOcorrencia = TAMANHO_MAXIMO_REFERENCIA_OCORRENCIA;
+            }
+        });
+
+
+        this.edTituloOcorrencia = (EditText) findViewById(R.id.editTextTituloOcorrencia);
+        this.edTituloOcorrencia.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int tamanhoAtual = edTituloOcorrencia.getText().toString().length();
+                if (contadorTituloOcorrencia > 1)
+                    txtContadorTitulo.setText((contadorTituloOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracteresRestantes));
+                else if (contadorTituloOcorrencia == 1)
+                    txtContadorTitulo.setText((contadorTituloOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracterRestante));
+                contadorTituloOcorrencia = TAMANHO_MAXIMO_TITULO_OCORRENCIA;
+            }
+        });
+
+        this.edObservacaoOcorrencia = (EditText) findViewById(R.id.editTextDescricaoOcorrencia);
+        this.edObservacaoOcorrencia.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int tamanhoAtual = edObservacaoOcorrencia.getText().toString().length();
+                if (contadorDescricaoOcorrencia > 1)
+                    txtContadorOcorrencia.setText((contadorDescricaoOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracteresRestantes));
+                else if (contadorDescricaoOcorrencia == 1)
+                    txtContadorOcorrencia.setText((contadorDescricaoOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracterRestante));
+                contadorDescricaoOcorrencia = TAMANHO_MAXIMO_DESCRICAO_OCORRENCIA;
+            }
+        });
 
         this.btnCadastrarOcorrencia = (Button) findViewById(R.id.btnEnviarOcorrencia);
         this.btnCadastrarOcorrencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                progressDialog = ProgressDialog.show(RegistrarOcorrencia.this, getResources().getString(R.string.aguarde),
-                        getResources().getString(R.string.msgCadastrandoOcorrencia));
+                criarDialog(RegistrarOcorrencia.this, "Confirma os dados?", "Por favor...");
 
-                tituloOcorrencia.setError(null);
-                //observacaoOcorrencia.setError(null);
-                enderecoAutoComplete.setError(null);
-                //pontoReferenciaOcorrencia.setError(null);
-
-                ValidadorUtil.validarCampoEmBranco(tituloOcorrencia, getResources().getString(R.string.erroInformarTituloOcorrencia));
-                ValidadorUtil.validarCampoEmBranco(enderecoAutoComplete, getResources().getString(R.string.erroInformarTituloOcorrencia));
-
-                if (ValidadorUtil.isNulo(tituloOcorrencia.getError()) && ValidadorUtil.isNulo(enderecoAutoComplete.getError())) {
-                    prepararParametros();
-                }
             }
         });
     }
@@ -148,9 +212,9 @@ public class RegistrarOcorrencia extends AppCompatActivity {
 
             this.parametros = new RequestParams();
 
-            this.parametros.put("titulo", this.tituloOcorrencia.getText().toString());
-            this.parametros.put("descricao", this.observacaoOcorrencia.getText().toString());
-            this.parametros.put("referencia", this.pontoReferenciaOcorrencia.getText().toString());
+            this.parametros.put("titulo", this.edTituloOcorrencia.getText().toString());
+            this.parametros.put("descricao", this.edObservacaoOcorrencia.getText().toString());
+            this.parametros.put("referencia", this.edPontoReferenciaOcorrencia.getText().toString());
             this.parametros.put("latitude", String.valueOf(coordenadasEndereco.get(0)));
             this.parametros.put("longitude", String.valueOf(coordenadasEndereco.get(1)));
             this.parametros.put("id_usuario", String.valueOf(UsuarioSingleton.getInstancia().getUsuario().getId()));
@@ -212,10 +276,68 @@ public class RegistrarOcorrencia extends AppCompatActivity {
     }
 
     private void limparCampos() {
-        this.tituloOcorrencia.setText("");
-        this.observacaoOcorrencia.setText("");
+        this.edTituloOcorrencia.setText("");
+        this.edObservacaoOcorrencia.setText("");
         this.enderecoAutoComplete.setText("");
-        this.pontoReferenciaOcorrencia.setText("");
+        this.edPontoReferenciaOcorrencia.setText("");
+
+        this.edTituloOcorrencia.setError(null);
+        this.edObservacaoOcorrencia.setError(null);
+        this.enderecoAutoComplete.setError(null);
+        this.edPontoReferenciaOcorrencia.setError(null);
+    }
+
+    public void limparCampos(View v) {
+        this.edTituloOcorrencia.setText("");
+        this.edObservacaoOcorrencia.setText("");
+        this.enderecoAutoComplete.setText("");
+        this.edPontoReferenciaOcorrencia.setText("");
+
+        this.edTituloOcorrencia.setError(null);
+        this.edObservacaoOcorrencia.setError(null);
+        this.enderecoAutoComplete.setError(null);
+        this.edPontoReferenciaOcorrencia.setError(null);
+    }
+
+    private void validarCamposEnviarWs() {
+        this.edTituloOcorrencia.setError(null);
+        //edObservacaoOcorrencia.setError(null);
+        this.enderecoAutoComplete.setError(null);
+        //edPontoReferenciaOcorrencia.setError(null);
+
+        ValidadorUtil.validarCampoEmBranco(this.edTituloOcorrencia, getResources().getString(R.string.erroInformarTituloOcorrencia));
+        ValidadorUtil.validarCampoEmBranco(this.enderecoAutoComplete, getResources().getString(R.string.erroInformarEnderecoOcorrencia));
+
+        if (ValidadorUtil.isNuloOuVazio(edTituloOcorrencia.getError()) && ValidadorUtil.isNuloOuVazio(this.enderecoAutoComplete.getError())) {
+            progressDialog = ProgressDialog.show(RegistrarOcorrencia.this, getResources().getString(R.string.aguarde),
+                    getResources().getString(R.string.msgCadastrandoOcorrencia));
+
+            prepararParametros();
+        }
+    }
+
+    public void criarDialog(final Context contexto, String titulo, String mensagem) {
+
+        AlertDialog dialog =  new AlertDialog.Builder(contexto)
+                .setTitle(titulo)
+                .setMessage(mensagem)
+                .setPositiveButton(contexto.getResources().getString(R.string.msgSim), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        validarCamposEnviarWs();
+                    }
+                })
+                .setNegativeButton(contexto.getResources().getString(R.string.msgNao), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.show();
+
     }
 
     @Override

@@ -68,6 +68,7 @@ public class Login extends FragmentActivity {
             this.btnLoginFacebook = (LoginButton) findViewById(R.id.btnLoginFacebook);
             this.btnLoginFacebook.setReadPermissions("public_profile");
             this.btnLoginFacebook.setReadPermissions("email");
+            this.btnLoginFacebook.setReadPermissions("user_location");
 
             this.btnLoginFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                 @Override
@@ -97,7 +98,7 @@ public class Login extends FragmentActivity {
 
                 JSONObject json = response.getJSONObject();
                 try {
-                    if(!ValidadorUtil.isNulo(json)){
+                    if(!ValidadorUtil.isNuloOuVazio(json)){
                         //String text = "<b>Name :</b> "+json.getString("name")+"<br><br><b>Email :</b> "+json.getString("email")+"<br><br><b>Profile link :</b> "+json.getString("link");
                         //ToastUtil.criarToastCurto(getApplicationContext(), "Email: " + Html.fromHtml(text)+"");
                         //ToastUtil.criarToastCurto(getApplicationContext(), "ID: " + json.getString("id")+"");
@@ -107,7 +108,7 @@ public class Login extends FragmentActivity {
                         //Log.d("ID", json.getString("id"));
                         //details_txt.setText(Html.fromHtml(text));
                         //profile.setProfileId(json.getString("id"));
-
+                        Log.d("cidade", json.getJSONObject("location").getString("name"));
                         parametros = new RequestParams();
                         parametros.put("nome", json.getString("name"));
                         parametros.put("email", json.getString("email"));
@@ -116,6 +117,7 @@ public class Login extends FragmentActivity {
                         parametros.put("user_g", String.valueOf(false));
                         parametros.put("recebe_notificacao", String.valueOf(true));
                         parametros.put("versao_app", String.valueOf(BuildConfig.VERSION_CODE));
+                        parametros.put("endereco", String.valueOf(json.getJSONObject("location").getString("name")));
 
                         PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, json.getString("name"), getApplicationContext());
                         PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, json.getString("email"), getApplicationContext());
@@ -130,7 +132,7 @@ public class Login extends FragmentActivity {
             }
         });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, name, link, email, picture");
+        parameters.putString("fields", "id, name, link, email, picture, location");
         request.setParameters(parameters);
         request.executeAsync();
     }

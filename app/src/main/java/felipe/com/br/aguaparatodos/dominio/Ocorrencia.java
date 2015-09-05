@@ -9,29 +9,24 @@ public class Ocorrencia {
     private String titulo;
     private String descricao;
     private String pontoReferencia;
-    private Localidade localidade;
     private int qtdDenuncias;
     private boolean ocorrenciaSolucionada;
     private Usuario usuario;
     private String numeroEndereco;
-    private String endereco;
-    private String cidade;
-    private String estado;
+    private Endereco endereco;
 
     public Ocorrencia() {
     }
 
-    public Ocorrencia(String titulo, String descricao, Localidade localidade, Usuario usuario, String numeroEndereco, String endereco, String cidade, String estado, boolean ocorrenciaSolucionada, String pontoReferencia) {
+    public Ocorrencia(String titulo, String descricao, String pontoReferencia, int qtdDenuncias, boolean ocorrenciaSolucionada, Usuario usuario, String numeroEndereco, Endereco endereco) {
         this.titulo = titulo;
         this.descricao = descricao;
-        this.localidade = localidade;
+        this.pontoReferencia = pontoReferencia;
+        this.qtdDenuncias = qtdDenuncias;
+        this.ocorrenciaSolucionada = ocorrenciaSolucionada;
         this.usuario = usuario;
         this.numeroEndereco = numeroEndereco;
         this.endereco = endereco;
-        this.cidade = cidade;
-        this.estado = estado;
-        this.ocorrenciaSolucionada = ocorrenciaSolucionada;
-        this.pontoReferencia = pontoReferencia;
     }
 
     public int getId() {
@@ -58,14 +53,6 @@ public class Ocorrencia {
         this.descricao = descricao;
     }
 
-    public Localidade getLocalidade() {
-        return localidade;
-    }
-
-    public void setLocalidade(Localidade localidade) {
-        this.localidade = localidade;
-    }
-
     public int getQtdDenuncias() {
         return qtdDenuncias;
     }
@@ -90,28 +77,12 @@ public class Ocorrencia {
         this.numeroEndereco = numeroEndereco;
     }
 
-    public String getEndereco() {
+    public Endereco getEndereco() {
         return endereco;
     }
 
-    public void setEndereco(String endereco) {
+    public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
     }
 
     public boolean isOcorrenciaSolucionada() {
@@ -128,5 +99,9 @@ public class Ocorrencia {
 
     public void setPontoReferencia(String pontoReferencia) {
         this.pontoReferencia = pontoReferencia;
+    }
+
+    public String getEnderecoFormatado() {
+        return this.endereco.getEndereco() + ", " + this.endereco.getCidade();
     }
 }

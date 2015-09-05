@@ -40,7 +40,8 @@
             android:label="@string/app_name" />
 
         <activity android:name=".activities.MainActivity" />
-        <activity android:name=".activities.RegistrarOcorrencia" />
+        <activity android:name=".activities.RegistrarOcorrencia"
+            android:windowSoftInputMode="adjustPan" />
 
     </application>
 
