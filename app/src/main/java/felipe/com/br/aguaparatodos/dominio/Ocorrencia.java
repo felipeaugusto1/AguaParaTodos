@@ -11,7 +11,7 @@ public class Ocorrencia {
     private String titulo;
     private String descricao;
     private String pontoReferencia;
-    private int qtdDenuncias;
+    private int qtdConfirmacoes;
     private boolean ocorrenciaSolucionada;
     private Usuario usuario;
     private Endereco endereco;
@@ -20,11 +20,11 @@ public class Ocorrencia {
     public Ocorrencia() {
     }
 
-    public Ocorrencia(String titulo, String descricao, String pontoReferencia, int qtdDenuncias, boolean ocorrenciaSolucionada, Usuario usuario, Endereco endereco, Date dataCadastro) {
+    public Ocorrencia(String titulo, String descricao, String pontoReferencia, int qtdConfirmacoes, boolean ocorrenciaSolucionada, Usuario usuario, Endereco endereco, Date dataCadastro) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.pontoReferencia = pontoReferencia;
-        this.qtdDenuncias = qtdDenuncias;
+        this.qtdConfirmacoes = qtdConfirmacoes;
         this.ocorrenciaSolucionada = ocorrenciaSolucionada;
         this.usuario = usuario;
         this.endereco = endereco;
@@ -55,12 +55,12 @@ public class Ocorrencia {
         this.descricao = descricao;
     }
 
-    public int getQtdDenuncias() {
-        return qtdDenuncias;
+    public int getQtdConfirmacoes() {
+        return qtdConfirmacoes;
     }
 
-    public void setQtdDenuncias(int qtdDenuncias) {
-        this.qtdDenuncias = qtdDenuncias;
+    public void setQtdConfirmacoes(int qtdConfirmacoes) {
+        this.qtdConfirmacoes = qtdConfirmacoes;
     }
 
     public Usuario getUsuario() {
@@ -114,7 +114,7 @@ public class Ocorrencia {
                 ", titulo='" + titulo + '\'' +
                 ", descricao='" + descricao + '\'' +
                 ", pontoReferencia='" + pontoReferencia + '\'' +
-                ", qtdDenuncias=" + qtdDenuncias +
+                ", qtdConfirmacoes=" + qtdConfirmacoes +
                 ", ocorrenciaSolucionada=" + ocorrenciaSolucionada +
                 ", usuario=" + usuario +
                 ", endereco=" + endereco +

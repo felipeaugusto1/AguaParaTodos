@@ -11,11 +11,14 @@
     <string name="msgSim">Sim</string>
     <string name="msgNao">Não</string>
 
+    <string name="msgCampoNaoInformado">Campo não informado</string>
+
     <!-- URLS WEBSERVICES -->
     <string name="usuario_login">usuario/login</string>
     <string name="ocorrencia_nova">ocorrencia/nova</string>
     <string name="ocorrencia_listar">ocorrencia/listar</string>
     <string name="ocorrencia_buscar_id">ocorrencia/buscarPorId</string>
+    <string name="ocorrencia_confirmar">ocorrencia/confirmar</string>
 
     <!-- TELA DE LOGIN -->
     <string name="bundle_nome_usuario">nome_usuario</string>
@@ -62,5 +65,11 @@
 
     <!-- Tela Detalhe da Ocorrencia -->
     <string name="tituloTelaDetalheOcorrenia">Detalhes da Ocorrência</string>
+    <string name="dialogTituloConfirmar">Confirmar Ocorrência</string>
+    <string name="dialogTextoConfirmar">Esta ocorrência realmente é verdadeira?</string>
+    <string name="msgSucessoConfirmar">Ocorrência confirmada com sucesso.</string>
+    <string name="msgErroConfirmarProibido">Você já confirmou esta ocorrência.</string>
+    <string name="msgPessoasConfirmaramOcorrenciaSingular">pessoa confirmou esta ocorrência.</string>
+    <string name="msgPessoasConfirmaramOcorrenciaPlural">pessoas confirmaram esta ocorrência.</string>
 
 </resources>

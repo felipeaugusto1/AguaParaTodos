@@ -108,7 +108,6 @@ public class Login extends FragmentActivity {
                         //Log.d("ID", json.getString("id"));
                         //details_txt.setText(Html.fromHtml(text));
                         //profile.setProfileId(json.getString("id"));
-                        Log.d("cidade", json.getJSONObject("location").getString("name"));
                         parametros = new RequestParams();
                         parametros.put("nome", json.getString("name"));
                         parametros.put("email", json.getString("email"));
@@ -117,11 +116,21 @@ public class Login extends FragmentActivity {
                         parametros.put("user_g", String.valueOf(false));
                         parametros.put("recebe_notificacao", String.valueOf(true));
                         parametros.put("versao_app", String.valueOf(BuildConfig.VERSION_CODE));
-                        parametros.put("endereco", String.valueOf(json.getJSONObject("location").getString("name")));
+                        try {
+                            Log.d("cidade", json.getJSONObject("location").getString("name"));
+                            parametros.put("endereco", String.valueOf(json.getJSONObject("location").getString("name")));
+                        } catch (NullPointerException e) {
+                            parametros.put("endereco", "");
+                        }
+
 
                         PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, json.getString("name"), getApplicationContext());
                         PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, json.getString("email"), getApplicationContext());
-                        PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, Profile.getCurrentProfile().getProfilePictureUri(50, 50).toString(), getApplicationContext());
+                        try {
+                            PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, Profile.getCurrentProfile().getProfilePictureUri(50, 50).toString(), getApplicationContext());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                         verificarEmail(parametros);
                     }

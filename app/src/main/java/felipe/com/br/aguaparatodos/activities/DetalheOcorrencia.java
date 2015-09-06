@@ -1,10 +1,13 @@
 package felipe.com.br.aguaparatodos.activities;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
@@ -83,9 +87,10 @@ public class DetalheOcorrencia extends AppCompatActivity {
     private RequestParams parametros;
     private Ocorrencia ocorrencia;
 
-    private TextView txtTituloOcorrencia,
+    private TextView txtTituloOcorrencia, txtQtdConfirmacoes,
             txtDescricaoOcorrencia, txtData, txtPontoReferenciaOcorrencia, txtEnderecoOcorrencia;
 
+    private RelativeLayout layoutCardConfirmacaoOcorrencia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +98,7 @@ public class DetalheOcorrencia extends AppCompatActivity {
         setContentView(R.layout.detalhe_ocorrencia);
 
         this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        //configurarMapa();
+
         criarReferenciasComponentes();
 
         this.toolbar = (Toolbar) findViewById(R.id.toolbar_detalhe_ocorrencia);
@@ -136,8 +141,8 @@ public class DetalheOcorrencia extends AppCompatActivity {
         this.txtDescricaoOcorrencia = (TextView) findViewById(R.id.txtObsOcorrencia);
         this.txtData = (TextView) findViewById(R.id.txtDataOcorrencia);
         this.txtEnderecoOcorrencia = (TextView) findViewById(R.id.txtEnderecoOcorrencia);
-        //this.qtdConfirmacoes = (TextView) findViewById(R.id.txtQtdConfirmacoes);
-        //this.qtdDenuncias = (TextView) findViewById(R.id.txtQtdDenuncias);
+        this.txtQtdConfirmacoes = (TextView) findViewById(R.id.txtQtdConfirmacoes);
+        this.layoutCardConfirmacaoOcorrencia = (RelativeLayout) findViewById(R.id.layout_detalhe_ocorrencia_confirmacoes);
     }
 
     private void buscarOcorrenciasPorIdWS(RequestParams parametros) {
@@ -198,32 +203,36 @@ public class DetalheOcorrencia extends AppCompatActivity {
         }
 
 
-
     }
 
     private void adicionarMarcador() {
-        Log.d("ocorrencia", ocorrencia.toString());
         if (!ValidadorUtil.isNuloOuVazio(ocorrencia)) {
             this.txtTituloOcorrencia.setText(ocorrencia.getTitulo());
             this.txtEnderecoOcorrencia.setText(ocorrencia.getEnderecoFormatado());
 
-            if (ocorrencia.getDescricao().length() > 0)
-                this.txtDescricaoOcorrencia.setText(ocorrencia.getDescricao());
+            if (this.ocorrencia.getDescricao().length() > 0)
+                this.txtDescricaoOcorrencia.setText(this.ocorrencia.getDescricao());
             else
-                this.txtDescricaoOcorrencia.setText("Campo não informado.");
+                this.txtDescricaoOcorrencia.setText(getResources().getString(R.string.msgCampoNaoInformado));
 
-            if (ocorrencia.getPontoReferencia().length() > 0)
-                this.txtPontoReferenciaOcorrencia.setText(ocorrencia.getPontoReferencia());
+            if (this.ocorrencia.getPontoReferencia().length() > 0)
+                this.txtPontoReferenciaOcorrencia.setText(this.ocorrencia.getPontoReferencia());
             else
-                this.txtPontoReferenciaOcorrencia.setText("Campo não informado.");
+                this.txtPontoReferenciaOcorrencia.setText(getResources().getString(R.string.msgCampoNaoInformado));
 
-            String dataFormatada = new SimpleDateFormat("dd/MM/yyyy").format(ocorrencia.getDataCadastro());
+            this.txtData.setText(new SimpleDateFormat("dd/MM/yyyy").format(this.ocorrencia.getDataCadastro()));
 
-            this.txtData.setText(dataFormatada);
-            //this.qtdConfirmacoes.setText("quantidade denuncias: " + ocorrencia.getQtdDenuncias());
+            if (this.ocorrencia.getQtdConfirmacoes() == 1) {
+                this.layoutCardConfirmacaoOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
+                this.txtQtdConfirmacoes.setText(String.valueOf(this.ocorrencia.getQtdConfirmacoes()).concat(" ").concat(getResources().getString(R.string.msgPessoasConfirmaramOcorrenciaSingular)));
+            }
+            else {
+                this.layoutCardConfirmacaoOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
+                this.txtQtdConfirmacoes.setText(String.valueOf(this.ocorrencia.getQtdConfirmacoes()).concat(" ").concat(getResources().getString(R.string.msgPessoasConfirmaramOcorrenciaPlural)));
+            }
 
-            LatLng c = new LatLng(ocorrencia.getEndereco().getLatitude(),
-                    ocorrencia.getEndereco().getLongitude());
+            LatLng c = new LatLng(this.ocorrencia.getEndereco().getLatitude(),
+                    this.ocorrencia.getEndereco().getLongitude());
 
             MarkerOptions markerOption = null;
 
@@ -275,6 +284,101 @@ public class DetalheOcorrencia extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    public void acoesBotoesDetalhesOcorrencia(View v) {
+        switch (v.getId()) {
+            case R.id.btnEnviarOcorrencia:
+                criarDialog(DetalheOcorrencia.this, getResources().getString(R.string.dialogTituloConfirmar), getResources().getString(R.string.dialogTextoConfirmar));
+        }
+    }
+
+    public void criarDialog(final Context contexto, String titulo, String mensagem) {
+
+        AlertDialog dialog = new AlertDialog.Builder(contexto)
+                .setTitle(titulo)
+                .setMessage(mensagem)
+                .setPositiveButton(contexto.getResources().getString(R.string.msgSim), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            prepararEnviarOcorrenciaWs();
+                            confirmarOcorrenciaWs();
+                        } catch (Exception e) {
+                            ToastUtil.criarToastLongo(DetalheOcorrencia.this, getResources().getString(R.string.msgErroWS));
+                        }
+                    }
+                })
+                .setNegativeButton(contexto.getResources().getString(R.string.msgNao), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.show();
+
+    }
+
+    private void prepararEnviarOcorrenciaWs() {
+        this.parametros = new RequestParams();
+        parametros.put("ocorrencia_id", this.ocorrencia.getId() + "");
+        parametros.put("usuario_id", String.valueOf(UsuarioSingleton.getInstancia().getUsuario().getId()));
+    }
+
+    private void confirmarOcorrenciaWs() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(WebService.ENDERECO_WS.concat(getResources().getString(R.string.ocorrencia_confirmar)), parametros,
+                new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers,
+                                          byte[] response) {
+                        String str = "";
+                        try {
+                            str = new String(response, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (str.equalsIgnoreCase(WebService.RESPOSTA_SUCESSO)) {
+                            ToastUtil.criarToastLongo(DetalheOcorrencia.this,
+                                    getResources().getString(R.string.msgSucessoConfirmar)
+                            );
+
+                            try {
+                                if ((ocorrencia.getQtdConfirmacoes() + 1) > 1) {
+                                    txtQtdConfirmacoes.setText(String.valueOf((ocorrencia.getQtdConfirmacoes() + 1)).concat(" ").concat(
+                                            getResources().getString(R.string.msgPessoasConfirmaramOcorrenciaPlural)
+                                    ));
+                                    layoutCardConfirmacaoOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
+                                }
+                                else if ((ocorrencia.getQtdConfirmacoes() + 1) == 1) {
+                                    txtQtdConfirmacoes.setText(String.valueOf((ocorrencia.getQtdConfirmacoes() + 1)).concat(" ").concat(
+                                            getResources().getString(R.string.msgPessoasConfirmaramOcorrenciaSingular)
+                                    ));
+                                    layoutCardConfirmacaoOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
+                                }
+                            } catch (Exception e) {
+                            }
+
+                        } else if (str.equalsIgnoreCase(WebService.RESPOSTA_ACESSO_NEGADO)) {
+                            ToastUtil.criarToastLongo(DetalheOcorrencia.this,
+                                    getResources().getString(R.string.msgErroConfirmarProibido)
+                            );
+                        } else
+                            ToastUtil.criarToastLongo(DetalheOcorrencia.this,
+                                    getResources().getString(R.string.msgErroWS)
+                            );
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers,
+                                          byte[] errorResponse, Throwable e) {
+
+                    }
+                });
     }
 
 }
