@@ -195,7 +195,7 @@ public class RegistrarOcorrencia extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                criarDialog(RegistrarOcorrencia.this, "Confirma os dados?", "Por favor...");
+                criarDialog(RegistrarOcorrencia.this, getResources().getString(R.string.confirmarDados), getResources().getString(R.string.infoDadosVeridicos));
 
             }
         });

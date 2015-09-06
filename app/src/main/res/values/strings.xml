@@ -65,6 +65,11 @@
 
     <string name="limparCampos">Limpar campos</string>
 
+    <string name="confirmarDados">Confirmar dados</string>
+    <string name="infoDadosVeridicos">Os dados são verídicos e podem ser utilizados pelas autoridades responsáveis para tomarem as medidas cabíveis?</string>
+
+
+
     <!-- Tela Detalhe da Ocorrencia -->
     <string name="tituloTelaDetalheOcorrenia">Detalhes da Ocorrência</string>
     <string name="dialogTituloConfirmar">Confirmar Ocorrência</string>

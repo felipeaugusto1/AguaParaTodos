@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -551,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (str.equalsIgnoreCase("sucesso")) {
                     progressDialog.dismiss();
-                    ToastUtil.criarToastLongo(MainActivity.this, getResources().getString(R.string.statusAtualizadoSucesso));
+                    ToastUtil.criarToastCurto(MainActivity.this, getResources().getString(R.string.statusAtualizadoSucesso));
                 } else if (str.equalsIgnoreCase("erro")) {
                     progressDialog.dismiss();
 
