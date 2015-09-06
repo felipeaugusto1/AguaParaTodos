@@ -12,9 +12,11 @@
     <string name="msgNao">Não</string>
 
     <string name="msgCampoNaoInformado">Campo não informado</string>
+    <string name="statusAtualizadoSucesso">Status atualizado com sucesso!</string>
 
     <!-- URLS WEBSERVICES -->
     <string name="usuario_login">usuario/login</string>
+    <string name="usuario_receber_notificacao">usuario/receberNotificacao</string>
     <string name="ocorrencia_nova">ocorrencia/nova</string>
     <string name="ocorrencia_listar">ocorrencia/listar</string>
     <string name="ocorrencia_buscar_id">ocorrencia/buscarPorId</string>

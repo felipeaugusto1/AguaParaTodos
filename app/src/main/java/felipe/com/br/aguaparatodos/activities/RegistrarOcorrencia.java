@@ -222,18 +222,16 @@ public class RegistrarOcorrencia extends AppCompatActivity {
             this.parametros.put("cidade", String.valueOf(valores.get("CIDADE")));
             this.parametros.put("estado", String.valueOf(valores.get("ESTADO")));
 
-            this.enviarOcorrencia(this.parametros);
+            this.enviarOcorrencia();
         } catch (Exception e) {
             ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.erroBuscarEndereco));
         }
-
-
     }
 
-    private boolean enviarOcorrencia(RequestParams parametros) {
+    private void enviarOcorrencia() {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        client.get(WebService.ENDERECO_WS.concat(getResources().getString(R.string.ocorrencia_nova)), parametros, new AsyncHttpResponseHandler() {
+        client.get(WebService.ENDERECO_WS.concat(getResources().getString(R.string.ocorrencia_nova)), this.parametros, new AsyncHttpResponseHandler() {
 
             @Override
             public void onSuccess(int i, Header[] headers, byte[] bytes) {
@@ -271,8 +269,6 @@ public class RegistrarOcorrencia extends AppCompatActivity {
             }
 
         });
-
-        return true;
     }
 
     private void limparCampos() {
@@ -337,7 +333,6 @@ public class RegistrarOcorrencia extends AppCompatActivity {
                 }).create();
 
         dialog.show();
-
     }
 
     @Override

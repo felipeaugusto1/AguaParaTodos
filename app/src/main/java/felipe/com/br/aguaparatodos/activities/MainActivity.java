@@ -1,5 +1,6 @@
 package felipe.com.br.aguaparatodos.activities;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -56,9 +57,12 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
+import felipe.com.br.aguaparatodos.dominio.Usuario;
+import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
 import felipe.com.br.aguaparatodos.utils.PreferenciasUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
@@ -156,15 +160,29 @@ public class MainActivity extends AppCompatActivity {
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
 
+        String valorNotificacao = PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_NOTIFICACAO, MainActivity.this);
+        boolean notificacao = false;
+        if (valorNotificacao.equalsIgnoreCase("true") | valorNotificacao.equalsIgnoreCase("false"))
+            notificacao = Boolean.getBoolean(valorNotificacao);
+
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_mapa)).withIcon(GoogleMaterial.Icon.gmd_map).withIdentifier(ID_MENU_MAPA);
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_registrar_ocorrencia)).withIcon(GoogleMaterial.Icon.gmd_new_releases).withIdentifier(ID_MENU_REGISTRAR_OCORRENCIA);
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sobre)).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(ID_MENU_SOBRE);
-        SwitchDrawerItem item4 = new SwitchDrawerItem().withName(getResources().getString(R.string.menu_notificacao)).withCheckable(UsuarioSingleton.getInstancia().getUsuario().isReceberNotificacao()).withOnCheckedChangeListener(new OnCheckedChangeListener() {
+        SwitchDrawerItem item4 = new SwitchDrawerItem().withName(getResources().getString(R.string.menu_notificacao)).withCheckable(true).withOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(IDrawerItem iDrawerItem, CompoundButton compoundButton, boolean b) {
+                progressDialog = ProgressDialog.show(MainActivity.this, getResources().getString(R.string.aguarde), getResources().getString(R.string.aguarde));
+                UsuarioSingleton.getInstancia().getUsuario().setReceberNotificacao(b);
+
+                prepararParametros();
+                acessarWs();
+
                 navigationDrawer.getAdapter().notifyDataSetChanged();
             }
         });
+
+        item4.withChecked(UsuarioSingleton.getInstancia().getUsuario().isReceberNotificacao());
+
         PrimaryDrawerItem item5 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sair)).withIcon(GoogleMaterial.Icon.gmd_exit_to_app).withIdentifier(ID_MENU_SAIR);
 
         AccountHeader headerResult = new AccountHeaderBuilder()
@@ -478,20 +496,79 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /* @Override
-    public void onInfoWindowClick(Marker marcador) {
-        Log.d("entrou aqui", "entrou aqui");
-        final Ocorrencia ocorrencia = marcadoresHashMap.get(marcador);
+    public void criarDialog(final Context contexto, String titulo, String mensagem) {
 
-        Intent telaDetalheOcorrencia = new Intent(MainActivity.this,
-                DetalheOcorrencia.class);
+        AlertDialog dialog =  new AlertDialog.Builder(contexto)
+                .setTitle(titulo)
+                .setMessage(mensagem)
+                .setPositiveButton(contexto.getResources().getString(R.string.msgSim), new DialogInterface.OnClickListener() {
 
-        telaDetalheOcorrencia.putExtra("ocorrencia_id",
-                String.valueOf(ocorrencia.getId()));
-        telaDetalheOcorrencia.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            prepararParametros();
+                            acessarWs();
+                        } catch (Exception e) {
+                            ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.erroBuscarEndereco));
+                        }
+                    }
+                })
+                .setNegativeButton(contexto.getResources().getString(R.string.msgNao), new DialogInterface.OnClickListener() {
 
-        startActivity(telaDetalheOcorrencia);
-    } */
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.show();
+    }
+
+    private void prepararParametros() {
+        try {
+            this.parametros = new RequestParams();
+            this.parametros.put("id", UsuarioSingleton.getInstancia().getUsuario().getId());
+            this.parametros.put("valor", String.valueOf(UsuarioSingleton.getInstancia().getUsuario().isReceberNotificacao()));
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void acessarWs() {
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(WebService.ENDERECO_WS.concat(getResources().getString(R.string.usuario_receber_notificacao)), this.parametros, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+
+                String str = "";
+                try {
+                    str = new String(bytes, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                if (str.equalsIgnoreCase("sucesso")) {
+                    progressDialog.dismiss();
+                    ToastUtil.criarToastLongo(MainActivity.this, getResources().getString(R.string.statusAtualizadoSucesso));
+                } else if (str.equalsIgnoreCase("erro")) {
+                    progressDialog.dismiss();
+
+                    ToastUtil.criarToastLongo(getApplicationContext(),
+                            getResources().getString(R.string.msgErroWS));
+                }
+
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                progressDialog.dismiss();
+
+                ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.msgErroWS));
+            }
+
+        });
+    }
 
 }
