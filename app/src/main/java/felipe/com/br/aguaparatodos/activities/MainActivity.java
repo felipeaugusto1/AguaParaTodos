@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
@@ -58,7 +59,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
@@ -69,6 +69,9 @@ import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
 import felipe.com.br.aguaparatodos.utils.WebService;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 import static felipe.com.br.aguaparatodos.R.string.app_name;
 
@@ -101,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Ocorrencia> listaOcorrencias;
     private HashMap<Marker, Ocorrencia> marcadoresHashMap;
     private RequestParams parametros;
+
+    private FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -255,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
         this.navigationDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         // ----
 
+        this.frameLayout = (FrameLayout) findViewById(R.id.frame_layout_mapa);
         this.navigationDrawer.getAdapter().notifyDataSetChanged();
         this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -278,6 +284,38 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(telaDetalheOcorrencia);
             }
         });
+
+
+//        new MaterialShowcaseView.Builder(this)
+//                .setTarget(this.fab)
+//                .setDismissText(getResources().getString(R.string.msgEntendi))
+//                .setDelay(200) // optional but starting animations immediately in onCreate can make them choppy
+//                .setContentText(getResources().getString(R.string.msgBtnNovaOcorrencia)).show();
+//
+//        new MaterialShowcaseView.Builder(this)
+//                .setTarget(this.toolbar)
+//                .setDismissText(getResources().getString(R.string.msgEntendi))
+//                .setContentText("Acesse outras funcionalidades aqui do lado esquerdo.")
+//                .setDelay(500) // optional but starting animations immediately in onCreate can make them choppy
+//        //.singleUse(SHOWCASE_ID) // provide a unique ID used to ensure it is only shown once
+//                .show();
+
+        /* new MaterialShowcaseView.Builder(this)
+                .setTarget(this.frameLayout)
+                .setDismissText(getResources().getString(R.string.msgEntendi))
+                .setDelay(200) // optional but starting animations immediately in onCreate can make them choppy
+                .setContentText(getResources().getString(R.string.msgMapa)).show(); */
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500); // half second between each showcase view
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, "");
+
+        sequence.addSequenceItem(this.fab, getResources().getString(R.string.msgBtnNovaOcorrencia), getResources().getString(R.string.msgEntendi));
+
+        sequence.addSequenceItem(this.toolbar, getResources().getString(R.string.msgBottom), getResources().getString(R.string.msgEntendi));
+
+        sequence.start();
     }
 
     private void configurarMapa() {

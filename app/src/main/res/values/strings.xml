@@ -14,6 +14,10 @@
     <string name="msgCampoNaoInformado">Campo não informado</string>
     <string name="statusAtualizadoSucesso">Status atualizado com sucesso!</string>
 
+    <string name="msgEntendi">Entendi, continuar</string>
+    <string name="msgBtnNovaOcorrencia">Aqui você pode cadastrar uma nova ocorrência informando da água parada, ou do risco de foco de dengue.</string>
+    <string name="msgBottom">Aqui você confere nossas outras funcionalidades.</string>
+
     <!-- URLS WEBSERVICES -->
     <string name="usuario_login">usuario/login</string>
     <string name="usuario_receber_notificacao">usuario/receberNotificacao</string>
