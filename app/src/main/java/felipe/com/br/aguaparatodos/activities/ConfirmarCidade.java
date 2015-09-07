@@ -18,9 +18,12 @@ import com.loopj.android.http.RequestParams;
 import org.apache.http.Header;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
+import felipe.com.br.aguaparatodos.extras.PlacesAutoCompleteAdapter;
+import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
 import felipe.com.br.aguaparatodos.utils.StringUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
@@ -36,31 +39,41 @@ public class ConfirmarCidade extends AppCompatActivity {
     private TextView cidadeRecuperada, textViewCidade, textViewInterrogacao, textViewCidadeInformativo;
     private RequestParams parametros;
 
+    private String cidade = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.confirmar_cidade);
 
+        this.criarReferenciasComponentes();
+
+        Bundle b = getIntent().getExtras();
+
+        if (b != null) {
+            this.cidade = b.getString("cidade");
+            if (!ValidadorUtil.isNuloOuVazio(cidade))
+                this.cidadeRecuperada.setText(StringUtil.converterPrimeiraLetraMaiuscula(cidade));
+            else
+                this.msgErroCidadeInvalida();
+        }
+    }
+
+    private void msgErroCidadeInvalida() {
+        this.cidadeRecuperada.setText("");
+        this.textViewInterrogacao.setText("");
+        this.textViewCidadeInformativo.setText("");
+        this.textViewCidade.setText("Ocorreu um erro ao recuperar sua cidade de residência. Por favor informe no campo abaixo.");
+    }
+
+    private void criarReferenciasComponentes() {
         this.cidadeRecuperada = (TextView) findViewById(R.id.textViewCidadeInformada);
         this.textViewCidade = (TextView) findViewById(R.id.textViewCidade);
         this.textViewInterrogacao = (TextView) findViewById(R.id.textViewInterrogacao);
         this.textViewCidadeInformativo = (TextView) findViewById(R.id.textViewCidadeInformativo);
         this.cidadeAutoComplete = (AutoCompleteTextView) findViewById(R.id.editTextCidadeUsuario);
 
-        Bundle b = getIntent().getExtras();
-
-        if (b != null) {
-            String cidade = b.getString("cidade");
-            if (!ValidadorUtil.isNuloOuVazio(cidade))
-                cidadeRecuperada.setText(StringUtil.converterPrimeiraLetraMaiuscula(cidade));
-            else {
-                cidadeRecuperada.setText("");
-                textViewInterrogacao.setText("");
-                textViewCidadeInformativo.setText("");
-                textViewCidade.setText("Ocorreu um erro ao recuperar sua cidade de residência. Por favor informe no campo abaixo.");
-            }
-
-        }
+        this.cidadeAutoComplete.setAdapter(new PlacesAutoCompleteAdapter(getApplicationContext(), R.layout.item_lista_busca_endereco));
     }
 
     public void acaoBotoes(View view) {
@@ -68,13 +81,24 @@ public class ConfirmarCidade extends AppCompatActivity {
             case R.id.btnContinuarCidade:
                 this.cidadeAutoComplete.setError(null);
 
-                if (ValidadorUtil.isNuloOuVazio(this.cidadeAutoComplete.getText().toString()))
+                if (ValidadorUtil.isNuloOuVazio(this.cidadeAutoComplete.getText().toString()) && ValidadorUtil.isNuloOuVazio(this.cidade))
                     this.cidadeAutoComplete.setError("Por favor informe a cidade que deseja acompanhar as ocorrências.");
                 else {
-                    this.parametros = new RequestParams();
-                    this.parametros.put("id", UsuarioSingleton.getInstancia().getUsuario().getId());
-                    this.parametros.put("cidade", this.cidadeAutoComplete.getText().toString());
-                    atualizarCidadeUsuario();
+                    try {
+                        this.parametros = new RequestParams();
+                        this.parametros.put("id", UsuarioSingleton.getInstancia().getUsuario().getId());
+
+                        if (ValidadorUtil.isNuloOuVazio(this.cidade)) {
+                            Map<String, String> valores = BuscarEnderecoGoogle.buscarEnderecoByNome(this.cidadeAutoComplete.getText().toString(), getApplicationContext());
+                            this.parametros.put("cidade", valores.get("CIDADE"));
+                        } else
+                            this.parametros.put("cidade", this.cidade);
+
+                        atualizarCidadeUsuario();
+                    } catch (Exception e) {
+                        ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.erroBuscarEndereco));
+                    }
+
                 }
         }
     }

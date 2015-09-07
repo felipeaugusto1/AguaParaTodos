@@ -17,6 +17,7 @@ public class Usuario {
     private boolean usuarioGooglePlus;
     private boolean receberNotificacao;
     private Endereco endereco;
+    private boolean primeiroLogin;
 
     public Usuario() {
     }
@@ -99,6 +100,14 @@ public class Usuario {
 
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
+    }
+
+    public boolean isPrimeiroLogin() {
+        return primeiroLogin;
+    }
+
+    public void setPrimeiroLogin(boolean primeiroLogin) {
+        this.primeiroLogin = primeiroLogin;
     }
 
     @Override

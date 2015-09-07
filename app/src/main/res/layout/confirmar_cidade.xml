@@ -53,7 +53,7 @@
             android:layout_below="@+id/textViewInterrogacao"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
-            android:text="Caso tenha havido algum engano, por favor digite o nome da sua cidade abaixo."
+            android:text="Caso tenha havido algum engano, por favor digite o nome da sua cidade abaixo. Caso contrário, clique em continuar."
             android:textColor="@android:color/black" />
 
 

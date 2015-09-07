@@ -175,7 +175,7 @@ public class Login extends FragmentActivity {
 
                 UsuarioSingleton.getInstancia().setUsuario(usuarioLogado);
 
-                if (!ValidadorUtil.isNuloOuVazio(usuarioLogado.getEndereco().getCidade())) {
+                /* if (!ValidadorUtil.isNuloOuVazio(usuarioLogado.getEndereco().getCidade())) {
                     Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
                     startActivity(telaPosLogin);
                 } else {
@@ -184,7 +184,18 @@ public class Login extends FragmentActivity {
                     Intent telaPosLogin = new Intent(Login.this, ConfirmarCidade.class);
                     telaPosLogin.putExtra("cidade", "natal");
                     startActivity(telaPosLogin);
+                } */
+                if (usuarioLogado.isPrimeiroLogin()) {
+                    Bundle b = new Bundle();
+
+                    Intent telaPosLogin = new Intent(Login.this, ConfirmarCidade.class);
+                    telaPosLogin.putExtra("cidade", usuarioLogado.getEndereco().getCidade());
+                    startActivity(telaPosLogin);
+                } else {
+                    Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
+                    startActivity(telaPosLogin);
                 }
+
             }
 
             @Override
