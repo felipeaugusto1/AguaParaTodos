@@ -151,7 +151,8 @@
             android:gravity="right"
             android:onClick="limparCampos"
             android:text="@string/limparCampos"
-            android:textSize="13dp" />
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="15dp" />
 
 
     </RelativeLayout>

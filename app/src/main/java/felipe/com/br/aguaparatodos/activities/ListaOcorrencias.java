@@ -3,7 +3,9 @@ package felipe.com.br.aguaparatodos.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,6 +50,8 @@ public class ListaOcorrencias extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
 
     private static ProgressDialog progressDialog;
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +105,26 @@ public class ListaOcorrencias extends AppCompatActivity {
         this.toolbar = (Toolbar) findViewById(R.id.toolbar_lista_ocorrencias);
         this.recyclerView = (RecyclerView) findViewById(R.id.cardList);
 
+        this.mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark, android.R.color.holo_green_dark, android.R.color.holo_blue_bright);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshContent();
+            }
+        });
+    }
 
+    private void refreshContent() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //mAdapter.refreshContent();
+                //mAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
+
+            }
+        }, 5000);
     }
 
     @Override

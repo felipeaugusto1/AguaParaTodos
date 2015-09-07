@@ -119,9 +119,10 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DetalheOcorrencia.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                //Intent intent = new Intent(DetalheOcorrencia.this, MainActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                //startActivity(intent);
+                onBackPressed();
             }
         });
 
@@ -129,6 +130,8 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
         if (b != null) {
             String ocorrenciaId = b.getString("ocorrencia_id");
+            //String classe = b.getString("classe");
+            //Log.d("classe", classe);
             this.parametros = new RequestParams();
             this.parametros.put("id", ocorrenciaId);
             buscarOcorrenciasPorIdWS(parametros);

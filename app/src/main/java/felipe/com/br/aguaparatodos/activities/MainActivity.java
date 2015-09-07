@@ -371,7 +371,6 @@ public class MainActivity extends AppCompatActivity {
                         Type listType = new TypeToken<ArrayList<Ocorrencia>>() {
                         }.getType();
                         listaOcorrencias = gson.fromJson(str, listType);
-
                         navigationDrawer.updateBadge(ID_MENU_LISTA_OCORRENCIAS, new StringHolder(String.valueOf(listaOcorrencias.size())));
 
                         percorrerOcorrencias();
