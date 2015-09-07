@@ -151,6 +151,7 @@ public class ListaOcorrencias extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        this.navigationDrawer.setSelection(0);
         super.onBackPressed();
     }
 

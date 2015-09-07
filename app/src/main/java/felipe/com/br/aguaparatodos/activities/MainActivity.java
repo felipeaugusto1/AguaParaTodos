@@ -29,6 +29,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -89,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int ID_MENU_MAPA = 1;
     private static final int ID_MENU_REGISTRAR_OCORRENCIA = 2;
-    private static final int ID_MENU_SOBRE = 7;
-    private static final int ID_MENU_SAIR = 6;
+    private static final int ID_MENU_SOBRE = 4;
+    private static final int ID_MENU_SAIR = 7;
     private static final int ID_MENU_LISTA_OCORRENCIAS = 3;
 
     private GoogleApiClient mGoogleApiClient;
@@ -414,6 +415,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+        this.mapa.animateCamera(CameraUpdateFactory.zoomTo(14));
+        this.mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+                UsuarioSingleton.getInstancia().getUsuario().getEndereco().getLatitude(), UsuarioSingleton.getInstancia().getUsuario().getEndereco().getLongitude()), 10));
+
+
         progressDialog.dismiss();
     }
 

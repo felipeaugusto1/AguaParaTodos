@@ -30,10 +30,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import felipe.com.br.aguaparatodos.BuildConfig;
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
+import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
 import felipe.com.br.aguaparatodos.utils.PreferenciasUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
@@ -117,10 +119,16 @@ public class Login extends FragmentActivity {
                         parametros.put("recebe_notificacao", String.valueOf(true));
                         parametros.put("versao_app", String.valueOf(BuildConfig.VERSION_CODE));
                         try {
-                            Log.d("cidade", json.getJSONObject("location").getString("name"));
-                            parametros.put("endereco", String.valueOf(json.getJSONObject("location").getString("name")));
+                            String endereco = String.valueOf(json.getJSONObject("location").getString("name"));
+                            //Log.d("cidade", json.getJSONObject("location").getString("name"));
+                            List<Double> coordenadas = BuscarEnderecoGoogle.buscarCoordenadasPorEndereco(getApplicationContext(), endereco);
+                            parametros.put("endereco", endereco);
+                            parametros.put("lat", String.valueOf(coordenadas.get(0)));
+                            parametros.put("long", String.valueOf(coordenadas.get(1)));
                         } catch (NullPointerException e) {
                             parametros.put("endereco", "");
+                            parametros.put("lat", String.valueOf(0));
+                            parametros.put("long", String.valueOf(0));
                         }
 
 
@@ -146,7 +154,7 @@ public class Login extends FragmentActivity {
         request.executeAsync();
     }
 
-    private boolean verificarEmail(RequestParams parametros) {
+    private void verificarEmail(RequestParams parametros) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(WebService.ENDERECO_WS.concat(getResources().getString(R.string.usuario_login)), parametros, new AsyncHttpResponseHandler() {
@@ -167,8 +175,16 @@ public class Login extends FragmentActivity {
 
                 UsuarioSingleton.getInstancia().setUsuario(usuarioLogado);
 
-                Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
-                startActivity(telaPosLogin);
+                if (!ValidadorUtil.isNuloOuVazio(usuarioLogado.getEndereco().getCidade())) {
+                    Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
+                    startActivity(telaPosLogin);
+                } else {
+                    Bundle b = new Bundle();
+
+                    Intent telaPosLogin = new Intent(Login.this, ConfirmarCidade.class);
+                    telaPosLogin.putExtra("cidade", "natal");
+                    startActivity(telaPosLogin);
+                }
             }
 
             @Override
@@ -178,8 +194,6 @@ public class Login extends FragmentActivity {
             }
 
         });
-
-        return true;
     }
 
     @Override

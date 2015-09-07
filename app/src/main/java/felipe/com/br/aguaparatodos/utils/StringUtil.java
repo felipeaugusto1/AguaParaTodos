@@ -30,4 +30,10 @@ public final class StringUtil {
 		return palavra;
 	}
 
+	public static String converterPrimeiraLetraMaiuscula(String palavra) {
+        String p = palavra.toLowerCase();
+        p = palavra.substring(0, 1).toUpperCase().concat(p.substring(1, p.length()));
+        return p;
+    }
+
 }
