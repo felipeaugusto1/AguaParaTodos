@@ -12,6 +12,9 @@ public class Endereco {
     private double latitude;
     private double longitude;
 
+    public Endereco() {
+    }
+
     public Endereco(String endereco, String cidade, String estado, double latitude, double longitude) {
         this.endereco = endereco;
         this.cidade = cidade;

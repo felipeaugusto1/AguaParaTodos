@@ -36,7 +36,7 @@
 
     <!-- MENU DRAWER -->
     <string name="menu_mapa">Mapa</string>
-    <string name="menu_registrar_ocorrencia">Registrar</string>
+    <string name="menu_registrar_ocorrencia">Registrar ocorrência</string>
     <string name="menu_sobre">Sobre</string>
     <string name="menu_sair">Sair</string>
     <string name="menu_notificacao">Notificação</string>
@@ -47,17 +47,14 @@
     <string name="msgCadastrandoOcorrencia">Cadastrando ocorrência&#8230;</string>
     <string name="msgSucessoEnviarOcorrencia">Ocorrência cadastrada com sucesso.</string>
     <string name="msgErroEnviarOcorrencia">Ocorreu um erro ao cadastrar a ocorrência.</string>
-    <string name="txtTituloOcorrencia">Título:</string>
+    <string name="txtTituloOcorrencia">Título</string>
     <string name="txtTituloOcorrencia2">Ocorrência</string>
     <string name="edTituloOcorrencia">Informe um título.</string>
-    <string name="txtObservacaoOcorrencia">Observação:</string>
-    <string name="txtObservacaoOcorrencia2">Observação</string>
+    <string name="txtObservacaoOcorrencia">Observação</string>
     <string name="edObservacaoOcorrencia">Descreva a ocorrência.</string>
-    <string name="txtEnderecoOcorrencia">Endereço:</string>
-    <string name="txtEnderecoOcorrencia2">Endereço</string>
+    <string name="txtEnderecoOcorrencia">Endereço</string>
     <string name="btnCadastrarOcorrencia">Cadastrar</string>
-    <string name="txtPontoReferenciaOcorrencia">Ponto de referência:</string>
-    <string name="txtPontoReferenciaOcorrencia2">Ponto de referência</string>
+    <string name="txtPontoReferenciaOcorrencia">Ponto de referência</string>
     <string name="edPontoReferenciaOcorrencia">Cite um ponto de referência.</string>
 
     <string name="erroInformarTituloOcorrencia">Por favor informe um título.</string>
@@ -82,5 +79,8 @@
     <string name="msgErroConfirmarProibido">Você já confirmou esta ocorrência.</string>
     <string name="msgPessoasConfirmaramOcorrenciaSingular">pessoa confirmou esta ocorrência.</string>
     <string name="msgPessoasConfirmaramOcorrenciaPlural">pessoas confirmaram esta ocorrência.</string>
+
+    <!-- Tela Lista de Ocorrencias -->
+    <string name="tituloListaOcorrencias">Lista de Ocorrências</string>
 
 </resources>

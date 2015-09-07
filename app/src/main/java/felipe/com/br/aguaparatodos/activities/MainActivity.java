@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
@@ -44,6 +45,8 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
+import com.mikepenz.materialdrawer.holder.StringHolder;
 import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -86,8 +89,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int ID_MENU_MAPA = 1;
     private static final int ID_MENU_REGISTRAR_OCORRENCIA = 2;
-    private static final int ID_MENU_SOBRE = 3;
+    private static final int ID_MENU_SOBRE = 7;
     private static final int ID_MENU_SAIR = 6;
+    private static final int ID_MENU_LISTA_OCORRENCIAS = 3;
 
     private GoogleApiClient mGoogleApiClient;
     // Request code to use when launching the resolution activity
@@ -171,8 +175,16 @@ public class MainActivity extends AppCompatActivity {
         if (valorNotificacao.equalsIgnoreCase("true") | valorNotificacao.equalsIgnoreCase("false"))
             notificacao = Boolean.getBoolean(valorNotificacao);
 
+        this.frameLayout = (FrameLayout) findViewById(R.id.frame_layout_mapa);
+        this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
+
+        this.configurarMapa();
+        this.atualizarMapa();
+
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_mapa)).withIcon(GoogleMaterial.Icon.gmd_map).withIdentifier(ID_MENU_MAPA);
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_registrar_ocorrencia)).withIcon(GoogleMaterial.Icon.gmd_new_releases).withIdentifier(ID_MENU_REGISTRAR_OCORRENCIA);
+        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withName("Lista").withBadgeStyle(new BadgeStyle().withColor(Color.RED).withTextColor(Color.WHITE)).withIcon(GoogleMaterial.Icon.gmd_list).withIdentifier(ID_MENU_LISTA_OCORRENCIAS);
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sobre)).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(ID_MENU_SOBRE);
         SwitchDrawerItem item4 = new SwitchDrawerItem().withName(getResources().getString(R.string.menu_notificacao)).withCheckable(true).withOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -219,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 .addDrawerItems(
                         item1,
                         item2,
+                        item6,
                         item3,
                         item4,
                         new DividerDrawerItem(),
@@ -243,6 +256,9 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(MainActivity.this, Login.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
+                        } else if (position == ID_MENU_LISTA_OCORRENCIAS) {
+                            //navigationDrawer.setSelection(3);
+                            startActivity(new Intent(MainActivity.this, ListaOcorrencias.class));
                         }
 
                         //transaction.addToBackStack(null);
@@ -260,13 +276,7 @@ public class MainActivity extends AppCompatActivity {
         this.navigationDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         // ----
 
-        this.frameLayout = (FrameLayout) findViewById(R.id.frame_layout_mapa);
         this.navigationDrawer.getAdapter().notifyDataSetChanged();
-        this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
-
-        this.configurarMapa();
-        this.atualizarMapa();
 
         this.mapa.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
@@ -361,6 +371,8 @@ public class MainActivity extends AppCompatActivity {
                         Type listType = new TypeToken<ArrayList<Ocorrencia>>() {
                         }.getType();
                         listaOcorrencias = gson.fromJson(str, listType);
+
+                        navigationDrawer.updateBadge(ID_MENU_LISTA_OCORRENCIAS, new StringHolder(String.valueOf(listaOcorrencias.size())));
 
                         percorrerOcorrencias();
                     }
@@ -519,7 +531,7 @@ public class MainActivity extends AppCompatActivity {
                     TextView titulo = (TextView) v.findViewById(R.id.txtTitulo);
                     TextView descricao = (TextView) v.findViewById(R.id.txtDescricao);
                     TextView endereco = (TextView) v.findViewById(R.id.txtEndereco);
-                    TextView denuncias = (TextView) v.findViewById(R.id.txtDenuncias);
+                    //TextView denuncias = (TextView) v.findViewById(R.id.txtDenuncias);
 
                     titulo.setText(ocorrencia.getTitulo());
                     descricao.setText(ocorrencia.getDescricao());

@@ -151,7 +151,7 @@
             android:gravity="right"
             android:onClick="limparCampos"
             android:text="@string/limparCampos"
-            android:textSize="12dp" />
+            android:textSize="13dp" />
 
 
     </RelativeLayout>

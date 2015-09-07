@@ -46,6 +46,8 @@
 
         <activity android:name=".activities.DetalheOcorrencia" />
 
+        <activity android:name=".activities.ListaOcorrencias" />
+
     </application>
 
 </manifest>

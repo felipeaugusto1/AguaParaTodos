@@ -23,7 +23,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/txtEnderecoOcorrencia2"
+                android:text="@string/txtEnderecoOcorrencia"
                 android:textSize="15sp" />
 
             <View

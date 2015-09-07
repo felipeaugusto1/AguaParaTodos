@@ -12,8 +12,8 @@
         <RelativeLayout
             android:id="@+id/layout_detalhe_ocorrencia_confirmacoes"
             android:layout_width="fill_parent"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
 
             <TextView
                 android:id="@+id/txtQtdConfirmacoes"
@@ -25,11 +25,9 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
-
                 android:gravity="center"
-                android:text="pessoas confirmaram..."
+                android:text=""
                 android:textSize="15sp" />
-
 
         </RelativeLayout>
 
