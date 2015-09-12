@@ -7,6 +7,9 @@ import java.util.Date;
  */
 public class Usuario {
 
+    public static String PREFERENCIA_VISUALIZACAO_CIDADE = "cidade";
+    public static String PREFERENCIA_VISUALIZACAO_PAIS = "pais";
+
     private int id;
     private String nomeCompleto;
     private String email;
@@ -18,6 +21,7 @@ public class Usuario {
     private boolean receberNotificacao;
     private Endereco endereco;
     private boolean primeiroLogin;
+    private String preferenciaVisualizacao;
 
     public Usuario() {
     }
@@ -108,6 +112,14 @@ public class Usuario {
 
     public void setPrimeiroLogin(boolean primeiroLogin) {
         this.primeiroLogin = primeiroLogin;
+    }
+
+    public String getPreferenciaVisualizacao() {
+        return preferenciaVisualizacao;
+    }
+
+    public void setPreferenciaVisualizacao(String preferenciaVisualizacao) {
+        this.preferenciaVisualizacao = preferenciaVisualizacao;
     }
 
     @Override

@@ -16,52 +16,22 @@
             layout="@layout/toolbar_top" />
 
         <TextView
-            android:id="@+id/textViewCidade"
+            android:id="@+id/textViewMsgCidade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:text="Você reside na cidade de "
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:id="@+id/textViewCidadeInformada"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/textViewCidade"
-            android:text=""
+            android:layout_marginRight="5dp"
+            android:text="@string/msgTxtConfirmarCidade"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textViewInterrogacao"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/textViewCidadeInformada"
-            android:text="\?"
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:id="@+id/textViewCidadeInformativo"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textViewInterrogacao"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:text="Caso tenha havido algum engano, por favor digite o nome da sua cidade abaixo. Caso contrário, clique em continuar."
-            android:textColor="@android:color/black" />
-
 
         <AutoCompleteTextView
             android:id="@+id/editTextCidadeUsuario"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textViewCidadeInformativo"
+            android:layout_below="@+id/textViewMsgCidade"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="10dp">

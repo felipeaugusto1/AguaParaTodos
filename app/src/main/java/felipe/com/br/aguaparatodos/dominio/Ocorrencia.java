@@ -1,6 +1,7 @@
 package felipe.com.br.aguaparatodos.dominio;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by felipe on 8/29/15.
@@ -12,6 +13,7 @@ public class Ocorrencia {
     private String descricao;
     private String pontoReferencia;
     private int qtdConfirmacoes;
+    private List<Integer> usuariosConfirmaram;
     private boolean ocorrenciaSolucionada;
     private Usuario usuario;
     private Endereco endereco;
@@ -105,6 +107,14 @@ public class Ocorrencia {
 
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public List<Integer> getUsuariosConfirmaram() {
+        return usuariosConfirmaram;
+    }
+
+    public void setUsuariosConfirmaram(List<Integer> usuariosConfirmaram) {
+        this.usuariosConfirmaram = usuariosConfirmaram;
     }
 
     @Override

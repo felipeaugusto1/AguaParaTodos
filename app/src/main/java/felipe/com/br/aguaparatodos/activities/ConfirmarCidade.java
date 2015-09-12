@@ -21,6 +21,7 @@ import com.loopj.android.http.RequestParams;
 import org.apache.http.Header;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 import felipe.com.br.aguaparatodos.R;
@@ -44,6 +45,7 @@ public class ConfirmarCidade extends AppCompatActivity {
 
     private String cidade = "", estado = "";
     private Map<String, String> valores;
+    private List<Double> coordenadas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class ConfirmarCidade extends AppCompatActivity {
                 else {
                     try {
                         this.valores = BuscarEnderecoGoogle.buscarEnderecoByNome(this.cidadeAutoComplete.getText().toString(), getApplicationContext());
+                        this.coordenadas = BuscarEnderecoGoogle.buscarCoordenadasPorEndereco(getApplicationContext(), this.cidadeAutoComplete.getText().toString());
                         this.cidade = this.valores.get("CIDADE");
                         this.estado = this.valores.get("ESTADO");
 
@@ -97,6 +100,8 @@ public class ConfirmarCidade extends AppCompatActivity {
 
         this.parametros.put("cidade", this.valores.get("CIDADE"));
         this.parametros.put("estado", this.valores.get("ESTADO"));
+        this.parametros.put("lat", String.valueOf(this.coordenadas.get(0)));
+        this.parametros.put("lon", String.valueOf(this.coordenadas.get(1)));
         atualizarCidadeUsuario();
     }
 
@@ -137,11 +142,15 @@ public class ConfirmarCidade extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                if (str.equalsIgnoreCase(WebService.RESPOSTA_SUCESSO)) {
+                Gson gson = new GsonBuilder().setDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss").create();
+
+                Usuario usuarioLogado = gson.fromJson(str, Usuario.class);
+
+                if (usuarioLogado.getId() > 0) {
+                    UsuarioSingleton.getInstancia().setUsuario(usuarioLogado);
                     ToastUtil.criarToastLongo(getApplicationContext(), "Informação atualizada com sucesso!");
                     startActivity(new Intent(ConfirmarCidade.this, MainActivity.class));
-                } else if (str.equalsIgnoreCase(WebService.RESPOSTA_ERRO)) {
-
                 }
             }
 

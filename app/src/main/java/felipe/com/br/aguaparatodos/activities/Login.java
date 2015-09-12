@@ -139,7 +139,7 @@ public class Login extends FragmentActivity implements
         }
     }
 
-    private void prepararParametros(String nome, String email, boolean usuarioFacebook, boolean usuarioTwitter, boolean usuarioGooglePlus, boolean recebeNotificacao, String endereco, double lat, double lon) {
+    private void prepararParametros(String nome, String email, boolean usuarioFacebook, boolean usuarioTwitter, boolean usuarioGooglePlus, boolean recebeNotificacao, String endereco) {
         parametros = new RequestParams();
         parametros.put("nome", nome);
         parametros.put("email", email);
@@ -149,8 +149,7 @@ public class Login extends FragmentActivity implements
         parametros.put("recebe_notificacao", String.valueOf(recebeNotificacao));
         parametros.put("versao_app", String.valueOf(BuildConfig.VERSION_CODE));
         parametros.put("endereco", endereco);
-        parametros.put("lat", String.valueOf(lat));
-        parametros.put("long", String.valueOf(lon));
+        parametros.put("pref", Usuario.PREFERENCIA_VISUALIZACAO_CIDADE);
     }
 
     public void recuperarInformacoesUsuarioFacebook() {
@@ -180,17 +179,15 @@ public class Login extends FragmentActivity implements
                         parametros.put("versao_app", String.valueOf(BuildConfig.VERSION_CODE)); */
                         String endereco = "";
                         String email = "";
-                        double lat = 0, lon = 0;
                         try {
                             endereco = String.valueOf(json.getJSONObject("location").getString("name"));
                             email = json.getString("email");
                             //Log.d("cidade", json.getJSONObject("location").getString("name"));
-                            List<Double> coordenadas = BuscarEnderecoGoogle.buscarCoordenadasPorEndereco(getApplicationContext(), endereco);
                         } catch (Exception e) {
                             email = "erro_".concat(json.getString("name").replace(" ", "_").concat(regId));
                         }
 
-                        prepararParametros(json.getString("name"), email, true, false, false, true, endereco, lat, lon);
+                        prepararParametros(json.getString("name"), email, true, false, false, true, endereco);
 
                         try {
                             PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, Profile.getCurrentProfile().getProfilePictureUri(50, 50).toString(), getApplicationContext());
@@ -364,7 +361,7 @@ public class Login extends FragmentActivity implements
             e.printStackTrace();
         }
 
-        prepararParametros(nome, email, false, false, true, true, "", 0, 0);
+        prepararParametros(nome, email, false, false, true, true, "");
         verificarEmail(this.parametros);
     }
 

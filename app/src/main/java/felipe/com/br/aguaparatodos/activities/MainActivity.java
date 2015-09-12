@@ -325,10 +325,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configurarMapa() {
-        if (this.mapa == null) {
+        if (ValidadorUtil.isNuloOuVazio(this.mapa)) {
             this.mapa = this.mapFragment.getMap();
 
-            if (this.mapa != null) {
+            if (!ValidadorUtil.isNuloOuVazio(this.mapa)) {
                 this.mapa.setMyLocationEnabled(true);
             }
         }
@@ -414,7 +414,6 @@ public class MainActivity extends AppCompatActivity {
         this.mapa.animateCamera(CameraUpdateFactory.zoomTo(14));
         this.mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
                 UsuarioSingleton.getInstancia().getUsuario().getEndereco().getLatitude(), UsuarioSingleton.getInstancia().getUsuario().getEndereco().getLongitude()), 10));
-
 
         progressDialog.dismiss();
     }
