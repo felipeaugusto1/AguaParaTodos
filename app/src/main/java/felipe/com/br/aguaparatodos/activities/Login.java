@@ -106,12 +106,9 @@ public class Login extends FragmentActivity implements
                 .addScope(new Scope(Scopes.PROFILE))
                 .build();
 
-        Log.d("aaaaaaa", PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()));
         if (!PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()).equalsIgnoreCase(PreferenciasUtil.VALOR_INVALIDO)) {
             this.parametros = new RequestParams();
             this.parametros.put("email", PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()));
-            Log.d("to aqui2", "to aqui2");
-            Log.d("to aqui2", PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()));
             this.verificarEmail(this.parametros);
         } else {
             this.btnLoginFacebook = (LoginButton) findViewById(R.id.btnLoginFacebook);
@@ -123,7 +120,6 @@ public class Login extends FragmentActivity implements
                 @Override
                 public void onSuccess(LoginResult loginResult) {
                     ToastUtil.criarToastCurto(getApplicationContext(), getResources().getString(R.string.aguarde));
-                    Log.d("to aqui3", "to aqui3");
                     recuperarInformacoesUsuarioFacebook();
                 }
 
@@ -368,7 +364,6 @@ public class Login extends FragmentActivity implements
             e.printStackTrace();
         }
 
-        Log.d("to aqui1", "to aqui1");
         prepararParametros(nome, email, false, false, true, true, "", 0, 0);
         verificarEmail(this.parametros);
     }
@@ -408,10 +403,7 @@ public class Login extends FragmentActivity implements
     }
 
     private void logOutGooglePlus() {
-        Log.d("saindo do fb...", "saindo...");
-
         if (mGoogleApiClient.isConnected()) {
-            Log.d("agora entrou aqui", "agora entrou aqui");
             Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
             mGoogleApiClient.disconnect();
         }

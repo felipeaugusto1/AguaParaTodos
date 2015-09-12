@@ -82,7 +82,7 @@ public class ConfirmarCidade extends AppCompatActivity {
                         this.cidade = this.valores.get("CIDADE");
                         this.estado = this.valores.get("ESTADO");
 
-                        criarDialog(ConfirmarCidade.this, this.cidade, "Você mora em ".concat(this.cidade).concat("/").concat(this.estado).concat("?"));
+                        criarDialog(ConfirmarCidade.this, "Cidade", "Você mora em ".concat(this.cidade).concat("/").concat(this.estado).concat("?"));
                     } catch (Exception e) {
                         ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.erroBuscarCidade));
                     }
