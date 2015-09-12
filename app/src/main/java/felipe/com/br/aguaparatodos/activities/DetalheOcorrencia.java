@@ -228,8 +228,7 @@ public class DetalheOcorrencia extends AppCompatActivity {
             if (this.ocorrencia.getQtdConfirmacoes() == 1) {
                 this.layoutCardConfirmacaoOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
                 this.txtQtdConfirmacoes.setText(String.valueOf(this.ocorrencia.getQtdConfirmacoes()).concat(" ").concat(getResources().getString(R.string.msgPessoasConfirmaramOcorrenciaSingular)));
-            }
-            else {
+            } else {
                 this.layoutCardConfirmacaoOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
                 this.txtQtdConfirmacoes.setText(String.valueOf(this.ocorrencia.getQtdConfirmacoes()).concat(" ").concat(getResources().getString(R.string.msgPessoasConfirmaramOcorrenciaPlural)));
             }
@@ -254,7 +253,7 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_compartilhar, menu);
         return true;
     }
 
@@ -262,8 +261,16 @@ public class DetalheOcorrencia extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_compartilhar:
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT,
+                        ocorrencia.getTitulo()
+                                + "\n" + ocorrencia.getEndereco().getEndereco());
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -356,8 +363,7 @@ public class DetalheOcorrencia extends AppCompatActivity {
                                             getResources().getString(R.string.msgPessoasConfirmaramOcorrenciaPlural)
                                     ));
                                     layoutCardConfirmacaoOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
-                                }
-                                else if ((ocorrencia.getQtdConfirmacoes() + 1) == 1) {
+                                } else if ((ocorrencia.getQtdConfirmacoes() + 1) == 1) {
                                     txtQtdConfirmacoes.setText(String.valueOf((ocorrencia.getQtdConfirmacoes() + 1)).concat(" ").concat(
                                             getResources().getString(R.string.msgPessoasConfirmaramOcorrenciaSingular)
                                     ));
