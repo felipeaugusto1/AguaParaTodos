@@ -128,7 +128,7 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
         Bundle b = getIntent().getExtras();
 
-        if (b != null) {
+        if (!ValidadorUtil.isNuloOuVazio(b)) {
             String ocorrenciaId = b.getString("ocorrencia_id");
             //String classe = b.getString("classe");
             //Log.d("classe", classe);

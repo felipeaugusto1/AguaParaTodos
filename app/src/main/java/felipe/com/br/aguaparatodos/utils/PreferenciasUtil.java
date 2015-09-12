@@ -8,15 +8,16 @@ import android.content.SharedPreferences;
  */
 public class PreferenciasUtil {
 
+    public static final String VALOR_INVALIDO = "_blank";
+
+    public static final String LOGOUT_FACEBOOK = "LOGOUT_FACEBOOK";
+
     public static final String PREFERENCIAS_LOGIN = "USUARIO_LOGIN";
-    public static final String PREFERENCIAS_NOTIFICACAO = "RECEBER_NOTIFICACAO";
     public static final String KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL = "email";
     public static final String KEY_PREFERENCIAS_USUARIO_LOGADO_NOME = "usuario";
     public static final String KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO = "foto";
     public static final String KEY_PREFERENCIAS_NOTIFICACAO = "receber_notificacao";
 
-    public static final String VALUE_PREFERENCIAS_NOTIFICACAO_TRUE = "true";
-    public static final String VALUE_PREFERENCIAS_NOTIFICACAO_FALSE = "false";
 
     public static void salvarPreferenciasLogin(String key, String value, Context contexto) {
         SharedPreferences preferencias = contexto.getSharedPreferences(
@@ -29,7 +30,7 @@ public class PreferenciasUtil {
     public static String getPreferenciasUsuarioLogado(String key, Context contexto) {
         SharedPreferences sharedPreferences = contexto.getSharedPreferences(
                 PreferenciasUtil.PREFERENCIAS_LOGIN, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(key, "erro");
+        return sharedPreferences.getString(key, VALOR_INVALIDO);
     }
 
 

@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.plus.Plus;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
@@ -250,13 +251,7 @@ public class MainActivity extends AppCompatActivity {
                         } else if (position == ID_MENU_MAPA) {
                             navigationDrawer.setSelection(0);
                         } else if (position == ID_MENU_SAIR) {
-                            LoginManager.getInstance().logOut();
-                            PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, "erro", getApplicationContext());
-                            PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, "erro", getApplicationContext());
-                            PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, "erro", getApplicationContext());
-                            Intent intent = new Intent(MainActivity.this, Login.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
+                            logOut();
                         } else if (position == ID_MENU_LISTA_OCORRENCIAS) {
                             //navigationDrawer.setSelection(3);
                             startActivity(new Intent(MainActivity.this, ListaOcorrencias.class));
@@ -626,6 +621,26 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void logOut() {
+        PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, PreferenciasUtil.VALOR_INVALIDO, getApplicationContext());
+        PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, PreferenciasUtil.VALOR_INVALIDO, getApplicationContext());
+        PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, PreferenciasUtil.VALOR_INVALIDO, getApplicationContext());
+
+        if (UsuarioSingleton.getInstancia().getUsuario().isUsuarioFacebook())
+            LoginManager.getInstance().logOut();
+        if (UsuarioSingleton.getInstancia().getUsuario().isUsuarioGooglePlus()) {
+            if (mGoogleApiClient.isConnected()) {
+                Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+                mGoogleApiClient.disconnect();
+            }
+        }
+
+        Intent intent = new Intent(MainActivity.this, Login.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("logoutFacebook", true);
+        startActivity(intent);
     }
 
 }
