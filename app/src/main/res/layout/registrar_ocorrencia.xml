@@ -115,6 +115,7 @@
             android:layout_marginTop="5dp"
             android:hint="@string/edPontoReferenciaOcorrencia"
             android:inputType="textMultiLine"
+            android:maxLength="30"
             android:lines="2" />
 
         <TextView

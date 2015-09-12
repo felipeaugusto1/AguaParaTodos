@@ -62,7 +62,6 @@ public class ListaOcorrencias extends AppCompatActivity {
 
         criarReferenciasComponentes();
 
-        this.toolbar.setTitle(getResources().getString(R.string.tituloTelaDetalheOcorrenia));
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         this.toolbar.setTitle(getResources().getString(R.string.tituloListaOcorrencias));
         setSupportActionBar(this.toolbar);

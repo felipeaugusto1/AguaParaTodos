@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import felipe.com.br.aguaparatodos.R;
@@ -37,6 +38,7 @@ public class RecyclerViewAdapterOcorrencias extends RecyclerView.Adapter<Recycle
         Ocorrencia ocorrencia = listaOcorrencias.get(i);
         contactViewHolder.id = ocorrencia.getId();
         contactViewHolder.titulo.setText(ocorrencia.getTitulo());
+        contactViewHolder.dataCadastro.setText("Data de cadastro: ".concat(new SimpleDateFormat("dd/MM/yyyy").format(ocorrencia.getDataCadastro())));
         contactViewHolder.descricao.setText(ocorrencia.getDescricao());
         contactViewHolder.endereco.setText(ocorrencia.getEndereco().getEndereco());
     }
@@ -53,7 +55,7 @@ public class RecyclerViewAdapterOcorrencias extends RecyclerView.Adapter<Recycle
     public static class OcorrenciaViewHolder extends RecyclerView.ViewHolder {
 
         protected int id;
-        protected TextView titulo, descricao, endereco;
+        protected TextView titulo, descricao, endereco, dataCadastro;
         protected View view;
 
         private Context context;
@@ -65,6 +67,7 @@ public class RecyclerViewAdapterOcorrencias extends RecyclerView.Adapter<Recycle
             titulo = (TextView) v.findViewById(R.id.txtTitulo);
             descricao = (TextView) v.findViewById(R.id.txtDescricao);
             endereco = (TextView) v.findViewById(R.id.txtEndereco);
+            dataCadastro = (TextView) v.findViewById(R.id.txtDataCadastro);
 
             view.setOnClickListener(new View.OnClickListener() {
 

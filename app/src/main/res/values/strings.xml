@@ -22,6 +22,7 @@
     <string name="usuario_login">usuario/login</string>
     <string name="usuario_receber_notificacao">usuario/receberNotificacao</string>
     <string name="usuario_atualizar_cidade">usuario/atualizarCidade</string>
+    <string name="usuario_atualizar_gcm">usuario/atualizarGcm</string>
     <string name="ocorrencia_nova">ocorrencia/nova</string>
     <string name="ocorrencia_listar">ocorrencia/listar</string>
     <string name="ocorrencia_buscar_id">ocorrencia/buscarPorId</string>
@@ -81,7 +82,15 @@
     <string name="msgPessoasConfirmaramOcorrenciaSingular">pessoa confirmou esta ocorrência.</string>
     <string name="msgPessoasConfirmaramOcorrenciaPlural">pessoas confirmaram esta ocorrência.</string>
 
+
     <!-- Tela Lista de Ocorrencias -->
     <string name="tituloListaOcorrencias">Lista de Ocorrências</string>
+
+    <!-- Tela de Confirmar Cidade -->
+    <string name="msgTxtConfirmarCidade">Por favor confirme sua cidade de residência no campo abaixo.</string>
+    <string name="msgErroInformarCidade">Por favor informe sua cidade.</string>
+    <string name="msgCidadeDigiteAqui">Cidade</string>
+    <string name="erroBuscarCidade">Por favor informe uma cidade válida.</string>
+    <string name="txtDataDeCadastro">Data de cadastro:</string>
 
 </resources>

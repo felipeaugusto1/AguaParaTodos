@@ -1,5 +1,8 @@
 package felipe.com.br.aguaparatodos.activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +26,7 @@ import java.util.Map;
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
 import felipe.com.br.aguaparatodos.extras.PlacesAutoCompleteAdapter;
+import felipe.com.br.aguaparatodos.gcm.AtualizarGCMUsuario;
 import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
 import felipe.com.br.aguaparatodos.utils.StringUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
@@ -36,10 +40,10 @@ import felipe.com.br.aguaparatodos.utils.WebService;
 public class ConfirmarCidade extends AppCompatActivity {
 
     private AutoCompleteTextView cidadeAutoComplete;
-    private TextView cidadeRecuperada, textViewCidade, textViewInterrogacao, textViewCidadeInformativo;
     private RequestParams parametros;
 
-    private String cidade = "";
+    private String cidade = "", estado = "";
+    private Map<String, String> valores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,29 +52,18 @@ public class ConfirmarCidade extends AppCompatActivity {
 
         this.criarReferenciasComponentes();
 
-        Bundle b = getIntent().getExtras();
+        String gcm = getIntent().getStringExtra("gcm");
+        if (!ValidadorUtil.isNuloOuVazio(gcm)) {
 
-        if (b != null) {
-            this.cidade = b.getString("cidade");
-            if (!ValidadorUtil.isNuloOuVazio(cidade))
-                this.cidadeRecuperada.setText(StringUtil.converterPrimeiraLetraMaiuscula(cidade));
-            else
-                this.msgErroCidadeInvalida();
+            this.parametros = new RequestParams();
+            this.parametros.put("id", UsuarioSingleton.getInstancia().getUsuario().getId());
+            this.parametros.put("gcm", gcm);
+            AtualizarGCMUsuario.atualizarGcm(this.parametros, ConfirmarCidade.this);
         }
-    }
 
-    private void msgErroCidadeInvalida() {
-        this.cidadeRecuperada.setText("");
-        this.textViewInterrogacao.setText("");
-        this.textViewCidadeInformativo.setText("");
-        this.textViewCidade.setText("Ocorreu um erro ao recuperar sua cidade de residência. Por favor informe no campo abaixo.");
     }
 
     private void criarReferenciasComponentes() {
-        this.cidadeRecuperada = (TextView) findViewById(R.id.textViewCidadeInformada);
-        this.textViewCidade = (TextView) findViewById(R.id.textViewCidade);
-        this.textViewInterrogacao = (TextView) findViewById(R.id.textViewInterrogacao);
-        this.textViewCidadeInformativo = (TextView) findViewById(R.id.textViewCidadeInformativo);
         this.cidadeAutoComplete = (AutoCompleteTextView) findViewById(R.id.editTextCidadeUsuario);
 
         this.cidadeAutoComplete.setAdapter(new PlacesAutoCompleteAdapter(getApplicationContext(), R.layout.item_lista_busca_endereco));
@@ -82,25 +75,52 @@ public class ConfirmarCidade extends AppCompatActivity {
                 this.cidadeAutoComplete.setError(null);
 
                 if (ValidadorUtil.isNuloOuVazio(this.cidadeAutoComplete.getText().toString()) && ValidadorUtil.isNuloOuVazio(this.cidade))
-                    this.cidadeAutoComplete.setError("Por favor informe a cidade que deseja acompanhar as ocorrências.");
+                    this.cidadeAutoComplete.setError(getResources().getString(R.string.msgErroInformarCidade));
                 else {
                     try {
-                        this.parametros = new RequestParams();
-                        this.parametros.put("id", UsuarioSingleton.getInstancia().getUsuario().getId());
+                        this.valores = BuscarEnderecoGoogle.buscarEnderecoByNome(this.cidadeAutoComplete.getText().toString(), getApplicationContext());
+                        this.cidade = this.valores.get("CIDADE");
+                        this.estado = this.valores.get("ESTADO");
 
-                        if (ValidadorUtil.isNuloOuVazio(this.cidade)) {
-                            Map<String, String> valores = BuscarEnderecoGoogle.buscarEnderecoByNome(this.cidadeAutoComplete.getText().toString(), getApplicationContext());
-                            this.parametros.put("cidade", valores.get("CIDADE"));
-                        } else
-                            this.parametros.put("cidade", this.cidade);
-
-                        atualizarCidadeUsuario();
+                        criarDialog(ConfirmarCidade.this, this.cidade, "Você mora em ".concat(this.cidade).concat("/").concat(this.estado).concat("?"));
                     } catch (Exception e) {
-                        ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.erroBuscarEndereco));
+                        ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.erroBuscarCidade));
                     }
-
                 }
         }
+    }
+
+    private void atualizarDados() {
+        this.parametros = new RequestParams();
+        this.parametros.put("id", UsuarioSingleton.getInstancia().getUsuario().getId());
+
+
+        this.parametros.put("cidade", this.valores.get("CIDADE"));
+        this.parametros.put("estado", this.valores.get("ESTADO"));
+        atualizarCidadeUsuario();
+    }
+
+    public void criarDialog(final Context contexto, String titulo, String mensagem) {
+
+        AlertDialog dialog =  new AlertDialog.Builder(contexto)
+                .setTitle(titulo)
+                .setMessage(mensagem)
+                .setPositiveButton(contexto.getResources().getString(R.string.msgSim), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        atualizarDados();
+                    }
+                })
+                .setNegativeButton(contexto.getResources().getString(R.string.msgNao), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.show();
     }
 
     private void atualizarCidadeUsuario() {
@@ -123,7 +143,6 @@ public class ConfirmarCidade extends AppCompatActivity {
                 } else if (str.equalsIgnoreCase(WebService.RESPOSTA_ERRO)) {
 
                 }
-
             }
 
             @Override
