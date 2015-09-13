@@ -140,7 +140,7 @@ public class RegistrarOcorrencia extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 int tamanhoAtual = edTituloOcorrencia.getText().toString().length();
-                if (contadorTituloOcorrencia >= 1)
+                if (contadorTituloOcorrencia > 1)
                     txtContadorTitulo.setText((contadorTituloOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracteresRestantes));
                 contadorTituloOcorrencia = TAMANHO_MAXIMO_TITULO_OCORRENCIA;
             }

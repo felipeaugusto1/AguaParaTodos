@@ -34,13 +34,17 @@ public class RecyclerViewAdapterOcorrencias extends RecyclerView.Adapter<Recycle
     }
 
     @Override
-    public void onBindViewHolder(OcorrenciaViewHolder contactViewHolder, int i) {
+    public void onBindViewHolder(OcorrenciaViewHolder ocorrenciaViewHolder, int i) {
         Ocorrencia ocorrencia = listaOcorrencias.get(i);
-        contactViewHolder.id = ocorrencia.getId();
-        contactViewHolder.titulo.setText(ocorrencia.getTitulo());
-        contactViewHolder.dataCadastro.setText("Data de cadastro: ".concat(new SimpleDateFormat("dd/MM/yyyy").format(ocorrencia.getDataCadastro())));
-        contactViewHolder.descricao.setText(ocorrencia.getDescricao());
-        contactViewHolder.endereco.setText(ocorrencia.getEndereco().getEndereco());
+        ocorrenciaViewHolder.id = ocorrencia.getId();
+        ocorrenciaViewHolder.titulo.setText(ocorrencia.getTitulo());
+        ocorrenciaViewHolder.dataCadastro.setText("Data de cadastro: ".concat(new SimpleDateFormat("dd/MM/yyyy").format(ocorrencia.getDataCadastro())));
+        ocorrenciaViewHolder.descricao.setText(ocorrencia.getDescricao());
+        ocorrenciaViewHolder.endereco.setText(ocorrencia.getEndereco().getEndereco());
+        if (ocorrencia.isOcorrenciaSolucionada())
+            ocorrenciaViewHolder.status.setText("Status: Solucionada");
+        else
+            ocorrenciaViewHolder.status.setText("Status: Aguardando solução");
     }
 
     @Override
@@ -55,7 +59,7 @@ public class RecyclerViewAdapterOcorrencias extends RecyclerView.Adapter<Recycle
     public static class OcorrenciaViewHolder extends RecyclerView.ViewHolder {
 
         protected int id;
-        protected TextView titulo, descricao, endereco, dataCadastro;
+        protected TextView titulo, descricao, endereco, dataCadastro, status;
         protected View view;
 
         private Context context;
@@ -68,6 +72,7 @@ public class RecyclerViewAdapterOcorrencias extends RecyclerView.Adapter<Recycle
             descricao = (TextView) v.findViewById(R.id.txtDescricao);
             endereco = (TextView) v.findViewById(R.id.txtEndereco);
             dataCadastro = (TextView) v.findViewById(R.id.txtDataCadastro);
+            status = (TextView) v.findViewById(R.id.txtStatus);
 
             view.setOnClickListener(new View.OnClickListener() {
 

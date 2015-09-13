@@ -81,6 +81,8 @@
     <string name="msgErroConfirmarProibido">Você já confirmou esta ocorrência.</string>
     <string name="msgPessoasConfirmaramOcorrenciaSingular">pessoa confirmou esta ocorrência.</string>
     <string name="msgPessoasConfirmaramOcorrenciaPlural">pessoas confirmaram esta ocorrência.</string>
+    <string name="msgStatusOcorrenciaSolucionada">Status: Solucionada</string>
+    <string name="msgStatusOcorrenciaAguardando">Status: Aguardando solução</string>
 
 
     <!-- Tela Lista de Ocorrencias -->

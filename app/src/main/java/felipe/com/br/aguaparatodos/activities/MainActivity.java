@@ -170,11 +170,6 @@ public class MainActivity extends AppCompatActivity {
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
 
-        String valorNotificacao = PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_NOTIFICACAO, MainActivity.this);
-        boolean notificacao = false;
-        if (valorNotificacao.equalsIgnoreCase("true") | valorNotificacao.equalsIgnoreCase("false"))
-            notificacao = Boolean.getBoolean(valorNotificacao);
-
         this.frameLayout = (FrameLayout) findViewById(R.id.frame_layout_mapa);
         this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -223,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
         this.navigationDrawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(this.toolbar)
+                .withDisplayBelowStatusBar(true)
                 .withSelectedItem(0)
                 .withTranslucentStatusBar(true)
                 .withActionBarDrawerToggle(true)
@@ -367,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
                         listaOcorrencias = gson.fromJson(str, listType);
 
                         filtrarOcorrenciasUsuario();
-                        percorrerOcorrencias(true);
+                        percorrerOcorrencias(UsuarioSingleton.getInstancia().getUsuario().getPreferenciaVisualizacao().equalsIgnoreCase(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE));
                     }
 
                     @Override

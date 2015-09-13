@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -89,6 +90,7 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
     private TextView txtTituloOcorrencia, txtQtdConfirmacoes,
             txtDescricaoOcorrencia, txtData, txtPontoReferenciaOcorrencia, txtEnderecoOcorrencia, txtStatusOcorrencia;
+    private Button btnConfirmar, btnSolucionar;
 
     private RelativeLayout layoutCardConfirmacaoOcorrencia, layoutCardStatusOcorrencia;
 
@@ -148,6 +150,8 @@ public class DetalheOcorrencia extends AppCompatActivity {
         this.txtStatusOcorrencia = (TextView) findViewById(R.id.txtStatusOcorrencia);
         this.layoutCardConfirmacaoOcorrencia = (RelativeLayout) findViewById(R.id.layout_detalhe_ocorrencia_confirmacoes);
         this.layoutCardStatusOcorrencia = (RelativeLayout) findViewById(R.id.layout_detalhe_status_ocorrencia);
+        this.btnConfirmar = (Button) findViewById(R.id.btnEnviarOcorrencia);
+        this.btnSolucionar = (Button) findViewById(R.id.btnOcorrenciaSolucionada);
     }
 
     private void buscarOcorrenciasPorIdWS(RequestParams parametros) {
@@ -182,6 +186,13 @@ public class DetalheOcorrencia extends AppCompatActivity {
     }
 
     private void percorrerOcorrencias() {
+        if (this.ocorrencia.isOcorrenciaSolucionada()) {
+            this.btnSolucionar.setBackgroundColor(getResources().getColor(R.color.prata));
+            this.btnConfirmar.setBackgroundColor(getResources().getColor(R.color.prata));
+            this.btnSolucionar.setClickable(false);
+            this.btnConfirmar.setClickable(false);
+        }
+
         try {
             configurarMapa();
             adicionarMarcador();
@@ -207,11 +218,11 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
             if (this.ocorrencia.isOcorrenciaSolucionada()) {
                 this.layoutCardStatusOcorrencia.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-                this.txtStatusOcorrencia.setText("Status: Solucionada" );
+                this.txtStatusOcorrencia.setText(getResources().getString(R.string.msgStatusOcorrenciaSolucionada));
             }
             else {
                 this.layoutCardStatusOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
-                this.txtStatusOcorrencia.setText("Status: Aguardando solução" );
+                this.txtStatusOcorrencia.setText(getResources().getString(R.string.msgStatusOcorrenciaAguardando));
             }
 
             if (this.ocorrencia.getDescricao().length() > 0)
@@ -391,6 +402,9 @@ public class DetalheOcorrencia extends AppCompatActivity {
                         }
 
                         if (str.equalsIgnoreCase(WebService.RESPOSTA_SUCESSO)) {
+                            layoutCardStatusOcorrencia.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+                            txtStatusOcorrencia.setText(getResources().getString(R.string.msgStatusOcorrenciaSolucionada));
+
                             ToastUtil.criarToastLongo(DetalheOcorrencia.this,
                                     "Ocorrência marcada como solucionada!"
                             );

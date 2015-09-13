@@ -26,10 +26,20 @@
             android:gravity="center_vertical" />
 
         <TextView
-            android:id="@+id/txtDataCadastro"
+            android:id="@+id/txtStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/txtTitulo"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/txtDataCadastro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtStatus"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"

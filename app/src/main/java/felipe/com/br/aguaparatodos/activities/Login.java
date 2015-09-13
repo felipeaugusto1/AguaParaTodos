@@ -94,9 +94,12 @@ public class Login extends FragmentActivity implements
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
+        registerIdInBackground();
+
         setContentView(R.layout.login);
 
-        registerIdInBackground();
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        this.btnLoginFacebook = (LoginButton) findViewById(R.id.btnLoginFacebook);
 
         // Build GoogleApiClient with access to basic profile
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -107,11 +110,14 @@ public class Login extends FragmentActivity implements
                 .build();
 
         if (!PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()).equalsIgnoreCase(PreferenciasUtil.VALOR_INVALIDO)) {
+
+            this.btnLoginFacebook.setVisibility(View.INVISIBLE);
+            findViewById(R.id.sign_in_button).setBackgroundColor(View.INVISIBLE);
             this.parametros = new RequestParams();
             this.parametros.put("email", PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()));
             this.verificarEmail(this.parametros);
         } else {
-            this.btnLoginFacebook = (LoginButton) findViewById(R.id.btnLoginFacebook);
+
             this.btnLoginFacebook.setReadPermissions("public_profile");
             this.btnLoginFacebook.setReadPermissions("email");
             this.btnLoginFacebook.setReadPermissions("user_location");
@@ -134,8 +140,6 @@ public class Login extends FragmentActivity implements
                     ToastUtil.criarToastCurto(getApplicationContext(), getResources().getString(R.string.login_facebook_erro));
                 }
             });
-
-            findViewById(R.id.sign_in_button).setOnClickListener(this);
         }
     }
 
@@ -149,7 +153,6 @@ public class Login extends FragmentActivity implements
         parametros.put("recebe_notificacao", String.valueOf(recebeNotificacao));
         parametros.put("versao_app", String.valueOf(BuildConfig.VERSION_CODE));
         parametros.put("endereco", endereco);
-        parametros.put("pref", Usuario.PREFERENCIA_VISUALIZACAO_CIDADE);
     }
 
     public void recuperarInformacoesUsuarioFacebook() {
@@ -160,29 +163,11 @@ public class Login extends FragmentActivity implements
                 JSONObject json = response.getJSONObject();
                 try {
                     if (!ValidadorUtil.isNuloOuVazio(json)) {
-                        //String text = "<b>Name :</b> "+json.getString("name")+"<br><br><b>Email :</b> "+json.getString("email")+"<br><br><b>Profile link :</b> "+json.getString("link");
-                        //ToastUtil.criarToastCurto(getApplicationContext(), "Email: " + Html.fromHtml(text)+"");
-                        //ToastUtil.criarToastCurto(getApplicationContext(), "ID: " + json.getString("id")+"");
-                        //Log.d("nome", json.getString("name"));
-                        //Log.d("email", json.getString("email"));
-                        //Log.d("profile", json.getString("link"));
-                        //Log.d("ID", json.getString("id"));
-                        //details_txt.setText(Html.fromHtml(text));
-                        //profile.setProfileId(json.getString("id"));
-                        /* parametros = new RequestParams();
-                        parametros.put("nome", json.getString("name"));
-                        parametros.put("email", json.getString("email"));
-                        parametros.put("user_f", String.valueOf(true));
-                        parametros.put("user_t", String.valueOf(false));
-                        parametros.put("user_g", String.valueOf(false));
-                        parametros.put("recebe_notificacao", String.valueOf(true));
-                        parametros.put("versao_app", String.valueOf(BuildConfig.VERSION_CODE)); */
                         String endereco = "";
                         String email = "";
                         try {
                             endereco = String.valueOf(json.getJSONObject("location").getString("name"));
                             email = json.getString("email");
-                            //Log.d("cidade", json.getJSONObject("location").getString("name"));
                         } catch (Exception e) {
                             email = "erro_".concat(json.getString("name").replace(" ", "_").concat(regId));
                         }
@@ -234,16 +219,6 @@ public class Login extends FragmentActivity implements
                 PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, usuarioLogado.getNomeCompleto(), getApplicationContext());
                 PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, usuarioLogado.getEmail(), getApplicationContext());
 
-                /* if (!ValidadorUtil.isNuloOuVazio(usuarioLogado.getEndereco().getCidade())) {
-                    Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
-                    startActivity(telaPosLogin);
-                } else {
-                    Bundle b = new Bundle();
-
-                    Intent telaPosLogin = new Intent(Login.this, ConfirmarCidade.class);
-                    telaPosLogin.putExtra("cidade", "natal");
-                    startActivity(telaPosLogin);
-                } */
                 if (usuarioLogado.isPrimeiroLogin()) {
                     Bundle b = new Bundle();
 

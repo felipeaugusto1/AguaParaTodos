@@ -108,6 +108,7 @@ public class ListaOcorrencias extends AppCompatActivity {
 
         this.mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark, android.R.color.holo_green_dark, android.R.color.holo_blue_bright);
+
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -203,13 +204,19 @@ public class ListaOcorrencias extends AppCompatActivity {
     }
 
     private void filtrarOcorrenciasUsuario() {
+        List<Ocorrencia> ocorrenciasNaCidade = new ArrayList<>();
         if (UsuarioSingleton.getInstancia().getUsuario().getPreferenciaVisualizacao().equalsIgnoreCase(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE)) {
+            ocorrenciasNaCidade = new ArrayList<Ocorrencia>();
             String cidadeUsuario = UsuarioSingleton.getInstancia().getUsuario().getEndereco().getCidade();
 
             for (Ocorrencia o : this.listaOcorrencias) {
-                if (!o.getEndereco().getCidade().equalsIgnoreCase(cidadeUsuario))
-                    this.listaOcorrencias.remove(o);
+                if (o.getEndereco().getCidade().equalsIgnoreCase(cidadeUsuario))
+                    ocorrenciasNaCidade.add(o);
             }
+        }
+        if (ocorrenciasNaCidade.size() > 0) {
+            this.listaOcorrencias = new ArrayList<Ocorrencia>();
+            this.listaOcorrencias = ocorrenciasNaCidade;
         }
     }
 
