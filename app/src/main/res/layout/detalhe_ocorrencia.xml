@@ -23,6 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp" />
 
+        <include layout="@layout/card_detalhe_ocorrencia_status" />
+
         <include layout="@layout/card_detalhe_ocorrencia_confirmacoes" />
 
         <include layout="@layout/card_detalhe_ocorrencia_titulo" />
@@ -42,10 +44,25 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:background="@color/vermelho"
             android:text="Confirmar"
+            android:onClick="acoesBotoesDetalhesOcorrencia"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btnOcorrenciaSolucionada"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnEnviarOcorrencia"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_green_light"
+            android:text="Marcar como Solucionada"
             android:onClick="acoesBotoesDetalhesOcorrencia"
             android:textColor="@android:color/white" />
 

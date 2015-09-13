@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textViewMsgCidade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:text="Quais ocorrências você deseja visualizar?"
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/rgAbrangenciaVisualizacao"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textViewMsgCidade"
+        android:layout_height="wrap_content" >
+
+        <RadioButton
+            android:id="@+id/rbCidade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Apenas da minha cidade" />
+
+        <RadioButton
+            android:id="@+id/rbPais"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="De todo o país" />
+
+    </RadioGroup>
+
+
+    <Button
+        android:id="@+id/btnSalvarVisualizacao"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rgAbrangenciaVisualizacao"
+        android:layout_gravity="center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
+        android:onClick="acaoBotoes"
+        android:text="Salvar"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>

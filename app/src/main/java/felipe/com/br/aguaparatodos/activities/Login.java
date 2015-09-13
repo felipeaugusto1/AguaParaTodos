@@ -229,6 +229,7 @@ public class Login extends FragmentActivity implements
                 usuarioLogado = gson.fromJson(str, Usuario.class);
 
                 UsuarioSingleton.getInstancia().setUsuario(usuarioLogado);
+                UsuarioSingleton.getInstancia().getUsuario().setPreferenciaVisualizacao(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE);
 
                 PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, usuarioLogado.getNomeCompleto(), getApplicationContext());
                 PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, usuarioLogado.getEmail(), getApplicationContext());

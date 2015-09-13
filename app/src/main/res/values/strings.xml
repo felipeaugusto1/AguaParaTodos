@@ -27,6 +27,7 @@
     <string name="ocorrencia_listar">ocorrencia/listar</string>
     <string name="ocorrencia_buscar_id">ocorrencia/buscarPorId</string>
     <string name="ocorrencia_confirmar">ocorrencia/confirmar</string>
+    <string name="ocorrencia_solucionada">ocorrencia/solucionada</string>
 
     <!-- TELA DE LOGIN -->
     <string name="bundle_nome_usuario">nome_usuario</string>
@@ -63,8 +64,7 @@
     <string name="erroInformarEnderecoOcorrencia">Por favor informe um endereço.</string>
     <string name="erroBuscarEndereco">Ocorreu algum erro ao buscar o endereço, por favor tente novamente.</string>
 
-    <string name="msgCaracteresRestantes">caracteres restantes.</string>
-    <string name="msgCaracterRestante">caractere restante.</string>
+    <string name="msgCaracteresRestantes">caractere(s) restante(s).</string>
 
     <string name="limparCampos">Limpar campos</string>
 

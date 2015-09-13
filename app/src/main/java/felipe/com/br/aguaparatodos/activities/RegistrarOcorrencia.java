@@ -120,10 +120,8 @@ public class RegistrarOcorrencia extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 int tamanhoAtual = edPontoReferenciaOcorrencia.getText().toString().length();
-                if (contadorReferenciaOcorrencia > 1)
+                if (contadorReferenciaOcorrencia >= 1)
                     txtContadorPontoReferencia.setText((contadorReferenciaOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracteresRestantes));
-                else if (contadorReferenciaOcorrencia == 1)
-                    txtContadorPontoReferencia.setText((contadorReferenciaOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracterRestante));
                 contadorReferenciaOcorrencia = TAMANHO_MAXIMO_REFERENCIA_OCORRENCIA;
             }
         });
@@ -142,10 +140,8 @@ public class RegistrarOcorrencia extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 int tamanhoAtual = edTituloOcorrencia.getText().toString().length();
-                if (contadorTituloOcorrencia > 1)
+                if (contadorTituloOcorrencia >= 1)
                     txtContadorTitulo.setText((contadorTituloOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracteresRestantes));
-                else if (contadorTituloOcorrencia == 1)
-                    txtContadorTitulo.setText((contadorTituloOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracterRestante));
                 contadorTituloOcorrencia = TAMANHO_MAXIMO_TITULO_OCORRENCIA;
             }
         });
@@ -164,10 +160,8 @@ public class RegistrarOcorrencia extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 int tamanhoAtual = edObservacaoOcorrencia.getText().toString().length();
-                if (contadorDescricaoOcorrencia > 1)
+                if (contadorDescricaoOcorrencia >= 1)
                     txtContadorOcorrencia.setText((contadorDescricaoOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracteresRestantes));
-                else if (contadorDescricaoOcorrencia == 1)
-                    txtContadorOcorrencia.setText((contadorDescricaoOcorrencia - tamanhoAtual) + " " + getResources().getString(R.string.msgCaracterRestante));
                 contadorDescricaoOcorrencia = TAMANHO_MAXIMO_DESCRICAO_OCORRENCIA;
             }
         });

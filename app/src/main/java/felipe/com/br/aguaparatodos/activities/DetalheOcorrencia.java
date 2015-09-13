@@ -88,9 +88,9 @@ public class DetalheOcorrencia extends AppCompatActivity {
     private Ocorrencia ocorrencia;
 
     private TextView txtTituloOcorrencia, txtQtdConfirmacoes,
-            txtDescricaoOcorrencia, txtData, txtPontoReferenciaOcorrencia, txtEnderecoOcorrencia;
+            txtDescricaoOcorrencia, txtData, txtPontoReferenciaOcorrencia, txtEnderecoOcorrencia, txtStatusOcorrencia;
 
-    private RelativeLayout layoutCardConfirmacaoOcorrencia;
+    private RelativeLayout layoutCardConfirmacaoOcorrencia, layoutCardStatusOcorrencia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +145,9 @@ public class DetalheOcorrencia extends AppCompatActivity {
         this.txtData = (TextView) findViewById(R.id.txtDataOcorrencia);
         this.txtEnderecoOcorrencia = (TextView) findViewById(R.id.txtEnderecoOcorrencia);
         this.txtQtdConfirmacoes = (TextView) findViewById(R.id.txtQtdConfirmacoes);
+        this.txtStatusOcorrencia = (TextView) findViewById(R.id.txtStatusOcorrencia);
         this.layoutCardConfirmacaoOcorrencia = (RelativeLayout) findViewById(R.id.layout_detalhe_ocorrencia_confirmacoes);
+        this.layoutCardStatusOcorrencia = (RelativeLayout) findViewById(R.id.layout_detalhe_status_ocorrencia);
     }
 
     private void buscarOcorrenciasPorIdWS(RequestParams parametros) {
@@ -189,14 +191,6 @@ public class DetalheOcorrencia extends AppCompatActivity {
     }
 
     private void configurarMapa() {
-        /* this.txtTituloOcorrencia.setText(ocorrencia.getTitulo());
-        this.txtDescricaoOcorrencia.setText(ocorrencia.getDescricao());
-
-        String dataFormatada = new SimpleDateFormat("dd/MM/yyyy").format(ocorrencia.getDataCadastro());
-
-        this.txtData.setText(dataFormatada);
-        this.qtdConfirmacoes.setText("quantidade denuncias: " + ocorrencia.getQtdDenuncias()); */
-
         if (this.mapa == null) {
             this.mapa = this.mapFragment.getMap();
 
@@ -204,14 +198,21 @@ public class DetalheOcorrencia extends AppCompatActivity {
                 this.mapa.setMyLocationEnabled(true);
             }
         }
-
-
     }
 
     private void adicionarMarcador() {
         if (!ValidadorUtil.isNuloOuVazio(ocorrencia)) {
             this.txtTituloOcorrencia.setText(ocorrencia.getTitulo());
             this.txtEnderecoOcorrencia.setText(ocorrencia.getEnderecoFormatado());
+
+            if (this.ocorrencia.isOcorrenciaSolucionada()) {
+                this.layoutCardStatusOcorrencia.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+                this.txtStatusOcorrencia.setText("Status: Solucionada" );
+            }
+            else {
+                this.layoutCardStatusOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
+                this.txtStatusOcorrencia.setText("Status: Aguardando solução" );
+            }
 
             if (this.ocorrencia.getDescricao().length() > 0)
                 this.txtDescricaoOcorrencia.setText(this.ocorrencia.getDescricao());
@@ -300,6 +301,9 @@ public class DetalheOcorrencia extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.btnEnviarOcorrencia:
                 criarDialog(DetalheOcorrencia.this, getResources().getString(R.string.dialogTituloConfirmar), getResources().getString(R.string.dialogTextoConfirmar));
+                break;
+            case R.id.btnOcorrenciaSolucionada:
+                criarDialogSolucionarOcorrencia();
         }
     }
 
@@ -332,11 +336,80 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
     }
 
+    public void criarDialogSolucionarOcorrencia() {
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Ocorrência Solucionada")
+                .setMessage("Por favor, somente continue esta operação se o problema foi realmente solucionado.")
+                .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            prepararSolucionarOcorrenciaWs();
+                            ocorrenciaSolucionadaWs();
+                        } catch (Exception e) {
+                            ToastUtil.criarToastLongo(DetalheOcorrencia.this, getResources().getString(R.string.msgErroWS));
+                        }
+                    }
+                })
+                .setNegativeButton("Parar", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.show();
+
+    }
+
     private void prepararEnviarOcorrenciaWs() {
         this.parametros = new RequestParams();
-        parametros.put("ocorrencia_id", this.ocorrencia.getId() + "");
+        parametros.put("ocorrencia_id", String.valueOf(this.ocorrencia.getId()));
         parametros.put("usuario_id", String.valueOf(UsuarioSingleton.getInstancia().getUsuario().getId()));
     }
+
+    private void prepararSolucionarOcorrenciaWs() {
+        this.parametros = new RequestParams();
+        this.parametros.put("ocorrencia_id", String.valueOf(this.ocorrencia.getId()));
+    }
+
+    private void ocorrenciaSolucionadaWs() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(WebService.ENDERECO_WS.concat(getResources().getString(R.string.ocorrencia_solucionada)), this.parametros,
+                new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers,
+                                          byte[] response) {
+                        String str = "";
+                        try {
+                            str = new String(response, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (str.equalsIgnoreCase(WebService.RESPOSTA_SUCESSO)) {
+                            ToastUtil.criarToastLongo(DetalheOcorrencia.this,
+                                    "Ocorrência marcada como solucionada!"
+                            );
+
+
+                        } else
+                            ToastUtil.criarToastLongo(DetalheOcorrencia.this,
+                                    getResources().getString(R.string.msgErroWS)
+                            );
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers,
+                                          byte[] errorResponse, Throwable e) {
+
+                    }
+                });
+    }
+
 
     private void confirmarOcorrenciaWs() {
         AsyncHttpClient client = new AsyncHttpClient();

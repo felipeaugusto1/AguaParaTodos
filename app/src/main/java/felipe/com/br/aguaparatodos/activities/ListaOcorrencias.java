@@ -31,8 +31,10 @@ import java.util.List;
 
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
+import felipe.com.br.aguaparatodos.dominio.Usuario;
 import felipe.com.br.aguaparatodos.extras.RecyclerViewAdapterOcorrencias;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
+import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.WebService;
 
 /**
@@ -184,6 +186,7 @@ public class ListaOcorrencias extends AppCompatActivity {
                         Type listType = new TypeToken<ArrayList<Ocorrencia>>() {
                         }.getType();
                         listaOcorrencias = gson.fromJson(str, listType);
+                        filtrarOcorrenciasUsuario();
 
                         RecyclerViewAdapterOcorrencias adapter = new RecyclerViewAdapterOcorrencias(listaOcorrencias);
                         recyclerView.setAdapter(adapter);
@@ -198,4 +201,16 @@ public class ListaOcorrencias extends AppCompatActivity {
                     }
                 });
     }
+
+    private void filtrarOcorrenciasUsuario() {
+        if (UsuarioSingleton.getInstancia().getUsuario().getPreferenciaVisualizacao().equalsIgnoreCase(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE)) {
+            String cidadeUsuario = UsuarioSingleton.getInstancia().getUsuario().getEndereco().getCidade();
+
+            for (Ocorrencia o : this.listaOcorrencias) {
+                if (!o.getEndereco().getCidade().equalsIgnoreCase(cidadeUsuario))
+                    this.listaOcorrencias.remove(o);
+            }
+        }
+    }
+
 }

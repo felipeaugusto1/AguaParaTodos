@@ -7,14 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Address;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
@@ -68,14 +67,12 @@ import java.util.List;
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
-import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
 import felipe.com.br.aguaparatodos.utils.PreferenciasUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
 import felipe.com.br.aguaparatodos.utils.WebService;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 import static felipe.com.br.aguaparatodos.R.string.app_name;
@@ -108,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static ProgressDialog progressDialog;
     private List<Ocorrencia> listaOcorrencias;
+    private List<Ocorrencia> listaOcorrenciasNaCidade = new ArrayList<>();
     private HashMap<Marker, Ocorrencia> marcadoresHashMap;
     private RequestParams parametros;
 
@@ -340,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
 
         progressDialog = ProgressDialog.show(this, getResources()
                         .getString(R.string.aguarde),
-                "carregando ocorrencias...");
+                "Carregando ocorrencias...");
         progressDialog.setCanceledOnTouchOutside(true);
 
         this.parametros = new RequestParams();
@@ -367,9 +365,9 @@ public class MainActivity extends AppCompatActivity {
                         Type listType = new TypeToken<ArrayList<Ocorrencia>>() {
                         }.getType();
                         listaOcorrencias = gson.fromJson(str, listType);
-                        navigationDrawer.updateBadge(ID_MENU_LISTA_OCORRENCIAS, new StringHolder(String.valueOf(listaOcorrencias.size())));
 
-                        percorrerOcorrencias();
+                        filtrarOcorrenciasUsuario();
+                        percorrerOcorrencias(true);
                     }
 
                     @Override
@@ -382,45 +380,74 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void percorrerOcorrencias() {
+    private void filtrarOcorrenciasUsuario() {
+        String cidadeUsuario = UsuarioSingleton.getInstancia().getUsuario().getEndereco().getCidade();
+
+        for (Ocorrencia o : this.listaOcorrencias) {
+            if (o.getEndereco().getCidade().equalsIgnoreCase(cidadeUsuario))
+                this.listaOcorrenciasNaCidade.add(o);
+        }
+    }
+
+    private void percorrerOcorrencias(boolean apenasMinhaCidade) {
+        this.mapa.clear();
+
         try {
             configurarMapa();
-            adicionarMarcadores();
+            if (apenasMinhaCidade) {
+                navigationDrawer.updateBadge(ID_MENU_LISTA_OCORRENCIAS, new StringHolder(String.valueOf(listaOcorrenciasNaCidade.size())));
+                adicionarMarcadores(this.listaOcorrenciasNaCidade);
+            }
+            else {
+                navigationDrawer.updateBadge(ID_MENU_LISTA_OCORRENCIAS, new StringHolder(String.valueOf(listaOcorrencias.size())));
+                adicionarMarcadores(this.listaOcorrencias);
+            }
+
         } catch (Exception e) {
             progressDialog.dismiss();
         }
     }
 
-    private void adicionarMarcadores() {
-        if (!ValidadorUtil.isNuloOuVazio(this.listaOcorrencias) && this.listaOcorrencias.size() > 0) {
+    private void adicionarMarcadores(List<Ocorrencia> listaOcorrencias) {
+
+        if (!ValidadorUtil.isNuloOuVazio(listaOcorrencias) && listaOcorrencias.size() > 0) {
             for (Ocorrencia ocorrencia : listaOcorrencias) {
-                LatLng c = new LatLng(ocorrencia.getEndereco().getLatitude(),
-                        ocorrencia.getEndereco().getLongitude());
+                if (!ocorrencia.isOcorrenciaSolucionada()) {
+                    LatLng c = new LatLng(ocorrencia.getEndereco().getLatitude(),
+                            ocorrencia.getEndereco().getLongitude());
 
-                MarkerOptions markerOption = null;
+                    MarkerOptions markerOption = null;
 
-                markerOption = new MarkerOptions().position(c).icon(BitmapDescriptorFactory
-                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    markerOption = new MarkerOptions().position(c).icon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 
-                Marker marcadorAtual = this.mapa.addMarker(markerOption);
+                    Marker marcadorAtual = this.mapa.addMarker(markerOption);
 
-                if (!ValidadorUtil.isNuloOuVazio(marcadorAtual)) {
-                    this.marcadoresHashMap.put(marcadorAtual, ocorrencia);
-                    this.mapa.setInfoWindowAdapter(new MarkerInfoWindowAdapter());
+                    if (!ValidadorUtil.isNuloOuVazio(marcadorAtual)) {
+                        this.marcadoresHashMap.put(marcadorAtual, ocorrencia);
+                        this.mapa.setInfoWindowAdapter(new MarkerInfoWindowAdapter());
+                    }
                 }
             }
         }
 
-        this.mapa.animateCamera(CameraUpdateFactory.zoomTo(14));
-        this.mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-                UsuarioSingleton.getInstancia().getUsuario().getEndereco().getLatitude(), UsuarioSingleton.getInstancia().getUsuario().getEndereco().getLongitude()), 10));
+        if (UsuarioSingleton.getInstancia().getUsuario().getPreferenciaVisualizacao().equalsIgnoreCase(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE)) {
+            this.mapa.animateCamera(CameraUpdateFactory.zoomTo(14));
+            this.mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+                    UsuarioSingleton.getInstancia().getUsuario().getEndereco().getLatitude(), UsuarioSingleton.getInstancia().getUsuario().getEndereco().getLongitude()), 10));
+        } else {
+            this.mapa.animateCamera(CameraUpdateFactory.zoomTo(10));
+            this.mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+                    -14.2392976, -53.1805017), 4));
+        }
+
 
         progressDialog.dismiss();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_ocorrencias, menu);
         return true;
     }
 
@@ -442,8 +469,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_visualizar_ocorrencias:
+                criarDialogAbrangenciaVisualizacao();
         }
 
         return super.onOptionsItemSelected(item);
@@ -549,7 +577,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void criarDialog(final Context contexto, String titulo, String mensagem) {
 
-        AlertDialog dialog =  new AlertDialog.Builder(contexto)
+        AlertDialog dialog = new AlertDialog.Builder(contexto)
                 .setTitle(titulo)
                 .setMessage(mensagem)
                 .setPositiveButton(contexto.getResources().getString(R.string.msgSim), new DialogInterface.OnClickListener() {
@@ -642,4 +670,47 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void criarDialogAbrangenciaVisualizacao() {
+        View view = getLayoutInflater().inflate(R.layout.visualizar_ocorrencias_dialog, null);
+
+        final Dialog dialog = new Dialog(this);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(view);
+        dialog.setTitle("Visualização");
+
+        final RadioGroup radioGroup = (RadioGroup) view
+                .findViewById(R.id.rgAbrangenciaVisualizacao);
+
+        Button btnFiltroLocal = (Button) view
+                .findViewById(R.id.btnSalvarVisualizacao);
+
+
+        btnFiltroLocal.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if (radioGroup.getCheckedRadioButtonId() == R.id.rbCidade) {
+                    UsuarioSingleton.getInstancia().getUsuario().setPreferenciaVisualizacao(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE);
+                    prepararOcorrencias(true);
+                } else {
+                    UsuarioSingleton.getInstancia().getUsuario().setPreferenciaVisualizacao(Usuario.PREFERENCIA_VISUALIZACAO_PAIS);
+                    prepararOcorrencias(false);
+                }
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void prepararOcorrencias(boolean apenasMinhaCidade) {
+        progressDialog = ProgressDialog.show(this, getResources()
+                        .getString(R.string.aguarde),
+                "Carregando ocorrencias...");
+        progressDialog.setCanceledOnTouchOutside(true);
+
+        percorrerOcorrencias(apenasMinhaCidade);
+    }
 }
