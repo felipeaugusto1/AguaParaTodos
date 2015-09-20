@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         this.toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        this.toolbar.setTitle(getResources().getString(app_name));
+        this.toolbar.setTitle(getResources().getString(R.string.app_name));
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
 

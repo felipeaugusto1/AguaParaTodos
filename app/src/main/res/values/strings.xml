@@ -5,6 +5,8 @@
 
     <string name="action_settings">Configurações</string>
 
+    <string name="search_title">Procurar</string>
+
     <string name="aguarde">Aguarde&#8230;</string>
     <string name="msgErroWS">Ocorreu algum erro. Por favor aguarde alguns instantes.</string>
 

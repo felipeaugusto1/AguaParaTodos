@@ -1,27 +1,34 @@
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeRefreshLayout"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutListaEstabelecimentos"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cardList"
+        android:scrollbars="vertical"
+        android:paddingTop="15dp"
+        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/cinza_claro"
-        tools:context=".ListaOcorrencias">
+        android:layout_height="match_parent"/>
 
-        <include
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:fitsSystemWindows="true"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_lista_ocorrencias"
-            layout="@layout/toolbar_top" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/cardList"
+            android:elevation="0dp"
+            android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/toolbar_lista_ocorrencias" />
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
 
-    </RelativeLayout>
+    </android.support.design.widget.AppBarLayout>
 
-</android.support.v4.widget.SwipeRefreshLayout>
-
+</android.support.design.widget.CoordinatorLayout>

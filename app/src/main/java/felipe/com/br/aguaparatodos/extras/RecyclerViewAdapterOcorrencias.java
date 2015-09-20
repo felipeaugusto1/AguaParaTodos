@@ -24,34 +24,56 @@ public class RecyclerViewAdapterOcorrencias extends RecyclerView.Adapter<Recycle
 
     private List<Ocorrencia> listaOcorrencias;
 
+    private static final int TYPE_HEADER = 2;
+    private static final int TYPE_ITEM = 1;
+
     public RecyclerViewAdapterOcorrencias(List<Ocorrencia> contactList) {
         this.listaOcorrencias = contactList;
     }
 
     @Override
     public int getItemCount() {
-        return listaOcorrencias.size();
+        return listaOcorrencias.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isPositionHeader(position))
+            return TYPE_HEADER;
+        return TYPE_ITEM;
+    }
+
+    private boolean isPositionHeader(int position) {
+        return position == 0;
     }
 
     @Override
     public void onBindViewHolder(OcorrenciaViewHolder ocorrenciaViewHolder, int i) {
-        Ocorrencia ocorrencia = listaOcorrencias.get(i);
-        ocorrenciaViewHolder.id = ocorrencia.getId();
-        ocorrenciaViewHolder.titulo.setText(ocorrencia.getTitulo());
-        ocorrenciaViewHolder.dataCadastro.setText("Data de cadastro: ".concat(new SimpleDateFormat("dd/MM/yyyy").format(ocorrencia.getDataCadastro())));
-        ocorrenciaViewHolder.descricao.setText(ocorrencia.getDescricao());
-        ocorrenciaViewHolder.endereco.setText(ocorrencia.getEndereco().getEndereco());
-        if (ocorrencia.isOcorrenciaSolucionada())
-            ocorrenciaViewHolder.status.setText("Status: Solucionada");
-        else
-            ocorrenciaViewHolder.status.setText("Status: Aguardando solução");
+        if (!isPositionHeader(i)) {
+            Ocorrencia ocorrencia = listaOcorrencias.get(i - 1); //-1 eh o cabecalho que foi adicionado
+            ocorrenciaViewHolder.id = ocorrencia.getId();
+            ocorrenciaViewHolder.titulo.setText(ocorrencia.getTitulo());
+            ocorrenciaViewHolder.dataCadastro.setText("Data de cadastro: ".concat(new SimpleDateFormat("dd/MM/yyyy").format(ocorrencia.getDataCadastro())));
+            ocorrenciaViewHolder.descricao.setText(ocorrencia.getDescricao());
+            ocorrenciaViewHolder.endereco.setText(ocorrencia.getEndereco().getEndereco());
+            if (ocorrencia.isOcorrenciaSolucionada())
+                ocorrenciaViewHolder.status.setText("Status: Solucionada");
+            else
+                ocorrenciaViewHolder.status.setText("Status: Aguardando solução");
+        }
     }
 
     @Override
     public OcorrenciaViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.
-                from(viewGroup.getContext()).
-                inflate(R.layout.card_view_ocorrencia, viewGroup, false);
+        View itemView = null;
+        if (i == TYPE_ITEM)
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.card_view_ocorrencia, viewGroup, false);
+        else if (i == TYPE_HEADER)
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.recycler_header, viewGroup, false);
 
         return new OcorrenciaViewHolder(itemView);
     }
@@ -79,16 +101,18 @@ public class RecyclerViewAdapterOcorrencias extends RecyclerView.Adapter<Recycle
                 @Override
                 public void onClick(View v) {
 
-                    context = v.getContext();
+                    if (id != 0) {
+                        context = v.getContext();
 
-                    Intent telaDetalheOcorrencia = new Intent(context,
-                            DetalheOcorrencia.class);
+                        Intent telaDetalheOcorrencia = new Intent(context,
+                                DetalheOcorrencia.class);
 
-                    telaDetalheOcorrencia.putExtra("ocorrencia_id", String.valueOf(id));
-                    //telaDetalheOcorrencia.putExtra("classe", String.valueOf(RecyclerViewAdapterOcorrencias.class));
-                    //telaDetalheOcorrencia.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        telaDetalheOcorrencia.putExtra("ocorrencia_id", String.valueOf(id));
+                        //telaDetalheOcorrencia.putExtra("classe", String.valueOf(RecyclerViewAdapterOcorrencias.class));
+                        //telaDetalheOcorrencia.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                    context.startActivity(telaDetalheOcorrencia);
+                        context.startActivity(telaDetalheOcorrencia);
+                    }
                 }
             });
 

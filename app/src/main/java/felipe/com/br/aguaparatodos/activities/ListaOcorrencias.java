@@ -1,18 +1,28 @@
 package felipe.com.br.aguaparatodos.activities;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.SearchRecentSuggestions;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -33,8 +43,11 @@ import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
 import felipe.com.br.aguaparatodos.extras.RecyclerViewAdapterOcorrencias;
+import felipe.com.br.aguaparatodos.provider.SearchableProvider;
+import felipe.com.br.aguaparatodos.utils.StringUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
+import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
 import felipe.com.br.aguaparatodos.utils.WebService;
 
 /**
@@ -47,9 +60,12 @@ public class ListaOcorrencias extends AppCompatActivity {
 
     private RequestParams parametros;
     private List<Ocorrencia> listaOcorrencias;
+    private List<Ocorrencia> listaOcorrenciasAux;
+    private List<Ocorrencia> listaOcorrenciasCidadeUsuario;
 
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
+    private RecyclerViewAdapterOcorrencias adapter;
 
     private static ProgressDialog progressDialog;
 
@@ -61,6 +77,8 @@ public class ListaOcorrencias extends AppCompatActivity {
         setContentView(R.layout.lista_ocorrencias);
 
         this.listaOcorrencias = new ArrayList<Ocorrencia>();
+        this.listaOcorrenciasAux = new ArrayList<Ocorrencia>();
+        this.listaOcorrenciasCidadeUsuario = new ArrayList<Ocorrencia>();
 
         criarReferenciasComponentes();
 
@@ -90,15 +108,64 @@ public class ListaOcorrencias extends AppCompatActivity {
 
         progressDialog = ProgressDialog.show(this, getResources()
                         .getString(R.string.aguarde),
-                "carregando ocorrencias...");
+                "Carregando ocorrencias...");
 
         this.recyclerView.setHasFixedSize(true);
         this.linearLayoutManager = new LinearLayoutManager(this);
         this.linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         this.recyclerView.setLayoutManager(this.linearLayoutManager);
 
+        this.adapter = new RecyclerViewAdapterOcorrencias(this.listaOcorrenciasAux);
+        this.recyclerView.setAdapter(adapter);
+
         buscarOcorrenciasWS();
         progressDialog.dismiss();
+
+        handleSearch(getIntent());
+    }
+
+    private void handleSearch(Intent intent) {
+        if (Intent.ACTION_SEARCH.equalsIgnoreCase(intent.getAction())) {
+            String q = intent.getStringExtra(SearchManager.QUERY);
+
+            filtrarOcorrencias(q);
+            this.toolbar.setTitle(q);
+            this.toolbar.setSubtitle(this.listaOcorrenciasAux.size()+" ocorrência(s).");
+
+            SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this, SearchableProvider.AUTHORITY, SearchableProvider.MODE);
+            searchRecentSuggestions.saveRecentQuery(q, null);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleSearch(intent);
+    }
+
+    private void filtrarOcorrencias(String q) {
+        this.listaOcorrenciasAux = new ArrayList<Ocorrencia>();
+
+        for (Ocorrencia ocorrencia :this.listaOcorrencias) {
+            if (StringUtil.retirarAcentosDaPalavra(ocorrencia.getEndereco().getCidade().toLowerCase()).startsWith(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))) {
+                this.listaOcorrenciasAux.add(ocorrencia);
+            }
+
+        }
+
+        if (this.listaOcorrenciasAux.isEmpty()) {
+            this.adapter = new RecyclerViewAdapterOcorrencias(this.listaOcorrenciasAux);
+            this.recyclerView.setAdapter(this.adapter);
+
+            ToastUtil.criarToastLongo(this, "Nenhuma ocorrência encontrada.");
+        } else {
+            this.adapter = new RecyclerViewAdapterOcorrencias(this.listaOcorrenciasAux);
+            this.recyclerView.setAdapter(this.adapter);
+
+            ToastUtil.criarToastCurto(getApplicationContext(), this.listaOcorrenciasAux.size() + " ocorrência(s) encontrada(s).");
+        }
+
+        this.adapter.notifyDataSetChanged();
     }
 
     private void criarReferenciasComponentes() {
@@ -106,7 +173,7 @@ public class ListaOcorrencias extends AppCompatActivity {
         this.toolbar = (Toolbar) findViewById(R.id.toolbar_lista_ocorrencias);
         this.recyclerView = (RecyclerView) findViewById(R.id.cardList);
 
-        this.mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        /* this.mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark, android.R.color.holo_green_dark, android.R.color.holo_blue_bright);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -114,7 +181,7 @@ public class ListaOcorrencias extends AppCompatActivity {
             public void onRefresh() {
                 refreshContent();
             }
-        });
+        }); */
     }
 
     private void refreshContent() {
@@ -131,7 +198,22 @@ public class ListaOcorrencias extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView;
+        MenuItem item = menu.findItem(R.id.menu_search);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            searchView = (SearchView) item.getActionView();
+        } else {
+            searchView = (SearchView) MenuItemCompat.getActionView(item);
+        }
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setQueryHint("Pesquise por cidade");
+
         return true;
     }
 
@@ -139,8 +221,14 @@ public class ListaOcorrencias extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        /* if (id == R.id.action_settings) {
             return true;
+        } */
+
+        if (item.getItemId()  == R.id.menu_delete) {
+            SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this, SearchableProvider.AUTHORITY, SearchableProvider.MODE);
+            searchRecentSuggestions.clearHistory();
+            Toast.makeText(this, "Historico excluído com sucesso.", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -187,10 +275,14 @@ public class ListaOcorrencias extends AppCompatActivity {
                         Type listType = new TypeToken<ArrayList<Ocorrencia>>() {
                         }.getType();
                         listaOcorrencias = gson.fromJson(str, listType);
+                        listaOcorrenciasAux = gson.fromJson(str, listType);
                         filtrarOcorrenciasUsuario();
 
-                        RecyclerViewAdapterOcorrencias adapter = new RecyclerViewAdapterOcorrencias(listaOcorrencias);
+                        adapter = new RecyclerViewAdapterOcorrencias(listaOcorrenciasAux);
                         recyclerView.setAdapter(adapter);
+
+                        //RecyclerViewAdapterOcorrencias adapter = new RecyclerViewAdapterOcorrencias(listaOcorrenciasAux);
+                        //recyclerView.setAdapter(adapter);
                     }
 
                     @Override
@@ -204,20 +296,25 @@ public class ListaOcorrencias extends AppCompatActivity {
     }
 
     private void filtrarOcorrenciasUsuario() {
-        List<Ocorrencia> ocorrenciasNaCidade = new ArrayList<>();
         if (UsuarioSingleton.getInstancia().getUsuario().getPreferenciaVisualizacao().equalsIgnoreCase(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE)) {
-            ocorrenciasNaCidade = new ArrayList<Ocorrencia>();
+            this.listaOcorrenciasCidadeUsuario = new ArrayList<Ocorrencia>();
             String cidadeUsuario = UsuarioSingleton.getInstancia().getUsuario().getEndereco().getCidade();
 
             for (Ocorrencia o : this.listaOcorrencias) {
                 if (o.getEndereco().getCidade().equalsIgnoreCase(cidadeUsuario))
-                    ocorrenciasNaCidade.add(o);
+                    this.listaOcorrenciasCidadeUsuario.add(o);
             }
-        }
-        if (ocorrenciasNaCidade.size() > 0) {
-            this.listaOcorrencias = new ArrayList<Ocorrencia>();
-            this.listaOcorrencias = ocorrenciasNaCidade;
-        }
-    }
 
+            if (this.listaOcorrenciasCidadeUsuario.size() > 0) {
+                this.listaOcorrenciasAux = this.listaOcorrenciasCidadeUsuario;
+
+                this.adapter = new RecyclerViewAdapterOcorrencias(this.listaOcorrenciasAux);
+                this.recyclerView.setAdapter(this.adapter);
+            }
+
+
+
+        }
+
+    }
 }
