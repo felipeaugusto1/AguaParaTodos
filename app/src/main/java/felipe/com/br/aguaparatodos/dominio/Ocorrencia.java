@@ -125,6 +125,7 @@ public class Ocorrencia {
                 ", descricao='" + descricao + '\'' +
                 ", pontoReferencia='" + pontoReferencia + '\'' +
                 ", qtdConfirmacoes=" + qtdConfirmacoes +
+                ", usuariosConfirmaram=" + usuariosConfirmaram +
                 ", ocorrenciaSolucionada=" + ocorrenciaSolucionada +
                 ", usuario=" + usuario +
                 ", endereco=" + endereco +

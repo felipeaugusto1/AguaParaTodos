@@ -89,8 +89,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int ID_MENU_MAPA = 1;
     private static final int ID_MENU_REGISTRAR_OCORRENCIA = 2;
     private static final int ID_MENU_SOBRE = 4;
-    private static final int ID_MENU_SAIR = 7;
+    private static final int ID_MENU_SAIR = 8;
     private static final int ID_MENU_LISTA_OCORRENCIAS = 3;
+    private static final int ID_MENU_AO_REDOR = 4;
 
     private GoogleApiClient mGoogleApiClient;
     // Request code to use when launching the resolution activity
@@ -180,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_mapa)).withIcon(GoogleMaterial.Icon.gmd_map).withIdentifier(ID_MENU_MAPA);
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_registrar_ocorrencia)).withIcon(GoogleMaterial.Icon.gmd_new_releases).withIdentifier(ID_MENU_REGISTRAR_OCORRENCIA);
         PrimaryDrawerItem item6 = new PrimaryDrawerItem().withName("Lista").withBadgeStyle(new BadgeStyle().withColor(Color.RED).withTextColor(Color.WHITE)).withIcon(GoogleMaterial.Icon.gmd_list).withIdentifier(ID_MENU_LISTA_OCORRENCIAS);
+        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withName("Ao redor").withIcon(GoogleMaterial.Icon.gmd_location_on).withIdentifier(ID_MENU_AO_REDOR);
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sobre)).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(ID_MENU_SOBRE);
         SwitchDrawerItem item4 = new SwitchDrawerItem().withName(getResources().getString(R.string.menu_notificacao)).withCheckable(true).withOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -196,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
         item4.withChecked(UsuarioSingleton.getInstancia().getUsuario().isReceberNotificacao());
 
-        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sair)).withIcon(GoogleMaterial.Icon.gmd_exit_to_app).withIdentifier(ID_MENU_SAIR);
+        PrimaryDrawerItem item7 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sair)).withIcon(GoogleMaterial.Icon.gmd_exit_to_app).withIdentifier(ID_MENU_SAIR);
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -228,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
                         item1,
                         item2,
                         item6,
+                        item5,
                         item3,
                         item4,
                         new DividerDrawerItem(),
@@ -239,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
                         //Fragment fragment;
                         //FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
+                        ToastUtil.criarToastCurto(getApplicationContext(), "posicao: " +position);
                         if (position == ID_MENU_REGISTRAR_OCORRENCIA) {
                             navigationDrawer.setSelection(1);
                             startActivity(new Intent(MainActivity.this, RegistrarOcorrencia.class));
@@ -249,6 +253,8 @@ public class MainActivity extends AppCompatActivity {
                         } else if (position == ID_MENU_LISTA_OCORRENCIAS) {
                             //navigationDrawer.setSelection(3);
                             startActivity(new Intent(MainActivity.this, ListaOcorrencias.class));
+                        } else if (position == ID_MENU_AO_REDOR) {
+                            startActivity(new Intent(MainActivity.this, AoRedor.class));
                         }
 
                         //transaction.addToBackStack(null);

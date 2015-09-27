@@ -20,6 +20,9 @@
     <string name="msgBtnNovaOcorrencia">Aqui você pode cadastrar uma nova ocorrência informando da água parada, ou do risco de foco de dengue.</string>
     <string name="msgBottom">Aqui você confere nossas outras funcionalidades.</string>
 
+    <string name="gpsDesativado">GPS está desativado.</string>
+    <string name="ativar">Ativar</string>
+
     <!-- URLS WEBSERVICES -->
     <string name="usuario_login">usuario/login</string>
     <string name="usuario_receber_notificacao">usuario/receberNotificacao</string>
