@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -65,12 +67,8 @@ public class AoRedor extends AppCompatActivity {
 
     private static ProgressDialog progressDialog;
     private List<Ocorrencia> listaOcorrencias;
-    private List<Ocorrencia> listaOcorrenciasNaCidade = new ArrayList<>();
     private HashMap<Marker, Ocorrencia> marcadoresHashMap;
     private static final long ONE_MIN = 1000 * 60;
-    private static final long REFRESH_TIME = ONE_MIN * 5;
-
-    private FrameLayout frameLayout;
 
     private static final int DISTANCIA_RAIO = 1000;
     private Location localizacaoUsuario;
@@ -83,22 +81,22 @@ public class AoRedor extends AppCompatActivity {
         setContentView(R.layout.activity_ao_redor);
 
         this.fusedLocationService = new FusedLocationPosition(this);
+
         this.myLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (!this.myLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            ToastUtil.criarToastLongo(AoRedor.this, "Por favor ative o GPS para usar esta funcionalidade.");
             alertaGPSDesativado();
+            ToastUtil.criarToastLongo(AoRedor.this, "Por favor ative o GPS para usar esta funcionalidade.");
         } else
-            recuperarPosicaoUsuario();
+           recuperarPosicaoUsuario();
 
 
 
         this.toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        this.toolbar.setTitle(getResources().getString(R.string.app_name));
+        this.toolbar.setTitle(getResources().getString(R.string.tela_ao_redor));
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
 
-        this.frameLayout = (FrameLayout) findViewById(R.id.frame_layout_mapa);
         this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         this.navigationDrawer = new DrawerBuilder()
@@ -272,41 +270,40 @@ public class AoRedor extends AppCompatActivity {
     private void adicionarMarcadores() {
         int contadorOcorrencias = 0;
 
-        if (!ValidadorUtil.isNuloOuVazio(listaOcorrencias) && listaOcorrencias.size() > 0) {
-            for (Ocorrencia ocorrencia : this.listaOcorrencias) {
-                double result =  SphericalUtil.computeDistanceBetween(
-                        new LatLng(this.localizacaoUsuario.getLatitude(), this.localizacaoUsuario.getLongitude()), new LatLng(ocorrencia.getEndereco()
-                                .getLatitude(), ocorrencia.getEndereco().getLongitude()));
+        try {
+            if (!ValidadorUtil.isNuloOuVazio(listaOcorrencias) && listaOcorrencias.size() > 0) {
+                for (Ocorrencia ocorrencia : this.listaOcorrencias) {
+                    double result =  SphericalUtil.computeDistanceBetween(
+                            new LatLng(this.localizacaoUsuario.getLatitude(), this.localizacaoUsuario.getLongitude()), new LatLng(ocorrencia.getEndereco()
+                                    .getLatitude(), ocorrencia.getEndereco().getLongitude()));
 
-                if (!ocorrencia.isOcorrenciaSolucionada() && result < DISTANCIA_RAIO) {
-                    contadorOcorrencias++;
-                    LatLng c = new LatLng(ocorrencia.getEndereco().getLatitude(),
-                            ocorrencia.getEndereco().getLongitude());
+                    if (!ocorrencia.isOcorrenciaSolucionada() && result < DISTANCIA_RAIO) {
+                        contadorOcorrencias++;
+                        LatLng c = new LatLng(ocorrencia.getEndereco().getLatitude(),
+                                ocorrencia.getEndereco().getLongitude());
 
-                    MarkerOptions markerOption = null;
+                        MarkerOptions markerOption = null;
 
-                    markerOption = new MarkerOptions().position(c).icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                        markerOption = new MarkerOptions().position(c).icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 
-                    Marker marcadorAtual = this.mapa.addMarker(markerOption);
+                        Marker marcadorAtual = this.mapa.addMarker(markerOption);
 
-                    if (!ValidadorUtil.isNuloOuVazio(marcadorAtual)) {
-                        this.marcadoresHashMap.put(marcadorAtual, ocorrencia);
-                        this.mapa.setInfoWindowAdapter(new MarkerInfoWindowAdapter());
+                        if (!ValidadorUtil.isNuloOuVazio(marcadorAtual)) {
+                            this.marcadoresHashMap.put(marcadorAtual, ocorrencia);
+                            this.mapa.setInfoWindowAdapter(new MarkerInfoWindowAdapter());
+                        }
                     }
                 }
+
+                ToastUtil.criarToastLongo(AoRedor.this, contadorOcorrencias +" ocorrência(s) encontrada(s) em um raio de 10 km.");
             }
 
-            if (contadorOcorrencias == 0)
-                ToastUtil.criarToastLongo(AoRedor.this, contadorOcorrencias +" ocorrência encontrada em um raio de 10 km.");
-            else if (contadorOcorrencias > 1)
-                ToastUtil.criarToastLongo(AoRedor.this, contadorOcorrencias +" ocorrências encontradas em um raio de 10 km.");
-
-
-            //criarCirculo();
+            progressDialog.dismiss();
+        } catch (Exception ex) {
+            ToastUtil.criarToastLongo(AoRedor.this, "Ocorreu um erro ao tentar recuperar sua posição. Por favor, tente novamente.");
         }
 
-        progressDialog.dismiss();
     }
 
     @Override

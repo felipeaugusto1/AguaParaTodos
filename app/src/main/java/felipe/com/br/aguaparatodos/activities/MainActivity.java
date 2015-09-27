@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.agua)
+                .withHeaderBackground(R.color.material_drawer_primary_light)
                 .addProfiles(
                         new ProfileDrawerItem().withName(nomeUsuario).withEmail(emailUsuario).withIcon(Uri.parse(fotoUsuario))
                 )
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                         item3,
                         item4,
                         new DividerDrawerItem(),
-                        item5
+                        item7
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
                         //Fragment fragment;
                         //FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                        ToastUtil.criarToastCurto(getApplicationContext(), "posicao: " +position);
+                        //ToastUtil.criarToastCurto(getApplicationContext(), "posicao: " +position);
                         if (position == ID_MENU_REGISTRAR_OCORRENCIA) {
                             navigationDrawer.setSelection(1);
                             startActivity(new Intent(MainActivity.this, RegistrarOcorrencia.class));
@@ -715,4 +715,5 @@ public class MainActivity extends AppCompatActivity {
 
         percorrerOcorrencias(apenasMinhaCidade);
     }
+
 }

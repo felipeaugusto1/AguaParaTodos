@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Água</string>
+    <string name="app_name">Água para Todos</string>
+
+    <string name="tela_ao_redor">Ao meu Redor</string>
 
     <string name="facebook_app_id">886882718059406</string>
 
