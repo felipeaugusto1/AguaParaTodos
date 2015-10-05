@@ -25,4 +25,12 @@ public class ListaOcorrenciasSingleton {
         this.lista = lista;
     }
 
+    public Ocorrencia buscarPorId(int id) {
+        for (Ocorrencia o: this.lista) {
+            if (o.getId() == id)
+                return o;
+        }
+
+        return null;
+    }
 }

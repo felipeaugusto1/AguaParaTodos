@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ import java.text.SimpleDateFormat;
 
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
+import felipe.com.br.aguaparatodos.singleton.ListaOcorrenciasSingleton;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.singleton.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
@@ -104,7 +106,15 @@ public class DetalheOcorrencia extends AppCompatActivity {
             //Log.d("classe", classe);
             this.parametros = new RequestParams();
             this.parametros.put("id", ocorrenciaId);
-            buscarOcorrenciasPorIdWS(parametros);
+            try {
+                this.ocorrencia = ListaOcorrenciasSingleton.getInstancia().buscarPorId(Integer.parseInt(ocorrenciaId));
+                if (ValidadorUtil.isNuloOuVazio(this.ocorrencia))
+                    buscarOcorrenciasPorIdWS(parametros);
+                else
+                    percorrerOcorrencias();
+            } catch (Exception e) {
+                buscarOcorrenciasPorIdWS(parametros);
+            }
         }
     }
 
