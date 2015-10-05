@@ -5,7 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +19,8 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -33,6 +38,7 @@ import java.util.Map;
 
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.extras.PlacesAutoCompleteAdapter;
+import felipe.com.br.aguaparatodos.gps.FusedLocationPosition;
 import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
 
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
@@ -54,6 +60,15 @@ public class RegistrarOcorrencia extends AppCompatActivity {
     private int contadorTituloOcorrencia = TAMANHO_MAXIMO_TITULO_OCORRENCIA;
     private int contadorReferenciaOcorrencia = TAMANHO_MAXIMO_REFERENCIA_OCORRENCIA;
     private Button btnCadastrarOcorrencia;
+    private RadioGroup radioGroupTipoEnderecoUtilizado;
+    private RadioButton radioButtonUtilizarGps, radioButtonUtilizarEndereco;
+
+    private boolean utilizarGps;
+    private boolean gpsUsuarioAtivado;
+
+    private Location localizacaoUsuario;
+    private FusedLocationPosition fusedLocationService;
+    private LocationManager myLocationManager;
 
     private RequestParams parametros;
     private static ProgressDialog progressDialog;
@@ -68,45 +83,89 @@ public class RegistrarOcorrencia extends AppCompatActivity {
 
         criarReferenciasComponentes();
 
-        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
-        this.toolbar.setTitle(getResources().getString(R.string.tituloTelaRegistrarOcorrenia));
-        //this.toolbar.setBackgroundColor(getResources().getColor(R.color.vermelho));
-        this.toolbar.setTitleTextColor(getResources().getColor(R.color.branco));
-        setSupportActionBar(this.toolbar);
+        if (this.myLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            recuperarPosicaoUsuario();
+            this.gpsUsuarioAtivado = true;
+        }
 
-        this.navigationDrawer = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(this.toolbar)
-                .build();
 
-        this.navigationDrawer.getDrawerLayout().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+            this.toolbar = (Toolbar) findViewById(R.id.toolbar);
+            this.toolbar.setTitle(getResources().getString(R.string.tituloTelaRegistrarOcorrenia));
+            //this.toolbar.setBackgroundColor(getResources().getColor(R.color.vermelho));
+            this.toolbar.setTitleTextColor(getResources().getColor(R.color.branco));
+            setSupportActionBar(this.toolbar);
 
-        this.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            this.navigationDrawer = new DrawerBuilder()
+                    .withActivity(this)
+                    .withToolbar(this.toolbar)
+                    .build();
 
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RegistrarOcorrencia.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        });
+            this.navigationDrawer.getDrawerLayout().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+            this.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(RegistrarOcorrencia.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+            });
+
+        }
+
+    private void recuperarPosicaoUsuario() {
+        this.localizacaoUsuario = fusedLocationService.getLocation();
     }
 
     private void criarReferenciasComponentes() {
+        this.fusedLocationService = new FusedLocationPosition(this);
+
+        this.myLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        this.radioGroupTipoEnderecoUtilizado = (RadioGroup) findViewById(R.id.radioGroupTipoEndereco);
+        this.radioButtonUtilizarGps = (RadioButton) findViewById(R.id.radioButtoUtilizarPosicao);
+        this.radioButtonUtilizarEndereco = (RadioButton) findViewById(R.id.radioButtonInformarEndereco);
+
         this.enderecoAutoComplete = (AutoCompleteTextView) findViewById(R.id.editTextEnderecoOcorrencia);
         this.enderecoAutoComplete.setAdapter(new PlacesAutoCompleteAdapter(getApplicationContext(), R.layout.item_lista_busca_endereco));
 
+        this.radioButtonUtilizarGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (myLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    recuperarPosicaoUsuario();
+                    gpsUsuarioAtivado = true;
+                } else
+                    gpsUsuarioAtivado = false;
+
+                utilizarGps = true;
+                enderecoAutoComplete.setEnabled(false);
+                if (!gpsUsuarioAtivado) {
+                    alertaGPSDesativado();
+                    ToastUtil.criarToastLongo(RegistrarOcorrencia.this, getResources().getString(R.string.msgAtivarGps));
+                }
+            }
+        });
+
+        this.radioButtonUtilizarEndereco.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utilizarGps = false;
+                enderecoAutoComplete.setEnabled(true);
+            }
+        });
+
         this.txtContadorOcorrencia = (TextView) findViewById(R.id.textViewContadorDescricao);
-        this.txtContadorOcorrencia.setText(contadorDescricaoOcorrencia + " " +getResources().getString(R.string.msgCaracteresRestantes));
+        this.txtContadorOcorrencia.setText(contadorDescricaoOcorrencia + " " + getResources().getString(R.string.msgCaracteresRestantes));
 
         this.txtContadorTitulo = (TextView) findViewById(R.id.textViewContadorTitulo);
         this.txtContadorTitulo.setText(contadorTituloOcorrencia + " " + getResources().getString(R.string.msgCaracteresRestantes));
 
         this.txtContadorPontoReferencia = (TextView) findViewById(R.id.textViewContadorReferencia);
-        this.txtContadorPontoReferencia.setText(contadorReferenciaOcorrencia + " " +getResources().getString(R.string.msgCaracteresRestantes));
+        this.txtContadorPontoReferencia.setText(contadorReferenciaOcorrencia + " " + getResources().getString(R.string.msgCaracteresRestantes));
         this.edPontoReferenciaOcorrencia = (EditText) findViewById(R.id.editTextPontoReferenciaOcorrencia);
         this.edPontoReferenciaOcorrencia.addTextChangedListener(new TextWatcher() {
             @Override
@@ -290,7 +349,7 @@ public class RegistrarOcorrencia extends AppCompatActivity {
 
     public void criarDialog(final Context contexto, String titulo, String mensagem) {
 
-        AlertDialog dialog =  new AlertDialog.Builder(contexto)
+        AlertDialog dialog = new AlertDialog.Builder(contexto)
                 .setTitle(titulo)
                 .setMessage(mensagem)
                 .setPositiveButton(contexto.getResources().getString(R.string.msgSim), new DialogInterface.OnClickListener() {
@@ -315,6 +374,30 @@ public class RegistrarOcorrencia extends AppCompatActivity {
     public void onBackPressed() {
         this.navigationDrawer.setSelection(0);
         super.onBackPressed();
+    }
+
+    private void alertaGPSDesativado() {
+        android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+        alertDialogBuilder
+                .setMessage(getResources().getString(R.string.gpsDesativado))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.ativar),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton(
+                getResources().getString(android.R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        android.support.v7.app.AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 
 }

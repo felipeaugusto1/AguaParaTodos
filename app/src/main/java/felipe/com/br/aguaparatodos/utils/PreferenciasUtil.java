@@ -33,5 +33,4 @@ public class PreferenciasUtil {
         return sharedPreferences.getString(key, VALOR_INVALIDO);
     }
 
-
 }

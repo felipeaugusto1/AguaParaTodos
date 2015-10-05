@@ -150,7 +150,6 @@ public class ListaOcorrencias extends AppCompatActivity {
             if (StringUtil.retirarAcentosDaPalavra(ocorrencia.getEndereco().getCidade().toLowerCase()).startsWith(StringUtil.retirarAcentosDaPalavra(q.toLowerCase()))) {
                 this.listaOcorrenciasAux.add(ocorrencia);
             }
-
         }
 
         if (this.listaOcorrenciasAux.isEmpty()) {

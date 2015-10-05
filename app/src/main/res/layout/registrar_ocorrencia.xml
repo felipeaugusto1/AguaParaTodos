@@ -95,11 +95,33 @@
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"></AutoCompleteTextView>
 
+        <RadioGroup
+            android:id="@+id/radioGroupTipoEndereco"
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/editTextEnderecoOcorrencia"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/radioButtonInformarEndereco"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/rbInformarEndereco" />
+
+            <RadioButton
+                android:id="@+id/radioButtoUtilizarPosicao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rbUtilizarGps" />
+
+        </RadioGroup>
+
+
         <TextView
             android:id="@+id/textViewPontoReferencia"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/editTextEnderecoOcorrencia"
+            android:layout_below="@+id/radioGroupTipoEndereco"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="15dp"
             android:text="@string/txtPontoReferenciaOcorrencia"
@@ -115,8 +137,8 @@
             android:layout_marginTop="5dp"
             android:hint="@string/edPontoReferenciaOcorrencia"
             android:inputType="textMultiLine"
-            android:maxLength="30"
-            android:lines="2" />
+            android:lines="2"
+            android:maxLength="30" />
 
         <TextView
             android:id="@+id/textViewContadorReferencia"
@@ -126,25 +148,11 @@
             android:layout_marginLeft="5dp"
             android:textSize="12dp" />
 
-        <Button
-            android:id="@+id/btnEnviarOcorrencia"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textViewContadorReferencia"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:text="@string/btnCadastrarOcorrencia"
-            android:textColor="@android:color/white" />
-
         <TextView
             android:id="@+id/txtLimparCamposOcorrencia"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btnEnviarOcorrencia"
+            android:layout_below="@+id/textViewContadorReferencia"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="10dp"
@@ -155,6 +163,20 @@
             android:textColor="@android:color/holo_blue_light"
             android:textSize="15dp" />
 
+        <Button
+            android:id="@+id/btnEnviarOcorrencia"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtLimparCamposOcorrencia"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:text="@string/btnCadastrarOcorrencia"
+            android:textColor="@android:color/white" />
 
     </RelativeLayout>
 

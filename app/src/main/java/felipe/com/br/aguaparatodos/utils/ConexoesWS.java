@@ -1,4 +1,4 @@
-package felipe.com.br.aguaparatodos.gcm;
+package felipe.com.br.aguaparatodos.utils;
 
 import android.content.Context;
 
@@ -14,9 +14,19 @@ import felipe.com.br.aguaparatodos.utils.WebService;
 /**
  * Created by felipe on 9/7/15.
  */
-public class AtualizarGCMUsuario {
+public class ConexoesWS {
 
-    public static void atualizarGcm(RequestParams parametros, Context contexto) {
+    private static RequestParams parametros;
+
+    public static void prepararCamposAtualizarGcm(Context contexto, int idUsuario, String gcm) {
+        parametros = new RequestParams();
+        parametros.put("id", String.valueOf(idUsuario));
+        parametros.put("gcm", gcm);
+
+        atualizarGcm(contexto);
+    }
+
+    public static void atualizarGcm(Context contexto) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(WebService.ENDERECO_WS.concat(contexto.getResources().getString(R.string.usuario_atualizar_gcm)), parametros, new AsyncHttpResponseHandler() {

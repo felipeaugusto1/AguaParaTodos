@@ -13,6 +13,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -67,6 +68,7 @@ import java.util.List;
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
+import felipe.com.br.aguaparatodos.utils.ConexoesWS;
 import felipe.com.br.aguaparatodos.utils.PreferenciasUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
@@ -93,14 +95,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int ID_MENU_LISTA_OCORRENCIAS = 3;
     private static final int ID_MENU_AO_REDOR = 4;
 
-    private GoogleApiClient mGoogleApiClient;
-    // Request code to use when launching the resolution activity
-    private static final int REQUEST_RESOLVE_ERROR = 1001;
-    // Unique tag for the error dialog fragment
-    private static final String DIALOG_ERROR = "dialog_error";
-    // Bool to track whether the app is already resolving an error
-    private boolean mResolvingError = false;
-
     private SupportMapFragment mapFragment;
     private GoogleMap mapa;
 
@@ -120,42 +114,6 @@ public class MainActivity extends AppCompatActivity {
         String nomeUsuario = PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, getApplicationContext());
         String emailUsuario = PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext());
         String fotoUsuario = PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, getApplicationContext());
-
-        // Create a GoogleApiClient instance
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Drive.API)
-                .addScope(Drive.SCOPE_FILE)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle bundle) {
-                        // Connected to Google Play services!
-                        // The good stuff goes here.
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int i) {
-                        // The connection has been interrupted.
-                        // Disable any UI components that depend on Google APIs
-                        // until onConnected() is called.
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult connectionResult) {
-                        if (mResolvingError) {
-                            // Already attempting to resolve an error.
-                            return;
-                        } else if (connectionResult.hasResolution()) {
-                            mResolvingError = true;
-                            //connectionResult.startResolutionForResult(  ((MainActivity) getSupportParentActivityIntent()), REQUEST_RESOLVE_ERROR);
-                        } else {
-                            // Show dialog using GoogleApiAvailability.getErrorDialog()
-                            showErrorDialog(connectionResult.getErrorCode());
-                            mResolvingError = true;
-                        }
-                    }
-                })
-                .build();
 
         this.fab = (FloatingActionButton) findViewById(R.id.fab_nova_ocorrencia);
         this.fab.setOnClickListener(new View.OnClickListener() {
@@ -312,6 +270,8 @@ public class MainActivity extends AppCompatActivity {
                 .setDelay(200) // optional but starting animations immediately in onCreate can make them choppy
                 .setContentText(getResources().getString(R.string.msgMapa)).show(); */
 
+        ConexoesWS.prepararCamposAtualizarGcm(MainActivity.this, UsuarioSingleton.getInstancia().getUsuario().getId(), UsuarioSingleton.getInstancia().getUsuario().getGcm());
+
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500); // half second between each showcase view
 
@@ -328,9 +288,9 @@ public class MainActivity extends AppCompatActivity {
         if (ValidadorUtil.isNuloOuVazio(this.mapa)) {
             this.mapa = this.mapFragment.getMap();
 
-            if (!ValidadorUtil.isNuloOuVazio(this.mapa)) {
+            /* if (!ValidadorUtil.isNuloOuVazio(this.mapa)) {
                 this.mapa.setMyLocationEnabled(true);
-            }
+            } */
         }
     }
 
@@ -369,7 +329,11 @@ public class MainActivity extends AppCompatActivity {
                         listaOcorrencias = gson.fromJson(str, listType);
 
                         filtrarOcorrenciasUsuario();
-                        percorrerOcorrencias(UsuarioSingleton.getInstancia().getUsuario().getPreferenciaVisualizacao().equalsIgnoreCase(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE));
+                        try {
+                            percorrerOcorrencias(UsuarioSingleton.getInstancia().getUsuario().getPreferenciaVisualizacao().equalsIgnoreCase(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE));
+                        } catch (NullPointerException e) {
+                            percorrerOcorrencias(true);
+                        }
                     }
 
                     @Override
@@ -454,20 +418,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_RESOLVE_ERROR) {
-            mResolvingError = false;
-            if (resultCode == RESULT_OK) {
-                // Make sure the app is not already connected or attempting to connect
-                if (!mGoogleApiClient.isConnecting() &&
-                        !mGoogleApiClient.isConnected()) {
-                    mGoogleApiClient.connect();
-                }
-            }
-        }
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -492,49 +442,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
     }
 
     @Override
     protected void onStop() {
-        mGoogleApiClient.disconnect();
         super.onStop();
-    }
-
-    // The rest of this code is all about building the error dialog
-    /* Creates a dialog for an error message */
-    private void showErrorDialog(int errorCode) {
-        // Create a fragment for the error dialog
-        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
-        // Pass the error that should be displayed
-        Bundle args = new Bundle();
-        args.putInt(DIALOG_ERROR, errorCode);
-        dialogFragment.setArguments(args);
-        dialogFragment.show(getSupportFragmentManager(), "errordialog");
-    }
-
-    /* Called from ErrorDialogFragment when the dialog is dismissed. */
-    public void onDialogDismissed() {
-        mResolvingError = false;
-    }
-
-    /* A fragment to display an error dialog */
-    public static class ErrorDialogFragment extends DialogFragment {
-        public ErrorDialogFragment() {
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Get the error code and retrieve the appropriate dialog
-            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
-            return GoogleApiAvailability.getInstance().getErrorDialog(
-                    this.getActivity(), errorCode, REQUEST_RESOLVE_ERROR);
-        }
-
-        @Override
-        public void onDismiss(DialogInterface dialog) {
-            ((MainActivity) getActivity()).onDialogDismissed();
-        }
     }
 
     public class MarkerInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
@@ -657,18 +569,22 @@ public class MainActivity extends AppCompatActivity {
         PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, PreferenciasUtil.VALOR_INVALIDO, getApplicationContext());
         PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, PreferenciasUtil.VALOR_INVALIDO, getApplicationContext());
 
-        if (UsuarioSingleton.getInstancia().getUsuario().isUsuarioFacebook())
+        if (UsuarioSingleton.getInstancia().getUsuario().isUsuarioFacebook()) {
             LoginManager.getInstance().logOut();
-        if (UsuarioSingleton.getInstancia().getUsuario().isUsuarioGooglePlus()) {
+        }
+        /* if (UsuarioSingleton.getInstancia().getUsuario().isUsuarioGooglePlus()) {
+            Log.d("logout 1", "logout 1");
             if (mGoogleApiClient.isConnected()) {
                 Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+                Log.d("logout 2", "logout 2");
                 mGoogleApiClient.disconnect();
             }
-        }
+        } */
+
+        UsuarioSingleton.getInstancia().setUsuario(new Usuario());
 
         Intent intent = new Intent(MainActivity.this, Login.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("logoutFacebook", true);
         startActivity(intent);
     }
 

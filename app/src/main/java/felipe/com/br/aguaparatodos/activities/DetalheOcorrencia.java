@@ -205,9 +205,9 @@ public class DetalheOcorrencia extends AppCompatActivity {
         if (this.mapa == null) {
             this.mapa = this.mapFragment.getMap();
 
-            if (this.mapa != null) {
+            /* if (this.mapa != null) {
                 this.mapa.setMyLocationEnabled(true);
-            }
+            } */
         }
     }
 

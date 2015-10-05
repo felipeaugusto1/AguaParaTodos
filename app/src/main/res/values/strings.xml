@@ -78,7 +78,9 @@
     <string name="confirmarDados">Confirmar dados</string>
     <string name="infoDadosVeridicos">Os dados são verídicos e podem ser utilizados pelas autoridades responsáveis para tomarem as medidas cabíveis?</string>
 
-
+    <string name="rbInformarEndereco">Utilizar endereço acima</string>
+    <string name="rbUtilizarGps">Utilizar minha posição atual (GPS)</string>
+    <string name="msgAtivarGps">Por favor ative o GPS para usar esta funcionalidade.</string>
 
     <!-- Tela Detalhe da Ocorrencia -->
     <string name="tituloTelaDetalheOcorrenia">Detalhes da Ocorrência</string>

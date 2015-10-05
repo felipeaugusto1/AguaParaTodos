@@ -6,10 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
@@ -27,9 +25,8 @@ import java.util.Map;
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
 import felipe.com.br.aguaparatodos.extras.PlacesAutoCompleteAdapter;
-import felipe.com.br.aguaparatodos.gcm.AtualizarGCMUsuario;
+import felipe.com.br.aguaparatodos.utils.ConexoesWS;
 import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
-import felipe.com.br.aguaparatodos.utils.StringUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
@@ -57,10 +54,12 @@ public class ConfirmarCidade extends AppCompatActivity {
         String gcm = getIntent().getStringExtra("gcm");
         if (!ValidadorUtil.isNuloOuVazio(gcm)) {
 
-            this.parametros = new RequestParams();
-            this.parametros.put("id", UsuarioSingleton.getInstancia().getUsuario().getId());
-            this.parametros.put("gcm", gcm);
-            AtualizarGCMUsuario.atualizarGcm(this.parametros, ConfirmarCidade.this);
+            //this.parametros = new RequestParams();
+            //this.parametros.put("id", UsuarioSingleton.getInstancia().getUsuario().getId());
+            //this.parametros.put("gcm", gcm);
+
+            ConexoesWS.prepararCamposAtualizarGcm(ConfirmarCidade.this, UsuarioSingleton.getInstancia().getUsuario().getId(), gcm);
+            //ConexoesWS.atualizarGcm(ConfirmarCidade.this);
         }
 
     }

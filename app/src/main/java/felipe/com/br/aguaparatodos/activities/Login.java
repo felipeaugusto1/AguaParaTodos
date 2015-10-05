@@ -49,6 +49,7 @@ import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
 import felipe.com.br.aguaparatodos.gcm.AndroidSystemUtil;
 import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
+import felipe.com.br.aguaparatodos.utils.ConexoesWS;
 import felipe.com.br.aguaparatodos.utils.PreferenciasUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
@@ -94,11 +95,8 @@ public class Login extends FragmentActivity implements
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
-        registerIdInBackground();
-
         setContentView(R.layout.login);
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
         this.btnLoginFacebook = (LoginButton) findViewById(R.id.btnLoginFacebook);
 
         // Build GoogleApiClient with access to basic profile
@@ -110,14 +108,11 @@ public class Login extends FragmentActivity implements
                 .build();
 
         if (!PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()).equalsIgnoreCase(PreferenciasUtil.VALOR_INVALIDO)) {
-
             this.btnLoginFacebook.setVisibility(View.INVISIBLE);
-            findViewById(R.id.sign_in_button).setBackgroundColor(View.INVISIBLE);
             this.parametros = new RequestParams();
             this.parametros.put("email", PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()));
             this.verificarEmail(this.parametros);
         } else {
-
             this.btnLoginFacebook.setReadPermissions("public_profile");
             this.btnLoginFacebook.setReadPermissions("email");
             this.btnLoginFacebook.setReadPermissions("user_location");
@@ -219,16 +214,7 @@ public class Login extends FragmentActivity implements
                 PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, usuarioLogado.getNomeCompleto(), getApplicationContext());
                 PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, usuarioLogado.getEmail(), getApplicationContext());
 
-                if (usuarioLogado.isPrimeiroLogin()) {
-                    Bundle b = new Bundle();
-
-                    Intent telaPosLogin = new Intent(Login.this, ConfirmarCidade.class);
-                    telaPosLogin.putExtra("cidade", usuarioLogado.getEndereco().getCidade());
-                    startActivity(telaPosLogin);
-                } else {
-                    Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
-                    startActivity(telaPosLogin);
-                }
+                registerIdInBackground();
 
             }
 
@@ -299,9 +285,7 @@ public class Login extends FragmentActivity implements
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.sign_in_button) {
-            onSignInClicked();
-        }
+
     }
 
     private void onSignInClicked() {
@@ -341,10 +325,29 @@ public class Login extends FragmentActivity implements
         verificarEmail(this.parametros);
     }
 
-
     @Override
     public void onConnectionSuspended(int i) {
 
+    }
+
+    private void iniciarProximaActivity() {
+        Log.d("indo iniciar activity", "indo iniciar activity");
+        Log.d("indo iniciar activity", UsuarioSingleton.getInstancia().getUsuario().getId()+"");
+        if (UsuarioSingleton.getInstancia().getUsuario().getId() != 0) {
+            if (usuarioLogado.isPrimeiroLogin()) {
+                Bundle b = new Bundle();
+
+                UsuarioSingleton.getInstancia().getUsuario().setGcm(regId);
+
+                Intent telaPosLogin = new Intent(Login.this, ConfirmarCidade.class);
+                telaPosLogin.putExtra("cidade", usuarioLogado.getEndereco().getCidade());
+                telaPosLogin.putExtra("gcm", regId);
+                startActivity(telaPosLogin);
+            } else {
+                Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
+                startActivity(telaPosLogin);
+            }
+        }
     }
 
     public void registerIdInBackground() {
@@ -359,6 +362,10 @@ public class Login extends FragmentActivity implements
 
                     regId = gcm.register(SENDER_ID);
                     msg = "Register Id: " + regId;
+
+                    Log.d("gcm", regId);
+
+                    iniciarProximaActivity();
 
                     AndroidSystemUtil.storeRegistrationId(Login.this, regId);
                 } catch (IOException e) {
