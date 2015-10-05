@@ -9,11 +9,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,10 +23,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -36,7 +30,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.plus.Plus;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
@@ -68,16 +61,15 @@ import java.util.List;
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
+import felipe.com.br.aguaparatodos.singleton.ListaOcorrenciasSingleton;
 import felipe.com.br.aguaparatodos.utils.ConexoesWS;
 import felipe.com.br.aguaparatodos.utils.PreferenciasUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
-import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
+import felipe.com.br.aguaparatodos.singleton.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
 import felipe.com.br.aguaparatodos.utils.WebService;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
-
-import static felipe.com.br.aguaparatodos.R.string.app_name;
 
 /**
  * Created by felipe on 8/23/15.
@@ -298,6 +290,9 @@ public class MainActivity extends AppCompatActivity {
         this.listaOcorrencias = new ArrayList<Ocorrencia>();
         this.marcadoresHashMap = new HashMap<Marker, Ocorrencia>();
 
+        ListaOcorrenciasSingleton.getInstancia().setLista(this.listaOcorrencias);
+        this.listaOcorrencias = ListaOcorrenciasSingleton.getInstancia().getLista();
+
         progressDialog = ProgressDialog.show(this, getResources()
                         .getString(R.string.aguarde),
                 "Carregando ocorrencias...");
@@ -327,6 +322,8 @@ public class MainActivity extends AppCompatActivity {
                         Type listType = new TypeToken<ArrayList<Ocorrencia>>() {
                         }.getType();
                         listaOcorrencias = gson.fromJson(str, listType);
+
+                        ListaOcorrenciasSingleton.getInstancia().setLista(listaOcorrencias);
 
                         filtrarOcorrenciasUsuario();
                         try {

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -42,7 +41,7 @@ import felipe.com.br.aguaparatodos.gps.FusedLocationPosition;
 import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
 
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
-import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
+import felipe.com.br.aguaparatodos.singleton.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
 import felipe.com.br.aguaparatodos.utils.WebService;
 

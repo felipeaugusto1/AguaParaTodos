@@ -42,17 +42,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 import felipe.com.br.aguaparatodos.BuildConfig;
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Usuario;
 import felipe.com.br.aguaparatodos.gcm.AndroidSystemUtil;
-import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
-import felipe.com.br.aguaparatodos.utils.ConexoesWS;
 import felipe.com.br.aguaparatodos.utils.PreferenciasUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
-import felipe.com.br.aguaparatodos.utils.UsuarioSingleton;
+import felipe.com.br.aguaparatodos.singleton.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
 import felipe.com.br.aguaparatodos.utils.WebService;
 

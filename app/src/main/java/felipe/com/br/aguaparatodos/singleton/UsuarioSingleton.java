@@ -1,4 +1,4 @@
-package felipe.com.br.aguaparatodos.utils;
+package felipe.com.br.aguaparatodos.singleton;
 
 import felipe.com.br.aguaparatodos.dominio.Usuario;
 
