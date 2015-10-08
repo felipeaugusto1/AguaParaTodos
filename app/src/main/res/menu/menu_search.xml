@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ListaEstabelecimentos">
+    <item
+        android:id="@+id/menu_search"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:title="@string/search_title" />
+
+    <item
+        android:id="@+id/menu_delete"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/ic_delete_white_24dp"
+        app:showAsAction="always"
+        android:title="Excluir histórico" />
+</menu>
