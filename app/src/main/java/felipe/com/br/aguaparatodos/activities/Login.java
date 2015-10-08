@@ -80,7 +80,7 @@ public class Login extends FragmentActivity implements
     private Usuario usuarioLogado;
     private RequestParams parametros;
 
-    private static final String TAG = "Projeto Agua GCM";
+    private static final String TAG = "Projeto Agua Para Todos";
     private GoogleCloudMessaging gcm;
     private String regId;
     private String SENDER_ID = "682647867821"; // id do projeto no google console

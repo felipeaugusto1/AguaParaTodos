@@ -27,8 +27,6 @@ public class NotificationCustomUtil {
         telaDetalheOcorrencia.putExtra("ocorrencia_id", ocorrenciaId);
         telaDetalheOcorrencia.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        Log.d("Indo criar notificacao:", "id da ocorrencia:" +ocorrenciaId);
-
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
                 telaDetalheOcorrencia, PendingIntent.FLAG_UPDATE_CURRENT);
 
