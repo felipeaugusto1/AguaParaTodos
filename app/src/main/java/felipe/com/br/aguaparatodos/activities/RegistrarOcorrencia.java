@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -30,9 +32,12 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 
 import org.apache.http.Header;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import felipe.com.br.aguaparatodos.R;
@@ -75,6 +80,9 @@ public class RegistrarOcorrencia extends AppCompatActivity {
     private Drawer navigationDrawer;
     private Toolbar toolbar;
 
+    private Map<String, String> valores;
+    private List<Double> coordenadasEndereco;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,32 +96,32 @@ public class RegistrarOcorrencia extends AppCompatActivity {
         }
 
 
-            this.toolbar = (Toolbar) findViewById(R.id.toolbar);
-            this.toolbar.setTitle(getResources().getString(R.string.tituloTelaRegistrarOcorrenia));
-            //this.toolbar.setBackgroundColor(getResources().getColor(R.color.vermelho));
-            this.toolbar.setTitleTextColor(getResources().getColor(R.color.branco));
-            setSupportActionBar(this.toolbar);
+        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
+        this.toolbar.setTitle(getResources().getString(R.string.tituloTelaRegistrarOcorrenia));
+        //this.toolbar.setBackgroundColor(getResources().getColor(R.color.vermelho));
+        this.toolbar.setTitleTextColor(getResources().getColor(R.color.branco));
+        setSupportActionBar(this.toolbar);
 
-            this.navigationDrawer = new DrawerBuilder()
-                    .withActivity(this)
-                    .withToolbar(this.toolbar)
-                    .build();
+        this.navigationDrawer = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(this.toolbar)
+                .build();
 
-            this.navigationDrawer.getDrawerLayout().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        this.navigationDrawer.getDrawerLayout().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-            this.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        this.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(RegistrarOcorrencia.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
-            });
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegistrarOcorrencia.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
 
-        }
+    }
 
     private void recuperarPosicaoUsuario() {
         this.localizacaoUsuario = fusedLocationService.getLocation();
@@ -236,21 +244,32 @@ public class RegistrarOcorrencia extends AppCompatActivity {
     }
 
     private void prepararParametros() {
-        try {
-            List<Double> coordenadasEndereco = BuscarEnderecoGoogle.buscarCoordenadasPorEndereco(getApplicationContext(), this.enderecoAutoComplete.getText().toString());
-            Map<String, String> valores = BuscarEnderecoGoogle.buscarEnderecoByNome(enderecoAutoComplete.getText().toString(), getApplicationContext());
+        List<String> endereco = new ArrayList<String>();
 
-            Log.d("ENDERECO", valores.get("ENDERECO"));
-            Log.d("CIDADE", valores.get("CIDADE"));
-            Log.d("ESTADO", valores.get("ESTADO"));
+        try {
+            if (!utilizarGps) {
+                this.coordenadasEndereco = BuscarEnderecoGoogle.buscarCoordenadasPorEndereco(getApplicationContext(), this.enderecoAutoComplete.getText().toString());
+                this.valores = BuscarEnderecoGoogle.buscarEnderecoByNome(enderecoAutoComplete.getText().toString(), getApplicationContext());
+            } else {
+                endereco = buscarEnderecoByCoordenadas(this.localizacaoUsuario.getLatitude(), this.localizacaoUsuario.getLongitude());
+                this.valores = BuscarEnderecoGoogle.buscarEnderecoByNome(endereco.get(0), getApplicationContext());
+            }
+
+            //progressDialog.dismiss();
 
             this.parametros = new RequestParams();
 
             this.parametros.put("titulo", this.edTituloOcorrencia.getText().toString());
             this.parametros.put("descricao", this.edObservacaoOcorrencia.getText().toString());
             this.parametros.put("referencia", this.edPontoReferenciaOcorrencia.getText().toString());
-            this.parametros.put("latitude", String.valueOf(coordenadasEndereco.get(0)));
-            this.parametros.put("longitude", String.valueOf(coordenadasEndereco.get(1)));
+            if (!utilizarGps) {
+                this.parametros.put("latitude", String.valueOf(coordenadasEndereco.get(0)));
+                this.parametros.put("longitude", String.valueOf(coordenadasEndereco.get(1)));
+            } else {
+                this.parametros.put("latitude", String.valueOf(this.localizacaoUsuario.getLatitude()));
+                this.parametros.put("longitude", String.valueOf(this.localizacaoUsuario.getLongitude()));
+            }
+
             this.parametros.put("id_usuario", String.valueOf(UsuarioSingleton.getInstancia().getUsuario().getId()));
             this.parametros.put("endereco", String.valueOf(valores.get("ENDERECO")));
             this.parametros.put("cidade", String.valueOf(valores.get("CIDADE")));
@@ -258,6 +277,7 @@ public class RegistrarOcorrencia extends AppCompatActivity {
 
             this.enviarOcorrencia();
         } catch (Exception e) {
+            e.printStackTrace();
             ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.erroBuscarEndereco));
         }
     }
@@ -337,9 +357,10 @@ public class RegistrarOcorrencia extends AppCompatActivity {
         //edPontoReferenciaOcorrencia.setError(null);
 
         ValidadorUtil.validarCampoEmBranco(this.edTituloOcorrencia, getResources().getString(R.string.erroInformarTituloOcorrencia));
-        ValidadorUtil.validarCampoEmBranco(this.enderecoAutoComplete, getResources().getString(R.string.erroInformarEnderecoOcorrencia));
+        if (!gpsUsuarioAtivado)
+            ValidadorUtil.validarCampoEmBranco(this.enderecoAutoComplete, getResources().getString(R.string.erroInformarEnderecoOcorrencia));
 
-        if (ValidadorUtil.isNuloOuVazio(edTituloOcorrencia.getError()) && ValidadorUtil.isNuloOuVazio(this.enderecoAutoComplete.getError())) {
+        if (ValidadorUtil.isNuloOuVazio(edTituloOcorrencia.getError()) && (ValidadorUtil.isNuloOuVazio(this.enderecoAutoComplete.getError()) || gpsUsuarioAtivado)) {
             progressDialog = ProgressDialog.show(RegistrarOcorrencia.this, getResources().getString(R.string.aguarde),
                     getResources().getString(R.string.msgCadastrandoOcorrencia));
 
@@ -393,6 +414,8 @@ public class RegistrarOcorrencia extends AppCompatActivity {
                 getResources().getString(android.R.string.cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        radioButtonUtilizarEndereco.setChecked(true);
+                        radioButtonUtilizarGps.setChecked(false);
                         dialog.cancel();
                     }
                 });
@@ -400,4 +423,55 @@ public class RegistrarOcorrencia extends AppCompatActivity {
         alert.show();
     }
 
+    private List<String> buscarEnderecoByCoordenadas(double latitude,
+                                                     double longitude) {
+        Geocoder geoCoordenadas = new Geocoder(RegistrarOcorrencia.this, (new Locale("pt",
+                "BR")));
+
+        List<Address> listaEnderecos = null;
+
+        for (int i = 0; 2 > i; i++) {
+            try {
+                listaEnderecos = geoCoordenadas.getFromLocation(latitude,
+                        longitude, 1);
+            } catch (IOException e) {
+                Log.e("Erro ao buscar endereco",
+                        e.getMessage());
+                continue;
+            }
+            break;
+
+        }
+
+        List<String> dados = new ArrayList<String>();
+
+        if (!listaEnderecos.isEmpty()) {
+            if (listaEnderecos.size() > 0) {
+
+                if (!listaEnderecos.isEmpty()) {
+                    if (listaEnderecos.size() > 0) {
+                        dados.add(listaEnderecos.get(0).getAddressLine(0));
+                        dados.add(listaEnderecos.get(0).getAddressLine(1));
+
+                        /* parametros.put("cep", listaEnderecos.get(0)
+                                .getPostalCode());
+                        parametros.put("estado", EstadosBrasileirosUtil
+                                .buscarSiglaEstado(listaEnderecos.get(0)
+                                        .getAdminArea()));
+
+                        if (listaEnderecos.get(0).getLocality() == null)
+                            parametros.put("cidade", listaEnderecos.get(0)
+                                    .getSubAdminArea());
+                        else
+                            parametros.put("cidade", listaEnderecos.get(0)
+                                    .getLocality()); */
+
+                        return dados;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 }

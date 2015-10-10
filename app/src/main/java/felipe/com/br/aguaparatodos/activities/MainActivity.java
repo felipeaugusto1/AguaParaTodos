@@ -591,6 +591,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } */
 
+        LoginManager.getInstance().logOut();
         UsuarioSingleton.getInstancia().setUsuario(new Usuario());
 
         Intent intent = new Intent(MainActivity.this, Login.class);

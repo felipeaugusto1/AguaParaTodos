@@ -78,7 +78,6 @@ public class BuscarEnderecoGoogle {
                                                             double latitude, double longitude) {
         Geocoder geoCoordenadas = new Geocoder(contexto,
                 (new Locale("pt", "BR")));
-
         try {
 
             List<Address> listaEnderecos = geoCoordenadas.getFromLocation(

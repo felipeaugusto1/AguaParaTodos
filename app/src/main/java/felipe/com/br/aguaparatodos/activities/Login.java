@@ -120,7 +120,7 @@ public class Login extends FragmentActivity implements
         if (!PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()).equalsIgnoreCase(PreferenciasUtil.VALOR_INVALIDO)) {
 
             this.edEmail.setText(PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, Login.this));
-            this.edSenha.setVisibility(View.INVISIBLE);
+            this.edSenha.setText(PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, Login.this));
             this.btnEntrar.setVisibility(View.INVISIBLE);
             this.txtOu.setVisibility(View.INVISIBLE);
             this.txtCriarConta.setVisibility(View.INVISIBLE);
