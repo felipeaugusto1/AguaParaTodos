@@ -27,6 +27,8 @@
 
     <!-- URLS WEBSERVICES -->
     <string name="usuario_login">usuario/login</string>
+    <string name="usuario_login_nativo">usuario/loginNativo</string>
+    <string name="usuario_verificar_codigo">usuario/verificarCodigo</string>
     <string name="usuario_receber_notificacao">usuario/receberNotificacao</string>
     <string name="usuario_atualizar_cidade">usuario/atualizarCidade</string>
     <string name="usuario_atualizar_gcm">usuario/atualizarGcm</string>
@@ -43,6 +45,7 @@
     <string name="login_facebook_cancelado">Login com Facebook cancelado.</string>
     <string name="login_facebook_erro">Ocorreu um erro ao logar com o Facebook.</string>
     <string name="login_erro">Ocorreu algum erro. Por favor tente novamente mais tarde.</string>
+    <string name="criar_conta">Criar Conta</string>
 
     <!-- MENU DRAWER -->
     <string name="menu_mapa">Mapa</string>
@@ -106,5 +109,7 @@
 
     <!-- Informações Fragment -->
     <string name="tela_informacoes">Informações</string>
+    <string name="title_activity_criar_conta">Criar Conta</string>
+    <string name="title_activity_confirmar_codigo_login">Confirmação</string>
 
 </resources>

@@ -14,7 +14,12 @@ public class Usuario {
     private String nomeCompleto;
     private String email;
     private String gcm;
+    private String senha;
+    private String senhaConfirmacao;
+    private String senhaDeSeguranca;
+    private String codigoVerificacao;
     private Date dataCadastro;
+    private boolean usuarioNativo;
     private boolean usuarioFacebook;
     private boolean usuarioTwitter;
     private boolean usuarioGooglePlus;
@@ -122,6 +127,30 @@ public class Usuario {
         this.preferenciaVisualizacao = preferenciaVisualizacao;
     }
 
+    public String getSenha() {
+        return senha;
+    }
+
+    public String getSenhaConfirmacao() {
+        return senhaConfirmacao;
+    }
+
+    public String getSenhaDeSeguranca() {
+        return senhaDeSeguranca;
+    }
+
+    public boolean isUsuarioNativo() {
+        return usuarioNativo;
+    }
+
+    public void setUsuarioNativo(boolean usuarioNativo) {
+        this.usuarioNativo = usuarioNativo;
+    }
+
+    public String getCodigoVerificacao() {
+        return codigoVerificacao;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
@@ -129,12 +158,18 @@ public class Usuario {
                 ", nomeCompleto='" + nomeCompleto + '\'' +
                 ", email='" + email + '\'' +
                 ", gcm='" + gcm + '\'' +
+                ", senha='" + senha + '\'' +
+                ", senhaConfirmacao='" + senhaConfirmacao + '\'' +
+                ", senhaDeSeguranca='" + senhaDeSeguranca + '\'' +
                 ", dataCadastro=" + dataCadastro +
+                ", usuarioNativo=" + usuarioNativo +
                 ", usuarioFacebook=" + usuarioFacebook +
                 ", usuarioTwitter=" + usuarioTwitter +
                 ", usuarioGooglePlus=" + usuarioGooglePlus +
                 ", receberNotificacao=" + receberNotificacao +
                 ", endereco=" + endereco +
+                ", primeiroLogin=" + primeiroLogin +
+                ", preferenciaVisualizacao='" + preferenciaVisualizacao + '\'' +
                 '}';
     }
 }

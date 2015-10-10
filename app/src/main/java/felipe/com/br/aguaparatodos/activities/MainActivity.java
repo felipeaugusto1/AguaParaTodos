@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int ID_MENU_AO_REDOR = 4;
     private static final int ID_MENU_AJUDA = 5;
     private static final int ID_MENU_SOBRE = 6;
-    private static final int ID_MENU_SAIR = 7;
+    private static final int ID_MENU_SAIR = 9;
 
 
 
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                         } else if (position == ID_MENU_MAPA) {
                             navigationDrawer.setSelection(0);
                         } else if (position == ID_MENU_SAIR) {
-                            //logOut();
+                            logOut();
                         } else if (position == ID_MENU_LISTA_OCORRENCIAS) {
                             //navigationDrawer.setSelection(3);
                             startActivity(new Intent(MainActivity.this, ListaOcorrencias.class));
@@ -438,6 +439,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        Log.d("resumiu", "resumiu");
+        this.navigationDrawer.setSelection(0);
         super.onResume();
     }
 

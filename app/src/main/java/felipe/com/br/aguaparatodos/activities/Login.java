@@ -21,6 +21,7 @@ import com.loopj.android.http.*;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import org.apache.http.Header;
 
@@ -85,6 +86,8 @@ public class Login extends FragmentActivity implements
     private String regId;
     private String SENDER_ID = "682647867821"; // id do projeto no google console
 
+    private EditText edEmail, edSenha;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +96,9 @@ public class Login extends FragmentActivity implements
         callbackManager = CallbackManager.Factory.create();
 
         setContentView(R.layout.login);
+
+        this.edEmail = (EditText) findViewById(R.id.editTextEmailLogin);
+        this.edSenha = (EditText) findViewById(R.id.editTextSenhaLogin);
 
         this.btnLoginFacebook = (LoginButton) findViewById(R.id.btnLoginFacebook);
 
@@ -135,10 +141,12 @@ public class Login extends FragmentActivity implements
         }
     }
 
-    private void prepararParametros(String nome, String email, boolean usuarioFacebook, boolean usuarioTwitter, boolean usuarioGooglePlus, boolean recebeNotificacao, String endereco) {
+    private void prepararParametros(String nome, String email, String senha, boolean usuarioFacebook, boolean usuarioTwitter, boolean usuarioGooglePlus, boolean recebeNotificacao, String endereco) {
         parametros = new RequestParams();
         parametros.put("nome", nome);
         parametros.put("email", email);
+        parametros.put("senha", "");
+        parametros.put("user_n", String.valueOf(Boolean.FALSE));
         parametros.put("user_f", String.valueOf(usuarioFacebook));
         parametros.put("user_t", String.valueOf(usuarioTwitter));
         parametros.put("user_g", String.valueOf(usuarioGooglePlus));
@@ -164,7 +172,7 @@ public class Login extends FragmentActivity implements
                             email = "erro_".concat(json.getString("name").replace(" ", "_").concat(regId));
                         }
 
-                        prepararParametros(json.getString("name"), email, true, false, false, true, endereco);
+                        prepararParametros(json.getString("name"), email, "", true, false, false, true, endereco);
 
                         try {
                             PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, Profile.getCurrentProfile().getProfilePictureUri(50, 50).toString(), getApplicationContext());
@@ -213,6 +221,48 @@ public class Login extends FragmentActivity implements
 
                 registerIdInBackground();
 
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                LoginManager.getInstance().logOut();
+                ToastUtil.criarToastLongo(getApplicationContext(), getResources().getString(R.string.login_erro));
+            }
+
+        });
+    }
+
+    private void loginNativo() {
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(WebService.ENDERECO_WS.concat(getResources().getString(R.string.usuario_login_nativo)), this.parametros, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                String str = "";
+                try {
+                    str = new String(bytes, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                Gson gson = new GsonBuilder().setDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss").create();
+
+                usuarioLogado = gson.fromJson(str, Usuario.class);
+
+                Log.d("usuario", usuarioLogado.toString());
+
+                if (usuarioLogado.getId() != 0) {
+                    UsuarioSingleton.getInstancia().setUsuario(usuarioLogado);
+                    UsuarioSingleton.getInstancia().getUsuario().setPreferenciaVisualizacao(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE);
+
+                    PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, usuarioLogado.getNomeCompleto(), getApplicationContext());
+                    PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, usuarioLogado.getEmail(), getApplicationContext());
+
+                    registerIdInBackground();
+                } else
+                    ToastUtil.criarToastLongo(Login.this, "Usuário ou senha inválidos.");
             }
 
             @Override
@@ -280,9 +330,36 @@ public class Login extends FragmentActivity implements
         }
     }
 
+    private boolean validarCamposLoginNativo() {
+        this.edEmail.setError("");
+        this.edSenha.setError("");
+
+        ValidadorUtil.validarCampoEmBranco(this.edEmail, "Informe seu email");
+        ValidadorUtil.validarCampoEmBranco(this.edSenha, "Informe sua senha");
+
+        if (!ValidadorUtil.isNuloOuVazio(this.edEmail.getError()) || !ValidadorUtil.isNuloOuVazio(this.edSenha.getError()))
+            return false;
+
+        return true;
+    }
+
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.txtCriarConta:
+                startActivity(new Intent(Login.this, CriarConta.class));
+                break;
+            case R.id.btnLogin:
+                if (validarCamposLoginNativo()) {
+                    this.parametros = new RequestParams();
+                    this.parametros.put("email", edEmail.getText().toString());
+                    this.parametros.put("senha", edSenha.getText().toString());
 
+                    loginNativo();
+                }
+
+                break;
+        }
     }
 
     private void onSignInClicked() {
@@ -318,7 +395,7 @@ public class Login extends FragmentActivity implements
             e.printStackTrace();
         }
 
-        prepararParametros(nome, email, false, false, true, true, "");
+        prepararParametros(nome, email, "", false, false, true, true, "");
         verificarEmail(this.parametros);
     }
 
@@ -328,18 +405,26 @@ public class Login extends FragmentActivity implements
     }
 
     private void iniciarProximaActivity() {
-        Log.d("indo iniciar activity", "indo iniciar activity");
-        Log.d("indo iniciar activity", UsuarioSingleton.getInstancia().getUsuario().getId()+"");
         if (UsuarioSingleton.getInstancia().getUsuario().getId() != 0) {
             if (usuarioLogado.isPrimeiroLogin()) {
-                Bundle b = new Bundle();
+                if (usuarioLogado.isUsuarioNativo()) {
+                    Bundle b = new Bundle();
 
-                UsuarioSingleton.getInstancia().getUsuario().setGcm(regId);
+                    Intent telaPosLogin = new Intent(Login.this, ConfirmarCodigoLogin.class);
 
-                Intent telaPosLogin = new Intent(Login.this, ConfirmarCidade.class);
-                telaPosLogin.putExtra("cidade", usuarioLogado.getEndereco().getCidade());
-                telaPosLogin.putExtra("gcm", regId);
-                startActivity(telaPosLogin);
+                    telaPosLogin.putExtra("gcm", regId);
+                    startActivity(telaPosLogin);
+                } else {
+                    Bundle b = new Bundle();
+
+                    UsuarioSingleton.getInstancia().getUsuario().setGcm(regId);
+
+                    Intent telaPosLogin = new Intent(Login.this, ConfirmarCidade.class);
+                    telaPosLogin.putExtra("cidade", usuarioLogado.getEndereco().getCidade());
+                    telaPosLogin.putExtra("gcm", regId);
+                    startActivity(telaPosLogin);
+                }
+
             } else {
                 Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
                 startActivity(telaPosLogin);

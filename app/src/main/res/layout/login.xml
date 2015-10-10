@@ -7,6 +7,43 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/editTextEmailLogin"
+        android:hint="Email"
+        android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/editTextSenhaLogin"
+        android:hint="Senha"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Entrar"
+        android:id="@+id/btnLogin"
+        android:onClick="onClick"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/criar_conta"
+        android:textColor="@android:color/white"
+        android:onClick="onClick"
+        android:clickable="true"
+        android:id="@+id/txtCriarConta"
+        android:layout_gravity="center_horizontal" />
+
     <com.facebook.login.widget.LoginButton
         android:id="@+id/btnLoginFacebook"
         android:layout_width="fill_parent"
