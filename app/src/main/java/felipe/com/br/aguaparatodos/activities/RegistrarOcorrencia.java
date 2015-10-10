@@ -277,8 +277,9 @@ public class RegistrarOcorrencia extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                progressDialog.dismiss();
+
                 if (str.equalsIgnoreCase("sucesso")) {
-                    progressDialog.dismiss();
 
                     ToastUtil.criarToastLongo(getApplicationContext(),
                             getResources().getString(R.string.msgSucessoEnviarOcorrencia));

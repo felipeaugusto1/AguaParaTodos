@@ -3,46 +3,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/colorPrimary"
     android:gravity="center"
     android:orientation="vertical">
 
     <EditText
+        android:id="@+id/editTextEmailLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:ems="10"
-        android:id="@+id/editTextEmailLogin"
+        android:gravity="center"
         android:hint="Email"
-        android:layout_gravity="center_horizontal" />
+        android:inputType="textEmailAddress" />
 
     <EditText
+        android:id="@+id/editTextSenhaLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:ems="10"
-        android:id="@+id/editTextSenhaLogin"
+        android:gravity="center"
         android:hint="Senha"
-        android:layout_gravity="center_horizontal" />
+        android:inputType="textPassword" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Entrar"
         android:id="@+id/btnLogin"
-        android:onClick="onClick"
-        android:layout_gravity="center" />
-
-    <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/criar_conta"
-        android:textColor="@android:color/white"
+        android:layout_gravity="center"
+        android:paddingTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/colorPrimary"
         android:onClick="onClick"
-        android:clickable="true"
-        android:id="@+id/txtCriarConta"
-        android:layout_gravity="center_horizontal" />
+        android:text="Entrar" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/btnLoginFacebook"
@@ -51,6 +49,28 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp" />
+
+    <TextView
+        android:id="@+id/txtOu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:text="ou"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/txtCriarConta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:onClick="onClick"
+        android:textColor="@color/primary"
+        android:text="@string/criar_conta"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

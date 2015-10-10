@@ -21,6 +21,7 @@ import com.loopj.android.http.*;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import org.apache.http.Header;
@@ -87,6 +88,7 @@ public class Login extends FragmentActivity implements
     private String SENDER_ID = "682647867821"; // id do projeto no google console
 
     private EditText edEmail, edSenha;
+    private Button btnEntrar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,7 @@ public class Login extends FragmentActivity implements
 
         this.edEmail = (EditText) findViewById(R.id.editTextEmailLogin);
         this.edSenha = (EditText) findViewById(R.id.editTextSenhaLogin);
+        this.btnEntrar = (Button) findViewById(R.id.btnLogin);
 
         this.btnLoginFacebook = (LoginButton) findViewById(R.id.btnLoginFacebook);
 
@@ -111,6 +114,13 @@ public class Login extends FragmentActivity implements
                 .build();
 
         if (!PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()).equalsIgnoreCase(PreferenciasUtil.VALOR_INVALIDO)) {
+
+            this.edEmail.setVisibility(View.INVISIBLE);
+            this.edSenha.setVisibility(View.INVISIBLE);
+            this.btnEntrar.setVisibility(View.INVISIBLE);
+
+            ToastUtil.criarToastLongo(Login.this, "Entrando...");
+
             this.btnLoginFacebook.setVisibility(View.INVISIBLE);
             this.parametros = new RequestParams();
             this.parametros.put("email", PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()));

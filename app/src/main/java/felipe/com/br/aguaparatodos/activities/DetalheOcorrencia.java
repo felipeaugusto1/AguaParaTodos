@@ -306,8 +306,12 @@ public class DetalheOcorrencia extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-                            prepararEnviarOcorrenciaWs();
-                            confirmarOcorrenciaWs();
+                            if (UsuarioSingleton.getInstancia().getUsuario().getId() != 0) {
+                                prepararEnviarOcorrenciaWs();
+                                confirmarOcorrenciaWs();
+                            } else
+                                ToastUtil.criarToastLongo(DetalheOcorrencia.this, "Logue no aplicativo para confirmar esta ocorrência.");
+
                         } catch (Exception e) {
                             ToastUtil.criarToastLongo(DetalheOcorrencia.this, getResources().getString(R.string.msgErroWS));
                         }
@@ -335,8 +339,11 @@ public class DetalheOcorrencia extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-                            prepararSolucionarOcorrenciaWs();
-                            ocorrenciaSolucionadaWs();
+                            if (UsuarioSingleton.getInstancia().getUsuario().getId() != 0) {
+                                prepararSolucionarOcorrenciaWs();
+                                ocorrenciaSolucionadaWs();
+                            } else
+                                ToastUtil.criarToastLongo(DetalheOcorrencia.this, "Logue no aplicativo para marcar esta ocorrência como solucionada.");
                         } catch (Exception e) {
                             ToastUtil.criarToastLongo(DetalheOcorrencia.this, getResources().getString(R.string.msgErroWS));
                         }
