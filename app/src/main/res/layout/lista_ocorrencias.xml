@@ -20,6 +20,15 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
 
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/toolbar_lista_ocorrencias"-->
+            <!--android:elevation="0dp"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:background="?attr/colorPrimary"-->
+            <!--app:layout_scrollFlags="scroll|enterAlways"-->
+            <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>-->
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_lista_ocorrencias"
             android:elevation="0dp"

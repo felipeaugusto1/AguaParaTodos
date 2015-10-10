@@ -36,7 +36,7 @@ public class NotificationCustomUtil {
                 .setSound(
                         RingtoneManager
                                 .getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setContentTitle("Nova ocorrência de água parada: ").setContentText(message);
+                .setContentTitle("Ocorrência de água parada: ").setContentText(message);
 
         mBuilder.setContentIntent(contentIntent);
 

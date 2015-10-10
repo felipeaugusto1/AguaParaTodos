@@ -1,0 +1,100 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cinza_claro"
+    tools:context="felipe.com.br.aguaparatodos.activities.SintomasFragment">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:id="@+id/txtObs"
+                style="@style/Base.TextAppearance.AppCompat.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Como prevenir?"
+                android:textSize="15sp" />
+
+            <View
+                android:id="@+id/linhaSeparacaoObs"
+                style="@style/Base.TextAppearance.AppCompat.Body1"
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_below="@+id/txtObs"
+                android:background="@color/cinza_claro" />
+
+            <TextView
+                android:id="@+id/txtTexto1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linhaSeparacaoObs"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="Siga alguns passos simples para combater este problema."
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/txtTexto2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtTexto1"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="Evite água parada em vasos, pneus e outros reservatórios;"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/txtTexto3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtTexto2"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="Coloque areia nos vasos de plantas;"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/txtTexto4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtTexto3"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="Mantenha a umidade do ambiente baixa;"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/txtTexto5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtTexto4"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="Coloque desinfetante nos ralos;"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>

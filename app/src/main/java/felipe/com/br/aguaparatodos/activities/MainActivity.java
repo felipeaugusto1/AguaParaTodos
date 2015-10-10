@@ -82,10 +82,15 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int ID_MENU_MAPA = 1;
     private static final int ID_MENU_REGISTRAR_OCORRENCIA = 2;
-    private static final int ID_MENU_SOBRE = 4;
-    private static final int ID_MENU_SAIR = 8;
     private static final int ID_MENU_LISTA_OCORRENCIAS = 3;
     private static final int ID_MENU_AO_REDOR = 4;
+    private static final int ID_MENU_AJUDA = 5;
+    private static final int ID_MENU_SOBRE = 6;
+    private static final int ID_MENU_SAIR = 7;
+
+
+
+
 
     private SupportMapFragment mapFragment;
     private GoogleMap mapa;
@@ -132,7 +137,8 @@ public class MainActivity extends AppCompatActivity {
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_registrar_ocorrencia)).withIcon(GoogleMaterial.Icon.gmd_new_releases).withIdentifier(ID_MENU_REGISTRAR_OCORRENCIA);
         PrimaryDrawerItem item6 = new PrimaryDrawerItem().withName("Lista").withBadgeStyle(new BadgeStyle().withColor(Color.RED).withTextColor(Color.WHITE)).withIcon(GoogleMaterial.Icon.gmd_list).withIdentifier(ID_MENU_LISTA_OCORRENCIAS);
         PrimaryDrawerItem item5 = new PrimaryDrawerItem().withName("Ao redor").withIcon(GoogleMaterial.Icon.gmd_location_on).withIdentifier(ID_MENU_AO_REDOR);
-        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sobre)).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(ID_MENU_SOBRE);
+        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sobre)).withIcon(GoogleMaterial.Icon.gmd_help).withIdentifier(ID_MENU_SOBRE);
+        PrimaryDrawerItem item7 = new PrimaryDrawerItem().withName(getResources().getString(R.string.tela_informacoes)).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(ID_MENU_AJUDA);
         SwitchDrawerItem item4 = new SwitchDrawerItem().withName(getResources().getString(R.string.menu_notificacao)).withCheckable(true).withOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(IDrawerItem iDrawerItem, CompoundButton compoundButton, boolean b) {
@@ -148,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
         item4.withChecked(UsuarioSingleton.getInstancia().getUsuario().isReceberNotificacao());
 
-        PrimaryDrawerItem item7 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sair)).withIcon(GoogleMaterial.Icon.gmd_exit_to_app).withIdentifier(ID_MENU_SAIR);
+        PrimaryDrawerItem item8 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sair)).withIcon(GoogleMaterial.Icon.gmd_exit_to_app).withIdentifier(ID_MENU_SAIR);
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -181,10 +187,11 @@ public class MainActivity extends AppCompatActivity {
                         item2,
                         item6,
                         item5,
+                        item7,
                         item3,
                         item4,
                         new DividerDrawerItem(),
-                        item7
+                        item8
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -199,11 +206,14 @@ public class MainActivity extends AppCompatActivity {
                         } else if (position == ID_MENU_MAPA) {
                             navigationDrawer.setSelection(0);
                         } else if (position == ID_MENU_SAIR) {
-                            logOut();
+                            //logOut();
                         } else if (position == ID_MENU_LISTA_OCORRENCIAS) {
                             //navigationDrawer.setSelection(3);
                             startActivity(new Intent(MainActivity.this, ListaOcorrencias.class));
-                        } else if (position == ID_MENU_AO_REDOR) {
+                        } else if (position == ID_MENU_AJUDA) {
+                            startActivity(new Intent(MainActivity.this, AjudaActivity.class));
+                        }
+                        else if (position == ID_MENU_AO_REDOR) {
                             startActivity(new Intent(MainActivity.this, AoRedor.class));
                         }
 

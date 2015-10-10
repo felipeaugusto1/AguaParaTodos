@@ -104,4 +104,7 @@
     <string name="erroBuscarCidade">Por favor informe uma cidade válida.</string>
     <string name="txtDataDeCadastro">Data de cadastro:</string>
 
+    <!-- Informações Fragment -->
+    <string name="tela_informacoes">Informações</string>
+
 </resources>

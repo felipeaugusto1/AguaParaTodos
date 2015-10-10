@@ -100,6 +100,8 @@
 
         <activity android:name=".activities.AoRedor" />
 
+        <activity android:name=".activities.AjudaActivity" />
+
     </application>
 
 </manifest>
