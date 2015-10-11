@@ -98,7 +98,6 @@ public class RegistrarOcorrencia extends AppCompatActivity {
 
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.toolbar.setTitle(getResources().getString(R.string.tituloTelaRegistrarOcorrenia));
-        //this.toolbar.setBackgroundColor(getResources().getColor(R.color.vermelho));
         this.toolbar.setTitleTextColor(getResources().getColor(R.color.branco));
         setSupportActionBar(this.toolbar);
 
@@ -244,18 +243,16 @@ public class RegistrarOcorrencia extends AppCompatActivity {
     }
 
     private void prepararParametros() {
-        List<String> endereco = new ArrayList<String>();
+        List<Address> endereco = new ArrayList<Address>();
 
         try {
             if (!utilizarGps) {
                 this.coordenadasEndereco = BuscarEnderecoGoogle.buscarCoordenadasPorEndereco(getApplicationContext(), this.enderecoAutoComplete.getText().toString());
                 this.valores = BuscarEnderecoGoogle.buscarEnderecoByNome(enderecoAutoComplete.getText().toString(), getApplicationContext());
             } else {
-                endereco = buscarEnderecoByCoordenadas(this.localizacaoUsuario.getLatitude(), this.localizacaoUsuario.getLongitude());
-                this.valores = BuscarEnderecoGoogle.buscarEnderecoByNome(endereco.get(0), getApplicationContext());
+                endereco = BuscarEnderecoGoogle.buscarEnderecoByCoordenadas(RegistrarOcorrencia.this, this.localizacaoUsuario.getLatitude(), this.localizacaoUsuario.getLongitude());
+                this.valores = BuscarEnderecoGoogle.buscarEnderecoByNome(String.valueOf(endereco.get(0).getAddressLine(0)), getApplicationContext());
             }
-
-            //progressDialog.dismiss();
 
             this.parametros = new RequestParams();
 
@@ -357,10 +354,10 @@ public class RegistrarOcorrencia extends AppCompatActivity {
         //edPontoReferenciaOcorrencia.setError(null);
 
         ValidadorUtil.validarCampoEmBranco(this.edTituloOcorrencia, getResources().getString(R.string.erroInformarTituloOcorrencia));
-        if (!gpsUsuarioAtivado)
+        if (!gpsUsuarioAtivado || radioButtonUtilizarEndereco.isChecked())
             ValidadorUtil.validarCampoEmBranco(this.enderecoAutoComplete, getResources().getString(R.string.erroInformarEnderecoOcorrencia));
 
-        if (ValidadorUtil.isNuloOuVazio(edTituloOcorrencia.getError()) && (ValidadorUtil.isNuloOuVazio(this.enderecoAutoComplete.getError()) || gpsUsuarioAtivado)) {
+        if (ValidadorUtil.isNuloOuVazio(edTituloOcorrencia.getError()) && (ValidadorUtil.isNuloOuVazio(this.enderecoAutoComplete.getError()) || (gpsUsuarioAtivado && radioButtonUtilizarGps.isChecked()))) {
             progressDialog = ProgressDialog.show(RegistrarOcorrencia.this, getResources().getString(R.string.aguarde),
                     getResources().getString(R.string.msgCadastrandoOcorrencia));
 
@@ -393,7 +390,6 @@ public class RegistrarOcorrencia extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        this.navigationDrawer.setSelection(0);
         super.onBackPressed();
     }
 
@@ -423,55 +419,4 @@ public class RegistrarOcorrencia extends AppCompatActivity {
         alert.show();
     }
 
-    private List<String> buscarEnderecoByCoordenadas(double latitude,
-                                                     double longitude) {
-        Geocoder geoCoordenadas = new Geocoder(RegistrarOcorrencia.this, (new Locale("pt",
-                "BR")));
-
-        List<Address> listaEnderecos = null;
-
-        for (int i = 0; 2 > i; i++) {
-            try {
-                listaEnderecos = geoCoordenadas.getFromLocation(latitude,
-                        longitude, 1);
-            } catch (IOException e) {
-                Log.e("Erro ao buscar endereco",
-                        e.getMessage());
-                continue;
-            }
-            break;
-
-        }
-
-        List<String> dados = new ArrayList<String>();
-
-        if (!listaEnderecos.isEmpty()) {
-            if (listaEnderecos.size() > 0) {
-
-                if (!listaEnderecos.isEmpty()) {
-                    if (listaEnderecos.size() > 0) {
-                        dados.add(listaEnderecos.get(0).getAddressLine(0));
-                        dados.add(listaEnderecos.get(0).getAddressLine(1));
-
-                        /* parametros.put("cep", listaEnderecos.get(0)
-                                .getPostalCode());
-                        parametros.put("estado", EstadosBrasileirosUtil
-                                .buscarSiglaEstado(listaEnderecos.get(0)
-                                        .getAdminArea()));
-
-                        if (listaEnderecos.get(0).getLocality() == null)
-                            parametros.put("cidade", listaEnderecos.get(0)
-                                    .getSubAdminArea());
-                        else
-                            parametros.put("cidade", listaEnderecos.get(0)
-                                    .getLocality()); */
-
-                        return dados;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
 }

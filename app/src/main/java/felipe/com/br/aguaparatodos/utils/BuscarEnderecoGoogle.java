@@ -95,7 +95,7 @@ public class BuscarEnderecoGoogle {
             }
 
         } catch (IOException e) {
-            Log.e("Erro busca endereco",
+            Log.e("Erro ao buscar endereco",
                     e.getMessage());
         }
 

@@ -121,13 +121,16 @@ public class Login extends FragmentActivity implements
 
             this.edEmail.setText(PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, Login.this));
             this.edSenha.setText(PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, Login.this));
-            this.btnEntrar.setVisibility(View.INVISIBLE);
-            this.txtOu.setVisibility(View.INVISIBLE);
-            this.txtCriarConta.setVisibility(View.INVISIBLE);
+            this.edEmail.setClickable(false);
+            this.edSenha.setClickable(false);
+
+            this.btnEntrar.setClickable(false);
+
+            this.txtCriarConta.setClickable(false);
 
             ToastUtil.criarToastLongo(Login.this, "Entrando...");
 
-            this.btnLoginFacebook.setVisibility(View.INVISIBLE);
+            this.btnLoginFacebook.setClickable(false);
             this.parametros = new RequestParams();
             this.parametros.put("email", PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()));
             this.verificarEmail(this.parametros);
