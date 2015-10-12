@@ -55,7 +55,7 @@ public class ConfirmarCodigoLogin extends Activity {
     }
 
     private boolean validarCampos() {
-        this.edCodigo.setError("");
+        this.edCodigo.setError(null);
 
         ValidadorUtil.validarCampoEmBranco(this.edCodigo, "Por favor informe o código enviado ao seu email");
 
@@ -117,7 +117,7 @@ public class ConfirmarCodigoLogin extends Activity {
 
                     startActivity(new Intent(ConfirmarCodigoLogin.this, MainActivity.class));
                 } else
-                    ToastUtil.criarToastLongo(ConfirmarCodigoLogin.this, "Usuário ou senha inválidos.");
+                    ToastUtil.criarToastLongo(ConfirmarCodigoLogin.this, "Código inválido, tente novamente..");
             }
 
             @Override

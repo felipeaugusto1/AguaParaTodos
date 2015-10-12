@@ -153,7 +153,7 @@ public class CriarConta extends AppCompatActivity {
                 progressDialog.dismiss();
 
                 if (usuarioLogado.getId() != 0) {
-                    ToastUtil.criarToastLongo(CriarConta.this, "Foi enviado um email com o código de verificação. Utilize-o para realizar o login.");
+                    ToastUtil.criarToastLongo(CriarConta.this, "Foi enviado um email com o código de verificação. Utilize-o para após o login.");
                     startActivity(new Intent(CriarConta.this, Login.class));
                 }
 

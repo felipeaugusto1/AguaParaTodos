@@ -145,6 +145,8 @@ public class ConfirmarCidade extends AppCompatActivity {
                         "yyyy-MM-dd'T'HH:mm:ss").create();
 
                 Usuario usuarioLogado = gson.fromJson(str, Usuario.class);
+                //usuarioLogado.getEndereco().setLatitude(Double.valueOf(coordenadas.get(0)));
+                //usuarioLogado.getEndereco().setLongitude(Double.valueOf(coordenadas.get(0)));
 
                 if (usuarioLogado.getId() > 0) {
                     UsuarioSingleton.getInstancia().setUsuario(usuarioLogado);

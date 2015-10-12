@@ -233,10 +233,6 @@ public class Login extends FragmentActivity implements
                 usuarioLogado = gson.fromJson(str, Usuario.class);
 
                 UsuarioSingleton.getInstancia().setUsuario(usuarioLogado);
-                UsuarioSingleton.getInstancia().getUsuario().setPreferenciaVisualizacao(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE);
-
-                PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, usuarioLogado.getNomeCompleto(), getApplicationContext());
-                PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, usuarioLogado.getEmail(), getApplicationContext());
 
                 registerIdInBackground();
 
@@ -350,8 +346,8 @@ public class Login extends FragmentActivity implements
     }
 
     private boolean validarCamposLoginNativo() {
-        this.edEmail.setError("");
-        this.edSenha.setError("");
+        this.edEmail.setError(null);
+        this.edSenha.setError(null);
 
         ValidadorUtil.validarCampoEmBranco(this.edEmail, "Informe seu email");
         ValidadorUtil.validarCampoEmBranco(this.edSenha, "Informe sua senha");
@@ -448,6 +444,11 @@ public class Login extends FragmentActivity implements
                 Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
                 startActivity(telaPosLogin);
             }
+
+            UsuarioSingleton.getInstancia().getUsuario().setPreferenciaVisualizacao(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE);
+
+            PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, usuarioLogado.getNomeCompleto(), getApplicationContext());
+            PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, usuarioLogado.getEmail(), getApplicationContext());
         }
     }
 

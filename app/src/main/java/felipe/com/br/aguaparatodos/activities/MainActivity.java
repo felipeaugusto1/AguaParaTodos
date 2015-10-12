@@ -127,9 +127,6 @@ public class MainActivity extends AppCompatActivity {
         this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
 
-        this.configurarMapa();
-        this.atualizarMapa();
-
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_mapa)).withIcon(GoogleMaterial.Icon.gmd_map).withIdentifier(ID_MENU_MAPA);
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_registrar_ocorrencia)).withIcon(GoogleMaterial.Icon.gmd_new_releases).withIdentifier(ID_MENU_REGISTRAR_OCORRENCIA).withSelectable(false);
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName("Lista").withBadgeStyle(new BadgeStyle().withColor(Color.RED).withTextColor(Color.WHITE)).withIcon(GoogleMaterial.Icon.gmd_list).withIdentifier(ID_MENU_LISTA_OCORRENCIAS).withSelectable(false);
@@ -225,6 +222,9 @@ public class MainActivity extends AppCompatActivity {
 
         this.navigationDrawer.getAdapter().notifyDataSetChanged();
 
+        this.configurarMapa();
+        this.atualizarMapa();
+
         this.mapa.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -241,7 +241,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(telaDetalheOcorrencia);
             }
         });
-
 
 //        new MaterialShowcaseView.Builder(this)
 //                .setTarget(this.fab)
@@ -368,12 +367,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             progressDialog.dismiss();
         }
     }
 
     private void adicionarMarcadores(List<Ocorrencia> listaOcorrencias) {
-
         if (!ValidadorUtil.isNuloOuVazio(listaOcorrencias) && listaOcorrencias.size() > 0) {
             for (Ocorrencia ocorrencia : listaOcorrencias) {
                 if (!ocorrencia.isOcorrenciaSolucionada()) {
@@ -395,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        UsuarioSingleton.getInstancia().getUsuario().setPreferenciaVisualizacao(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE);
         if (UsuarioSingleton.getInstancia().getUsuario().getPreferenciaVisualizacao().equalsIgnoreCase(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE)) {
             this.mapa.animateCamera(CameraUpdateFactory.zoomTo(14));
             this.mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
@@ -405,8 +405,12 @@ public class MainActivity extends AppCompatActivity {
                     -14.2392976, -53.1805017), 4));
         }
 
+        try {
+            progressDialog.dismiss();
+        } catch (Exception e) {
 
-        progressDialog.dismiss();
+        }
+
     }
 
     @Override

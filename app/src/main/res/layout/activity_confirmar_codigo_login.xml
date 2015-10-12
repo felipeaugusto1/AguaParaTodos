@@ -26,17 +26,25 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="65dp" />
 
     <Button
         android:id="@+id/btnConfirmarCodigoConfirmacao"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/edCodigoConfirmacao"
-        android:onClick="onClick"
         android:layout_centerHorizontal="true"
-        android:text="Entrar" />
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"
+        android:onClick="onClick"
+        android:text="Entrar"
+        android:textColor="@android:color/white" />
 
 
 </RelativeLayout>
