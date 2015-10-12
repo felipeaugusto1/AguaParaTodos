@@ -321,7 +321,6 @@ public class AoRedor extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        this.navigationDrawer.setSelection(0);
         super.onBackPressed();
     }
 
@@ -433,7 +432,7 @@ public class AoRedor extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 distancia_raio = progress;
-                txtRaio.setText(distancia_raio+"km");
+                txtRaio.setText(distancia_raio + "km");
             }
 
             @Override
@@ -443,7 +442,7 @@ public class AoRedor extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                ToastUtil.criarToastCurto(AoRedor.this, distancia_raio+"km");
             }
         });
 

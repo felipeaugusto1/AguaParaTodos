@@ -409,7 +409,6 @@ public class DetalheOcorrencia extends AppCompatActivity {
                 });
     }
 
-
     private void confirmarOcorrenciaWs() {
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(WebService.ENDERECO_WS.concat(getResources().getString(R.string.ocorrencia_confirmar)), parametros,

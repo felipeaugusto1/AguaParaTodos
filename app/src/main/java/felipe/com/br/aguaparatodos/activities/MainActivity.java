@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 .withActivity(this)
                 .withHeaderBackground(R.color.material_drawer_primary_light)
                 .addProfiles(
-                        new ProfileDrawerItem().withName(nomeUsuario).withEmail(emailUsuario).withIcon(Uri.parse(fotoUsuario))
+                        new ProfileDrawerItem().withName(nomeUsuario).withIcon(Uri.parse(fotoUsuario))
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override

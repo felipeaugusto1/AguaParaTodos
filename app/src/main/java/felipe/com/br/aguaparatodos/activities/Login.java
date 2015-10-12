@@ -119,7 +119,7 @@ public class Login extends FragmentActivity implements
 
         if (!PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, getApplicationContext()).equalsIgnoreCase(PreferenciasUtil.VALOR_INVALIDO)) {
 
-            this.edEmail.setText(PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, Login.this));
+            this.edEmail.setText(PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, Login.this));
             this.edSenha.setText(PreferenciasUtil.getPreferenciasUsuarioLogado(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, Login.this));
             this.edEmail.setClickable(false);
             this.edSenha.setClickable(false);
@@ -188,7 +188,8 @@ public class Login extends FragmentActivity implements
                             endereco = String.valueOf(json.getJSONObject("location").getString("name"));
                             email = json.getString("email");
                         } catch (Exception e) {
-                            email = "erro_".concat(json.getString("name").replace(" ", "_").concat(regId));
+                            //email = "erro_".concat(json.getString("name").replace(" ", "_").concat(regId));
+                            email = "erro_".concat(json.getString("name").replace(" ", "_"));
                         }
 
                         prepararParametros(json.getString("name"), email, "", true, false, false, true, endereco);
