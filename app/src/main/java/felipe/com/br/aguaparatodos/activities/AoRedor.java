@@ -93,7 +93,6 @@ public class AoRedor extends AppCompatActivity {
 
 
         this.toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        this.toolbar.setTitle(getResources().getString(R.string.tela_ao_redor));
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
 

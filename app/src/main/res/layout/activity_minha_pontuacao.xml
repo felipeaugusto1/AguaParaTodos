@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary"
+    tools:context="felipe.com.br.aguaparatodos.activities.SintomasFragment">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_top" />
+
+
+    <TextView
+        android:id="@+id/qtdPontos"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="100dp"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/white"
+        android:textSize="65dp" />
+
+    <TextView
+        android:id="@+id/qtdFrases"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/qtdPontos"
+        android:gravity="center"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/white"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/fraseContinuarAjudando"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/qtdFrases"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text=""
+        android:textColor="@android:color/white" />
+
+
+</RelativeLayout>

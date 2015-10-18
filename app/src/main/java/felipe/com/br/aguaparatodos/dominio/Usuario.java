@@ -27,6 +27,7 @@ public class Usuario {
     private Endereco endereco;
     private boolean primeiroLogin;
     private String preferenciaVisualizacao;
+    private int qtdPontos;
 
     public Usuario() {
     }
@@ -151,6 +152,14 @@ public class Usuario {
         return codigoVerificacao;
     }
 
+    public int getQtdPontos() {
+        return qtdPontos;
+    }
+
+    public void setQtdPontos(int qtdPontos) {
+        this.qtdPontos = qtdPontos;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
@@ -161,6 +170,7 @@ public class Usuario {
                 ", senha='" + senha + '\'' +
                 ", senhaConfirmacao='" + senhaConfirmacao + '\'' +
                 ", senhaDeSeguranca='" + senhaDeSeguranca + '\'' +
+                ", codigoVerificacao='" + codigoVerificacao + '\'' +
                 ", dataCadastro=" + dataCadastro +
                 ", usuarioNativo=" + usuarioNativo +
                 ", usuarioFacebook=" + usuarioFacebook +
@@ -170,6 +180,7 @@ public class Usuario {
                 ", endereco=" + endereco +
                 ", primeiroLogin=" + primeiroLogin +
                 ", preferenciaVisualizacao='" + preferenciaVisualizacao + '\'' +
+                ", qtdPontos=" + qtdPontos +
                 '}';
     }
 }

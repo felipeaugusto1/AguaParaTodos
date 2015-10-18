@@ -95,6 +95,8 @@
     <string name="msgPessoasConfirmaramOcorrenciaPlural">pessoas confirmaram esta ocorrência.</string>
     <string name="msgStatusOcorrenciaSolucionada">Status: Solucionada</string>
     <string name="msgStatusOcorrenciaAguardando">Status: Aguardando solução</string>
+    <string name="msgSolucionarOcorrenciaForaCidade">Algo estranho está ocorrendo. Você tentou marcar uma ocorrência fora da sua cidade como solucionada.</string>
+    <string name="msgConfirmarOcorrenciaForaCidade">Algo estranho está ocorrendo. Você tentou confirmar uma ocorrência fora da sua cidade como verdadeira.</string>
 
 
     <!-- Tela Lista de Ocorrencias -->
@@ -111,5 +113,8 @@
     <string name="tela_informacoes">Informações</string>
     <string name="title_activity_criar_conta">Criar Conta</string>
     <string name="title_activity_confirmar_codigo_login">Confirmação</string>
+
+    <!-- Tela Minha Pontuacao -->
+    <string name="tela_minha_pontuacao">Pontuação</string>
 
 </resources>

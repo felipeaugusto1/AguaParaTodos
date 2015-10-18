@@ -18,6 +18,7 @@ public class Ocorrencia {
     private Usuario usuario;
     private Endereco endereco;
     private Date dataCadastro;
+    private Date dataSolucao;
 
     public Ocorrencia() {
     }
@@ -115,6 +116,14 @@ public class Ocorrencia {
 
     public void setUsuariosConfirmaram(List<Integer> usuariosConfirmaram) {
         this.usuariosConfirmaram = usuariosConfirmaram;
+    }
+
+    public Date getDataSolucao() {
+        return dataSolucao;
+    }
+
+    public void setDataSolucao(Date dataSolucao) {
+        this.dataSolucao = dataSolucao;
     }
 
     @Override

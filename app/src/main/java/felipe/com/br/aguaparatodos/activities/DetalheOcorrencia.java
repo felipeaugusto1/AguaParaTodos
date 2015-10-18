@@ -35,10 +35,12 @@ import org.apache.http.Header;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import felipe.com.br.aguaparatodos.R;
 import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
 import felipe.com.br.aguaparatodos.singleton.ListaOcorrenciasSingleton;
+import felipe.com.br.aguaparatodos.utils.DataUtil;
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.singleton.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
@@ -163,13 +165,16 @@ public class DetalheOcorrencia extends AppCompatActivity {
                 });
     }
 
+    private void desabilitarBotaoSolucionarOcorrencia() {
+        this.btnSolucionar.setBackgroundColor(getResources().getColor(R.color.prata));
+        this.btnConfirmar.setBackgroundColor(getResources().getColor(R.color.prata));
+        this.btnSolucionar.setClickable(false);
+        this.btnConfirmar.setClickable(false);
+    }
+
     private void percorrerOcorrencias() {
-        if (this.ocorrencia.isOcorrenciaSolucionada()) {
-            this.btnSolucionar.setBackgroundColor(getResources().getColor(R.color.prata));
-            this.btnConfirmar.setBackgroundColor(getResources().getColor(R.color.prata));
-            this.btnSolucionar.setClickable(false);
-            this.btnConfirmar.setClickable(false);
-        }
+        if (this.ocorrencia.isOcorrenciaSolucionada())
+            desabilitarBotaoSolucionarOcorrencia();
 
         try {
             configurarMapa();
@@ -196,7 +201,7 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
             if (this.ocorrencia.isOcorrenciaSolucionada()) {
                 this.layoutCardStatusOcorrencia.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-                this.txtStatusOcorrencia.setText(getResources().getString(R.string.msgStatusOcorrenciaSolucionada));
+                this.txtStatusOcorrencia.setText(getResources().getString(R.string.msgStatusOcorrenciaSolucionada).concat(" em ").concat(DataUtil.formatarData(this.ocorrencia.getDataSolucao())));
             }
             else {
                 this.layoutCardStatusOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
@@ -213,7 +218,7 @@ public class DetalheOcorrencia extends AppCompatActivity {
             else
                 this.txtPontoReferenciaOcorrencia.setText(getResources().getString(R.string.msgCampoNaoInformado));
 
-            this.txtData.setText(new SimpleDateFormat("dd/MM/yyyy").format(this.ocorrencia.getDataCadastro()));
+            this.txtData.setText(DataUtil.formatarData(this.ocorrencia.getDataCadastro()));
 
             if (this.ocorrencia.getQtdConfirmacoes() == 1) {
                 this.layoutCardConfirmacaoOcorrencia.setBackgroundColor(getResources().getColor(R.color.vermelho_claro));
@@ -253,17 +258,22 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_compartilhar:
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        ocorrencia.getTitulo()
-                                + "\n" + ocorrencia.getEndereco().getEndereco());
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                compartilhar("");
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void compartilhar(String texto) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        if (texto.equalsIgnoreCase(""))
+            sendIntent.putExtra(Intent.EXTRA_TEXT, ocorrencia.getTitulo() + "\n" + ocorrencia.getEndereco().getEndereco());
+        else
+            sendIntent.putExtra(Intent.EXTRA_TEXT, texto);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 
     @Override
@@ -289,10 +299,16 @@ public class DetalheOcorrencia extends AppCompatActivity {
     public void acoesBotoesDetalhesOcorrencia(View v) {
         switch (v.getId()) {
             case R.id.btnEnviarOcorrencia:
-                criarDialog(DetalheOcorrencia.this, getResources().getString(R.string.dialogTituloConfirmar), getResources().getString(R.string.dialogTextoConfirmar));
+                if (this.ocorrencia.getEndereco().getCidade().equalsIgnoreCase(UsuarioSingleton.getInstancia().getUsuario().getEndereco().getCidade()))
+                    criarDialog(DetalheOcorrencia.this, getResources().getString(R.string.dialogTituloConfirmar), getResources().getString(R.string.dialogTextoConfirmar));
+                else
+                    ToastUtil.criarToastCurto(DetalheOcorrencia.this, getResources().getString(R.string.msgConfirmarOcorrenciaForaCidade));
                 break;
             case R.id.btnOcorrenciaSolucionada:
-                criarDialogSolucionarOcorrencia();
+                if (this.ocorrencia.getEndereco().getCidade().equalsIgnoreCase(UsuarioSingleton.getInstancia().getUsuario().getEndereco().getCidade()))
+                    criarDialogSolucionarOcorrencia();
+                else
+                    ToastUtil.criarToastCurto(DetalheOcorrencia.this, getResources().getString(R.string.msgSolucionarOcorrenciaForaCidade));
         }
     }
 
@@ -307,7 +323,7 @@ public class DetalheOcorrencia extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         try {
                             if (UsuarioSingleton.getInstancia().getUsuario().getId() != 0) {
-                                prepararEnviarOcorrenciaWs();
+                                prepararOcorrenciaWs();
                                 confirmarOcorrenciaWs();
                             } else
                                 ToastUtil.criarToastLongo(DetalheOcorrencia.this, "Logue no aplicativo para confirmar esta ocorrência.");
@@ -340,8 +356,14 @@ public class DetalheOcorrencia extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         try {
                             if (UsuarioSingleton.getInstancia().getUsuario().getId() != 0) {
-                                prepararSolucionarOcorrenciaWs();
+                                prepararOcorrenciaWs();
                                 ocorrenciaSolucionadaWs();
+                                int qtdPontos = UsuarioSingleton.getInstancia().getUsuario().getQtdPontos();
+                                UsuarioSingleton.getInstancia().getUsuario().setQtdPontos(qtdPontos + 1);
+
+                                desabilitarBotaoSolucionarOcorrencia();
+
+                                compartilharInformacao(DetalheOcorrencia.this, "Problema solucionado", "Detalhe compartilhar esta informação com alguém?");
                             } else
                                 ToastUtil.criarToastLongo(DetalheOcorrencia.this, "Logue no aplicativo para marcar esta ocorrência como solucionada.");
                         } catch (Exception e) {
@@ -361,15 +383,10 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
     }
 
-    private void prepararEnviarOcorrenciaWs() {
+    private void prepararOcorrenciaWs() {
         this.parametros = new RequestParams();
         parametros.put("ocorrencia_id", String.valueOf(this.ocorrencia.getId()));
         parametros.put("usuario_id", String.valueOf(UsuarioSingleton.getInstancia().getUsuario().getId()));
-    }
-
-    private void prepararSolucionarOcorrenciaWs() {
-        this.parametros = new RequestParams();
-        this.parametros.put("ocorrencia_id", String.valueOf(this.ocorrencia.getId()));
     }
 
     private void ocorrenciaSolucionadaWs() {
@@ -388,13 +405,13 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
                         if (str.equalsIgnoreCase(WebService.RESPOSTA_SUCESSO)) {
                             layoutCardStatusOcorrencia.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-                            txtStatusOcorrencia.setText(getResources().getString(R.string.msgStatusOcorrenciaSolucionada));
+                            txtStatusOcorrencia.setText(getResources().getString(R.string.msgStatusOcorrenciaSolucionada).concat(" em ").concat(DataUtil.formatarData(new Date())));
 
                             ToastUtil.criarToastLongo(DetalheOcorrencia.this,
                                     "Ocorrência marcada como solucionada!"
                             );
 
-
+                            ListaOcorrenciasSingleton.getInstancia().setOcorrenciaConfirmada(ocorrencia.getId());
                         } else
                             ToastUtil.criarToastLongo(DetalheOcorrencia.this,
                                     getResources().getString(R.string.msgErroWS)
@@ -461,4 +478,26 @@ public class DetalheOcorrencia extends AppCompatActivity {
                 });
     }
 
+    private void compartilharInformacao(Context contexto, String titulo, String mensagem) {
+        AlertDialog dialog = new AlertDialog.Builder(contexto)
+                .setTitle(titulo)
+                .setMessage(mensagem)
+                .setPositiveButton(contexto.getResources().getString(R.string.msgSim), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String msgSolucionada = "Eu solucionei o problema "+ocorrencia.getTitulo()+". Ajude a sociedade você também!\nAplicativo " +getResources().getString(R.string.app_name);
+                        compartilhar(msgSolucionada);
+                    }
+                })
+                .setNegativeButton(contexto.getResources().getString(R.string.msgNao), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        dialog.show();
+    }
 }

@@ -27,6 +27,10 @@ public final class DataUtil {
 		return date;
 	}
 
+	public static String formatarData(Date data) {
+		return new SimpleDateFormat("dd/MM/yyyy").format(data);
+	}
+
 	public static boolean validarDataEditText(View pView, String pMessage) {
 		if (pView instanceof EditText) {
 			EditText edText = (EditText) pView;

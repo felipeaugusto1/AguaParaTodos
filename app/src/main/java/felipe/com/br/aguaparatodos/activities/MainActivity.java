@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -85,9 +84,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int ID_MENU_REGISTRAR_OCORRENCIA = 2;
     private static final int ID_MENU_LISTA_OCORRENCIAS = 3;
     private static final int ID_MENU_AO_REDOR = 4;
-    private static final int ID_MENU_AJUDA = 5;
-    //private static final int ID_MENU_SOBRE = 6;
-    private static final int ID_MENU_SAIR = 8;
+    private static final int ID_MENU_INFORMACOES = 5;
+    private static final int ID_MENU_PONTUACAO = 6;
+    // notificacoes = 7
+    // linha separadora = 8
+    private static final int ID_MENU_SAIR = 9;
 
     private SupportMapFragment mapFragment;
     private GoogleMap mapa;
@@ -131,8 +132,9 @@ public class MainActivity extends AppCompatActivity {
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_registrar_ocorrencia)).withIcon(GoogleMaterial.Icon.gmd_new_releases).withIdentifier(ID_MENU_REGISTRAR_OCORRENCIA).withSelectable(false);
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName("Lista").withBadgeStyle(new BadgeStyle().withColor(Color.RED).withTextColor(Color.WHITE)).withIcon(GoogleMaterial.Icon.gmd_list).withIdentifier(ID_MENU_LISTA_OCORRENCIAS).withSelectable(false);
         PrimaryDrawerItem item4 = new PrimaryDrawerItem().withName("Ao redor").withIcon(GoogleMaterial.Icon.gmd_location_on).withIdentifier(ID_MENU_AO_REDOR).withSelectable(false);
-        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withName(getResources().getString(R.string.tela_informacoes)).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(ID_MENU_AJUDA).withSelectable(false);
-        SwitchDrawerItem item6 = new SwitchDrawerItem().withName(getResources().getString(R.string.menu_notificacao)).withCheckable(true).withOnCheckedChangeListener(new OnCheckedChangeListener() {
+        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withName(getResources().getString(R.string.tela_informacoes)).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(ID_MENU_INFORMACOES).withSelectable(false);
+        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withName("Minha Pontuação").withBadgeStyle(new BadgeStyle().withColor(Color.BLUE).withTextColor(Color.WHITE)).withIcon(GoogleMaterial.Icon.gmd_confirmation_number).withIdentifier(ID_MENU_PONTUACAO).withSelectable(false);
+        SwitchDrawerItem item7 = new SwitchDrawerItem().withName(getResources().getString(R.string.menu_notificacao)).withCheckable(true).withOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(IDrawerItem iDrawerItem, CompoundButton compoundButton, boolean b) {
                 progressDialog = ProgressDialog.show(MainActivity.this, getResources().getString(R.string.aguarde), getResources().getString(R.string.aguarde));
@@ -144,8 +146,8 @@ public class MainActivity extends AppCompatActivity {
                 navigationDrawer.getAdapter().notifyDataSetChanged();
             }
         });
-        item6.withChecked(UsuarioSingleton.getInstancia().getUsuario().isReceberNotificacao());
-        PrimaryDrawerItem item8 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sair)).withIcon(GoogleMaterial.Icon.gmd_exit_to_app).withIdentifier(ID_MENU_SAIR);
+        item7.withChecked(UsuarioSingleton.getInstancia().getUsuario().isReceberNotificacao());
+        PrimaryDrawerItem item9 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sair)).withIcon(GoogleMaterial.Icon.gmd_exit_to_app).withIdentifier(ID_MENU_SAIR);
         //PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName(getResources().getString(R.string.menu_sobre)).withIcon(GoogleMaterial.Icon.gmd_help).withIdentifier(ID_MENU_SOBRE);
 
         AccountHeader headerResult = new AccountHeaderBuilder()
@@ -181,8 +183,9 @@ public class MainActivity extends AppCompatActivity {
                         item4,
                         item5,
                         item6,
+                        item7,
                         new DividerDrawerItem(),
-                        item8
+                        item9
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -199,10 +202,12 @@ public class MainActivity extends AppCompatActivity {
                             logOut();
                         } else if (position == ID_MENU_LISTA_OCORRENCIAS) {
                             startActivity(new Intent(MainActivity.this, ListaOcorrencias.class));
-                        } else if (position == ID_MENU_AJUDA) {
+                        } else if (position == ID_MENU_INFORMACOES) {
                             startActivity(new Intent(MainActivity.this, AjudaActivity.class));
                         } else if (position == ID_MENU_AO_REDOR) {
                             startActivity(new Intent(MainActivity.this, AoRedor.class));
+                        } else if (position == ID_MENU_PONTUACAO) {
+                            startActivity(new Intent(MainActivity.this, MinhaPontuacao.class));
                         }
 
                         //transaction.addToBackStack(null);
@@ -219,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.navigationDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         // ----
+
+        this.navigationDrawer.updateBadge(ID_MENU_PONTUACAO, new StringHolder(String.valueOf(UsuarioSingleton.getInstancia().getUsuario().getQtdPontos())));
 
         this.navigationDrawer.getAdapter().notifyDataSetChanged();
 
@@ -358,11 +365,11 @@ public class MainActivity extends AppCompatActivity {
         try {
             configurarMapa();
             if (apenasMinhaCidade) {
-                navigationDrawer.updateBadge(ID_MENU_LISTA_OCORRENCIAS, new StringHolder(String.valueOf(listaOcorrenciasNaCidade.size())));
+                this.navigationDrawer.updateBadge(ID_MENU_LISTA_OCORRENCIAS, new StringHolder(String.valueOf(listaOcorrenciasNaCidade.size())));
                 adicionarMarcadores(this.listaOcorrenciasNaCidade);
             }
             else {
-                navigationDrawer.updateBadge(ID_MENU_LISTA_OCORRENCIAS, new StringHolder(String.valueOf(listaOcorrencias.size())));
+                this.navigationDrawer.updateBadge(ID_MENU_LISTA_OCORRENCIAS, new StringHolder(String.valueOf(listaOcorrencias.size())));
                 adicionarMarcadores(this.listaOcorrencias);
             }
 
@@ -434,6 +441,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        try {
+            percorrerOcorrencias(UsuarioSingleton.getInstancia().getUsuario().getPreferenciaVisualizacao().equalsIgnoreCase(Usuario.PREFERENCIA_VISUALIZACAO_CIDADE));
+        } catch (Exception e) {
+
+        }
+
     }
 
     @Override

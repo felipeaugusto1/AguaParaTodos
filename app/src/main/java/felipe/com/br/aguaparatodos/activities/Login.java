@@ -233,6 +233,8 @@ public class Login extends FragmentActivity implements
 
                 usuarioLogado = gson.fromJson(str, Usuario.class);
 
+                Log.d("usuario: ", usuarioLogado.toString());
+
                 UsuarioSingleton.getInstancia().setUsuario(usuarioLogado);
 
                 registerIdInBackground();

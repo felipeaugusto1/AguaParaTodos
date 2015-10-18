@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
+import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
 
 /**
  * Created by felipe on 10/4/15.
@@ -32,5 +33,16 @@ public class ListaOcorrenciasSingleton {
         }
 
         return null;
+    }
+
+    public void setOcorrenciaConfirmada(int idOcorrencia) {
+        if (!ValidadorUtil.isNuloOuVazio(this.lista)) {
+            Ocorrencia o;
+            o = buscarPorId(idOcorrencia);
+
+            if (!ValidadorUtil.isNuloOuVazio(o)) {
+                o.setOcorrenciaSolucionada(true);
+            }
+        }
     }
 }

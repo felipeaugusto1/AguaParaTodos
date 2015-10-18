@@ -45,7 +45,7 @@
                 android:layout_below="@+id/linhaSeparacaoObs"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
-                android:text="Poços de água parada representam um grande risco à saúde:"
+                android:text="Poços de água parada representam um grande risco à saúde, como por exemplo::"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp" />
 

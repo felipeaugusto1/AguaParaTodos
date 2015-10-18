@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -24,6 +22,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -32,17 +32,18 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 
 import org.apache.http.Header;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import felipe.com.br.aguaparatodos.R;
+import felipe.com.br.aguaparatodos.dominio.Ocorrencia;
+import felipe.com.br.aguaparatodos.dominio.Usuario;
 import felipe.com.br.aguaparatodos.extras.PlacesAutoCompleteAdapter;
 import felipe.com.br.aguaparatodos.gps.FusedLocationPosition;
+import felipe.com.br.aguaparatodos.singleton.ListaOcorrenciasSingleton;
 import felipe.com.br.aguaparatodos.utils.BuscarEnderecoGoogle;
 
 import felipe.com.br.aguaparatodos.utils.ToastUtil;
@@ -82,6 +83,8 @@ public class RegistrarOcorrencia extends AppCompatActivity {
 
     private Map<String, String> valores;
     private List<Double> coordenadasEndereco;
+
+    private String enderecoFormatado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,6 +257,8 @@ public class RegistrarOcorrencia extends AppCompatActivity {
                 this.valores = BuscarEnderecoGoogle.buscarEnderecoByNome(String.valueOf(endereco.get(0).getAddressLine(0)), getApplicationContext());
             }
 
+            this.enderecoFormatado = String.valueOf(valores.get("ENDERECO")).concat(", ").concat(String.valueOf(valores.get("CIDADE")));
+
             this.parametros = new RequestParams();
 
             this.parametros.put("titulo", this.edTituloOcorrencia.getText().toString());
@@ -296,20 +301,37 @@ public class RegistrarOcorrencia extends AppCompatActivity {
 
                 progressDialog.dismiss();
 
-                if (str.equalsIgnoreCase("sucesso")) {
+                Gson gson = new GsonBuilder().setDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss").create();
 
+                Ocorrencia ocorrencia = gson.fromJson(str, Ocorrencia.class);
+
+                ListaOcorrenciasSingleton.getInstancia().getLista().add(ocorrencia);
+
+                if (!ValidadorUtil.isNuloOuVazio(ocorrencia) && ocorrencia.getId() > 0) {
                     ToastUtil.criarToastLongo(getApplicationContext(),
                             getResources().getString(R.string.msgSucessoEnviarOcorrencia));
 
-                    limparCampos();
-
-                    startActivity(new Intent(RegistrarOcorrencia.this, MainActivity.class));
-                } else if (str.equalsIgnoreCase("erro")) {
+                    compartilharInformacao(RegistrarOcorrencia.this, edTituloOcorrencia.getText().toString(), "Você deseja compartilhar essa informação?");
+                } else {
                     progressDialog.dismiss();
 
                     ToastUtil.criarToastLongo(getApplicationContext(),
                             getResources().getString(R.string.msgErroEnviarOcorrencia));
                 }
+
+                /* if (str.equalsIgnoreCase("sucesso")) {
+
+                    ToastUtil.criarToastLongo(getApplicationContext(),
+                            getResources().getString(R.string.msgSucessoEnviarOcorrencia));
+
+                    compartilharInformacao(RegistrarOcorrencia.this, edTituloOcorrencia.getText().toString(), "Você deseja compartilhar essa informação?");
+                } else if (str.equalsIgnoreCase("erro")) {
+                    progressDialog.dismiss();
+
+                    ToastUtil.criarToastLongo(getApplicationContext(),
+                            getResources().getString(R.string.msgErroEnviarOcorrencia));
+                } */
 
             }
 
@@ -321,6 +343,41 @@ public class RegistrarOcorrencia extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void compartilharInformacao(Context contexto, String titulo, String mensagem) {
+        AlertDialog dialog = new AlertDialog.Builder(contexto)
+                .setTitle(titulo)
+                .setMessage(mensagem)
+                .setPositiveButton(contexto.getResources().getString(R.string.msgSim), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        limparCampos();
+
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT,
+                                edTituloOcorrencia.getText().toString()
+                                        + "\n" + enderecoFormatado);
+                        sendIntent.setType("text/plain");
+                        startActivity(sendIntent);
+                    }
+                })
+                .setNegativeButton(contexto.getResources().getString(R.string.msgNao), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                        limparCampos();
+
+                        startActivity(new Intent(RegistrarOcorrencia.this, MainActivity.class));
+                    }
+                }).create();
+
+        dialog.show();
     }
 
     private void limparCampos() {

@@ -111,7 +111,7 @@
                 android:layout_below="@+id/txtTexto6"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
-                android:text="Dor nos olhos e manhcas vermelhas na pele;"
+                android:text="Dor nos olhos e manchas vermelhas na pele;"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp" />
 

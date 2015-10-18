@@ -33,7 +33,6 @@ public class AjudaActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_ajuda);
 
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
-        this.toolbar.setTitle(getResources().getString(R.string.tela_informacoes));
         setSupportActionBar(this.toolbar);
 
         this.navigationDrawer = new DrawerBuilder()
