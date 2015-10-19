@@ -155,6 +155,7 @@ public class RegistrarOcorrencia extends AppCompatActivity {
                 if (!gpsUsuarioAtivado) {
                     alertaGPSDesativado();
                     ToastUtil.criarToastLongo(RegistrarOcorrencia.this, getResources().getString(R.string.msgAtivarGps));
+                    enderecoAutoComplete.setEnabled(true);
                 }
             }
         });

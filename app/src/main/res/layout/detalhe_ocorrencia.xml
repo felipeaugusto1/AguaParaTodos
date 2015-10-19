@@ -1,71 +1,75 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context=".DetalheOcorrencia">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/cinza_claro"
-        android:orientation="vertical">
+    <include
+        android:id="@+id/toolbar_detalhe_ocorrencia"
+        layout="@layout/toolbar_top" />
 
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <include
-            android:id="@+id/toolbar_detalhe_ocorrencia"
-            layout="@layout/toolbar_top" />
-
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="match_parent"
+            android:background="@color/cinza_claro"
+            android:orientation="vertical">
 
-        <include layout="@layout/card_detalhe_ocorrencia_status" />
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
 
-        <include layout="@layout/card_detalhe_ocorrencia_confirmacoes" />
 
-        <include layout="@layout/card_detalhe_ocorrencia_titulo" />
+            <include layout="@layout/card_detalhe_ocorrencia_status" />
 
-        <include layout="@layout/card_detalhe_ocorrencia_endereco" />
+            <include layout="@layout/card_detalhe_ocorrencia_confirmacoes" />
 
-        <include layout="@layout/card_detalhe_ocorrencia_obs" />
+            <include layout="@layout/card_detalhe_ocorrencia_titulo" />
 
-        <include layout="@layout/card_detalhe_ocorrencia_referencia" />
+            <include layout="@layout/card_detalhe_ocorrencia_endereco" />
 
-        <Button
-            android:id="@+id/btnEnviarOcorrencia"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textViewContadorReferencia"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1"
-            android:background="@color/vermelho"
-            android:text="Confirmar"
-            android:onClick="acoesBotoesDetalhesOcorrencia"
-            android:textColor="@android:color/white" />
+            <include layout="@layout/card_detalhe_ocorrencia_obs" />
 
-        <Button
-            android:id="@+id/btnOcorrenciaSolucionada"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnEnviarOcorrencia"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:background="@android:color/holo_green_light"
-            android:text="Marcar como Solucionada"
-            android:onClick="acoesBotoesDetalhesOcorrencia"
-            android:textColor="@android:color/white" />
+            <include layout="@layout/card_detalhe_ocorrencia_referencia" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/btnEnviarOcorrencia"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewContadorReferencia"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:background="@color/vermelho"
+                android:onClick="acoesBotoesDetalhesOcorrencia"
+                android:text="Confirmar"
+                android:textColor="@android:color/white" />
 
-</ScrollView>
+            <Button
+                android:id="@+id/btnOcorrenciaSolucionada"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnEnviarOcorrencia"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@android:color/holo_green_light"
+                android:onClick="acoesBotoesDetalhesOcorrencia"
+                android:text="Marcar como Solucionada"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>
