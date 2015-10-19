@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,6 +46,9 @@ import felipe.com.br.aguaparatodos.utils.ToastUtil;
 import felipe.com.br.aguaparatodos.singleton.UsuarioSingleton;
 import felipe.com.br.aguaparatodos.utils.ValidadorUtil;
 import felipe.com.br.aguaparatodos.utils.WebService;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 /**
  * Created by felipe on 9/4/15.
@@ -71,11 +75,8 @@ public class DetalheOcorrencia extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detalhe_ocorrencia);
 
-        this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
         criarReferenciasComponentes();
 
-        this.toolbar = (Toolbar) findViewById(R.id.toolbar_detalhe_ocorrencia);
         this.toolbar.setTitle(getResources().getString(R.string.tituloTelaDetalheOcorrenia));
         this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
@@ -118,9 +119,29 @@ public class DetalheOcorrencia extends AppCompatActivity {
                 buscarOcorrenciasPorIdWS(parametros);
             }
         }
+
+        /* new MaterialShowcaseView.Builder(this)
+                .setTarget(this.btnSolucionar)
+                .setDismissText(getResources().getString(R.string.msgEntendi))
+                .setDelay(200) // optional but starting animations immediately in onCreate can make them choppy
+                .setContentText("Ganhe pontos solucionando as ocorrências").show(); */
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500); // half second between each showcase view
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, "");
+
+        sequence.addSequenceItem(this.btnSolucionar, "Ganhe pontos solucionando as ocorrências", getResources().getString(R.string.msgEntendi));
+
+        sequence.addSequenceItem(this.btnConfirmar, "Caso conheça a ocorrência, confirme-a.", getResources().getString(R.string.msgEntendi));
+
+        sequence.start();
     }
 
     private void criarReferenciasComponentes() {
+        this.mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        this.toolbar = (Toolbar) findViewById(R.id.toolbar_detalhe_ocorrencia);
+
         this.txtTituloOcorrencia = (TextView) findViewById(R.id.txtTituloOcorrencia);
         this.txtPontoReferenciaOcorrencia = (TextView) findViewById(R.id.txtPontoReferenciaOcorrencia);
         this.txtDescricaoOcorrencia = (TextView) findViewById(R.id.txtObsOcorrencia);
@@ -500,4 +521,5 @@ public class DetalheOcorrencia extends AppCompatActivity {
 
         dialog.show();
     }
+
 }

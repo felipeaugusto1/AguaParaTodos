@@ -44,5 +44,18 @@
         android:text=""
         android:textColor="@android:color/white" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Compartilhar com os amigos"
+        android:id="@+id/button"
+        android:paddingRight="10dp"
+        android:layout_marginRight="3dp"
+        android:background="@drawable/round_button"
+        android:paddingLeft="10dp"
+        android:layout_below="@+id/fraseContinuarAjudando"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="101dp" />
+
 
 </RelativeLayout>
