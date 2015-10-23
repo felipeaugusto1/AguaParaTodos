@@ -75,8 +75,24 @@ public class MinhaPontuacao extends AppCompatActivity {
             this.txtFraseAjudar.setText("Ajude a sociedade a combater este problema, e acumule pontos!");
         }
 
+    }
 
+    public void acaoBotoes(View v) {
+        switch (v.getId()) {
+            case R.id.btnCompartilharAmigos:
+                compartilhar("COLOCAR_MENSAGEM_AQUI");
+        }
+    }
 
+    private void compartilhar(String texto) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        if (texto.equalsIgnoreCase(""))
+            sendIntent.putExtra(Intent.EXTRA_TEXT, texto);
+        else
+            sendIntent.putExtra(Intent.EXTRA_TEXT, texto);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 
 }
