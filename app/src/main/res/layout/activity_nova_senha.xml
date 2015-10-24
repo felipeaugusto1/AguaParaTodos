@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="felipe.com.br.aguaparatodos.activities.NovaSenha">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_top" />
+
+    <TextView
+        android:id="@+id/textViewSenha"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="15dp"
+        android:text="Nova Senha"
+        android:textSize="12dp" />
+
+    <EditText
+        android:id="@+id/editTextSenhaNova"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textViewSenha"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/textViewSenhaConfirmacao"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextSenhaNova"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="15dp"
+        android:text="Repita a Nova Senha"
+        android:textSize="12dp" />
+
+    <EditText
+        android:id="@+id/editTextSenhaConfirmacaoNova"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textViewSenhaConfirmacao"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/btnAtualizarSenha"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextSenhaConfirmacaoNova"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
+        android:onClick="onClick"
+        android:text="Cadastrar"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>

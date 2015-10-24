@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="felipe.com.br.aguaparatodos">
+    package="felipe.com.br.aguaparatodos" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -29,12 +29,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/MaterialDrawerTheme.Light.DarkToolbar.TranslucentStatus">
+        android:theme="@style/MaterialDrawerTheme.Light.DarkToolbar.TranslucentStatus" >
 
         <!-- GCM -->
         <receiver
             android:name=".gcm.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
@@ -61,7 +61,7 @@
 
         <activity
             android:name=".activities.Login"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -80,7 +80,7 @@
         <activity android:name=".activities.DetalheOcorrencia" />
         <activity
             android:name=".activities.ListaOcorrencias"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
                 <!-- <category android:name="android.intent.category.DEFAULT" /> -->
@@ -91,26 +91,27 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".activities.ConfirmarCidade" />
-
-        <activity android:name=".activities.AoRedor"
-            android:label="@string/tela_ao_redor"/>
-
+        <activity
+            android:name=".activities.AoRedor"
+            android:label="@string/tela_ao_redor" />
         <activity
             android:name=".activities.AjudaActivity"
             android:label="@string/tela_informacoes" />
-
         <activity
             android:name=".activities.CriarConta"
             android:label="@string/title_activity_criar_conta" />
-
         <activity
             android:name=".activities.ConfirmarCodigoLogin"
-            android:label="@string/title_activity_confirmar_codigo_login"></activity>
-
+            android:label="@string/title_activity_confirmar_codigo_login" />
         <activity
             android:name=".activities.MinhaPontuacao"
-            android:label="@string/tela_minha_pontuacao"></activity>
-
+            android:label="@string/tela_minha_pontuacao" />
+        <activity
+            android:name=".activities.EsqueciSenha"
+            android:label="@string/title_activity_esqueci_senha" >
+        </activity>
+        <activity android:name=".activities.NovaSenha" >
+        </activity>
     </application>
 
 </manifest>

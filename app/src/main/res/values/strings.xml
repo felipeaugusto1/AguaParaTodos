@@ -32,6 +32,8 @@
     <string name="usuario_receber_notificacao">usuario/receberNotificacao</string>
     <string name="usuario_atualizar_cidade">usuario/atualizarCidade</string>
     <string name="usuario_atualizar_gcm">usuario/atualizarGcm</string>
+    <string name="usuario_esqueci_senha">usuario/esqueciSenha</string>
+    <string name="usuario_alterar_senha">usuario/resetarSenha</string>
     <string name="ocorrencia_nova">ocorrencia/nova</string>
     <string name="ocorrencia_listar">ocorrencia/listar</string>
     <string name="ocorrencia_buscar_id">ocorrencia/buscarPorId</string>
@@ -116,5 +118,6 @@
 
     <!-- Tela Minha Pontuacao -->
     <string name="tela_minha_pontuacao">Pontuação</string>
+    <string name="title_activity_esqueci_senha">Esqueci minha senha</string>
 
 </resources>

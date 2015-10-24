@@ -375,7 +375,9 @@ public class Login extends FragmentActivity implements
 
                     loginNativo();
                 }
-
+                break;
+            case R.id.txtEsqueciSenha:
+                startActivity(new Intent(Login.this, EsqueciSenha.class));
                 break;
         }
     }
@@ -444,7 +446,12 @@ public class Login extends FragmentActivity implements
                 }
 
             } else {
-                Intent telaPosLogin = new Intent(Login.this, MainActivity.class);
+                Intent telaPosLogin;
+                if (usuarioLogado.isEsqueceuSenha())
+                    telaPosLogin = new Intent(Login.this, NovaSenha.class);
+                else
+                    telaPosLogin = new Intent(Login.this, MainActivity.class);
+
                 startActivity(telaPosLogin);
             }
 

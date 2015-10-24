@@ -28,6 +28,7 @@ public class Usuario {
     private boolean primeiroLogin;
     private String preferenciaVisualizacao;
     private int qtdPontos;
+    private boolean esqueceuSenha;
 
     public Usuario() {
     }
@@ -158,6 +159,14 @@ public class Usuario {
 
     public void setQtdPontos(int qtdPontos) {
         this.qtdPontos = qtdPontos;
+    }
+
+    public boolean isEsqueceuSenha() {
+        return esqueceuSenha;
+    }
+
+    public void setEsqueceuSenha(boolean esqueceuSenha) {
+        this.esqueceuSenha = esqueceuSenha;
     }
 
     @Override
