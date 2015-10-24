@@ -122,6 +122,9 @@ public class ListaOcorrencias extends AppCompatActivity {
         configurarLista();
         progressDialog.dismiss();
 
+        if (this.listaOcorrencias.size() == 0)
+            ToastUtil.criarToastLongo(ListaOcorrencias.this, "Nenhuma ocorrência cadastrada até o momento.");
+
         handleSearch(getIntent());
     }
 
@@ -241,7 +244,6 @@ public class ListaOcorrencias extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        this.navigationDrawer.setSelection(0);
         super.onBackPressed();
     }
 
@@ -319,4 +321,5 @@ public class ListaOcorrencias extends AppCompatActivity {
         }
 
     }
+
 }

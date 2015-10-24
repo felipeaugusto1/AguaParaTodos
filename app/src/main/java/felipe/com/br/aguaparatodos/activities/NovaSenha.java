@@ -64,6 +64,12 @@ public class NovaSenha extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(NovaSenha.this, Login.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                UsuarioSingleton.getInstancia().setUsuario(new Usuario());
+                PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_EMAIL, PreferenciasUtil.VALOR_INVALIDO, getApplicationContext());
+                PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_FOTO, PreferenciasUtil.VALOR_INVALIDO, getApplicationContext());
+                PreferenciasUtil.salvarPreferenciasLogin(PreferenciasUtil.KEY_PREFERENCIAS_USUARIO_LOGADO_NOME, PreferenciasUtil.VALOR_INVALIDO, getApplicationContext());
+
                 startActivity(intent);
             }
         });
@@ -154,4 +160,5 @@ public class NovaSenha extends AppCompatActivity {
 
         });
     }
+
 }
