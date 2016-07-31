@@ -5,4 +5,11 @@ O aplicativo Água Limpa tem como missão denunciar os focos de dengue e alertar
 
 Seu principal objetivo é servir como intermediador entre a população e os órgãos responsáveis, ou prefeitura, de forma que exista uma comunicação mais rápida e direta entre eles. São utilizadas tecnologias extremamente eficientes para tornar a denúncia o mais simples possível ao usuário, e através da geolocalização do dispositivo, avisar aos usuários que se encontram próximos da ocorrência.
 
-Link do aplicativo na Play Store: https://play.google.com/store/apps/details?id=felipe.com.br.aguaparatodos
+~~Link do aplicativo na [Play Store](https://play.google.com/store/apps/details?id=felipe.com.br.aguaparatodos)~~
+
+![template1](https://dl.dropboxusercontent.com/u/60579688/img_agua_limpa/1.png)
+![template1](https://dl.dropboxusercontent.com/u/60579688/img_agua_limpa/2.png)
+![template1](https://dl.dropboxusercontent.com/u/60579688/img_agua_limpa/3.png)
+![template1](https://dl.dropboxusercontent.com/u/60579688/img_agua_limpa/4.png)
+![template1](https://dl.dropboxusercontent.com/u/60579688/img_agua_limpa/5.png)
+![template1](https://dl.dropboxusercontent.com/u/60579688/img_agua_limpa/6.png)
