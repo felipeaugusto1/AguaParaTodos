@@ -8,7 +8,7 @@ Seu principal objetivo é servir como intermediador entre a população e os ór
 ~~Link do aplicativo na [Play Store](https://play.google.com/store/apps/details?id=felipe.com.br.aguaparatodos)~~
 
 Project made to ABRH Hackathon (2015).
-The main purpose of the app is to report places with standing water to prevent several diseases, to help the people who lives near to these contaminated places. Once the server is populated with data sent by the app, all these informations can be used by the governament to take the necessary solutions.
+The main purpose of the app is to report places with standing water to prevent several diseases, to help the people who lives near to these contaminated places. Once the server is populated with data sent by the app, all these informations can be used by the government to take the necessary solutions.
 The app is not working anymore because the server isn't online.
 
 ![template1](https://dl.dropboxusercontent.com/u/60579688/img_agua_limpa/1.png)
